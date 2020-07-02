@@ -1,28 +1,29 @@
 #' Nonparametric Bootstrap
 #'
 #' Generates `B` number of nonparametric bootstrap
-#'   samples from the original sample data.
+#' samples from the original sample `data`
+#' (the empirical distribution \eqn{\hat{F}}).
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #' @param data Vector, matrix or data frame.
-#'   Sample data to bootstrap.
+#'   Sample data to bootstrap
+#'   (the empirical distribution \eqn{\hat{F}}).
 #' @param B Integer. Number of bootstrap samples.
 #' @inheritParams jeksterslabRutils::util_lapply
 #' @return Returns a list of nonparametric bootstrap samples.
-#' @family bootstrap functions
-#' @keywords bootstraping
 #' @examples
 #' B <- 5L
+#' n <- 5
 #' # vector
-#' data_vector <- rnorm(n = 5)
+#' data_vector <- rnorm(n = n)
 #' nb(
 #'   data = data_vector,
 #'   B = B
 #' )
 #' # matrix
-#' X <- rnorm(n = 5)
-#' M <- rnorm(n = 5)
-#' Y <- rnorm(n = 5)
+#' X <- rnorm(n = n)
+#' M <- rnorm(n = n)
+#' Y <- rnorm(n = n)
 #' data_matrix <- cbind(X, M, Y)
 #' nb(
 #'   data = data_matrix,
@@ -35,7 +36,12 @@
 #'   B = B
 #' )
 #' @references
+#' Efron, B., & Tibshirani, R. J. (1993).
+#' An introduction to the bootstrap. New York, N.Y: Chapman & Hall.
+#'
 #' [Wikipedia: Bootstrapping (statistics)](https://en.wikipedia.org/wiki/Bootstrapping_(statistics))
+#' @family bootstrap functions
+#' @keywords bootstraping
 #' @importFrom jeksterslabRutils util_lapply
 #' @export
 nb <- function(data,
@@ -81,9 +87,24 @@ nb <- function(data,
 #' \eqn{\boldsymbol{\hat{\mu}}}
 #'
 #' Generates `B` number of parametric bootstrap
-#'   samples from the original sample data.
-#'   Data is generated from a multivariate normal distribution
-#'   using the estimated variance-covariance matrix and mean vector.
+#' samples from the original sample `data`
+#' (the empirical distribution
+#' \eqn{
+#'   \hat{F}_{
+#'     \mathrm{MVN}
+#'     \left(
+#'       \boldsymbol{\hat{\Sigma}},
+#'       \boldsymbol{\hat{\mu}}
+#'     \right)
+#'   }
+#' }).
+#' Data is generated from a multivariate normal distribution
+#' using the estimated variance-covariance matrix
+#' \eqn{\boldsymbol{\hat{\Sigma}}}
+#' and
+#' mean vector
+#' \eqn{\boldsymbol{\hat{\mu}}}
+#' .
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #' @param n Integer.
@@ -96,8 +117,6 @@ nb <- function(data,
 #' @inheritParams nb
 #' @return Returns a list of parametric bootstrap samples.
 #' @importFrom MASS mvrnorm
-#' @family bootstrap functions
-#' @keywords bootstraping
 #' @examples
 #' B <- 5L
 #' Sigmahat <- matrix(
@@ -126,6 +145,8 @@ nb <- function(data,
 #'   B = B
 #' )
 #' @inherit nb references
+#' @family bootstrap functions
+#' @keywords bootstraping
 #' @export
 .pb_mvn <- function(n,
                     Sigmahat,
@@ -189,6 +210,8 @@ nb <- function(data,
 #' )
 #' @inherit .pb_mvn references description return
 #' @importFrom stats cov
+#' @family bootstrap functions
+#' @keywords bootstraping
 #' @export
 pb_mvn <- function(data,
                    B = 2000L,
@@ -209,6 +232,10 @@ pb_mvn <- function(data,
 
 #' Parametric Bootstrap (Univariate)
 #'
+#' Generates `B` number of parametric bootstrap
+#' samples from estimated parameters of original univariate sample `data`
+#' (the empirical distribution \eqn{\hat{F}}).
+#'
 #' @author Ivan Jacob Agaloos Pesigan
 #' @param rFUN Function.
 #'   Data generating function to generate univariate data.
@@ -216,14 +243,47 @@ pb_mvn <- function(data,
 #'   Sample size.
 #' @param ... Arguments to pass to rFUN.
 #' @inheritParams nb
-#' @importFrom stats rnorm
 #' @examples
-#' pb_univ(
-#'   rFUN = rexp,
-#'   n = 5,
-#'   B = 5,
-#'   rate = 1
+#' # Normal distribution
+#' n <- 5
+#' B <- 5
+#' mu <- 100
+#' sigma2 <- 225
+#' sigma <- sqrt(sigma2)
+#' data <- rnorm(
+#'   n = n,
+#'   mean = mu,
+#'   sd = sigma
 #' )
+#' muhat <- mean(data)
+#' sigmahat <- sd(data)
+#' pb_univ(
+#'   rFUN = rnorm,
+#'   n = n,
+#'   B = B,
+#'   mean = muhat,
+#'   sd = sigmahat
+#' )
+#' # Binomial distribution
+#' n_trials <- 1
+#' p <- 0.50
+#' data <- rbinom(
+#'   n = n,
+#'   size = n_trials,
+#'   prob = p
+#' )
+#' phat <- mean(data) / n_trials
+#' pb_univ(
+#'   rFUN = rbinom,
+#'   n = n,
+#'   B = B,
+#'   size = n_trials,
+#'   prob = phat
+#' )
+#' @inherit .pb_mvn references return
+#' @family bootstrap functions
+#' @keywords bootstraping
+#' @importFrom stats rnorm
 #' @export
 pb_univ <- function(rFUN = rnorm,
                     n,
