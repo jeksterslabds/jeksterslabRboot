@@ -72,3 +72,4 @@ zero_hit <- function(thetahat_lo,
     thetahat_up
   )
 }
+
