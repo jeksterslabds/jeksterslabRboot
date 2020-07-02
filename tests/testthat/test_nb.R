@@ -242,11 +242,11 @@ test_that("nb mean_thetahat_star is equal to thetahat", {
   expect_equivalent(
     round(
       x = thetahat,
-      digits = 2
+      digits = 1
     ),
     round(
       x = mean_thetahat_star,
-      digits = 2
+      digits = 1
     )
   )
 })
@@ -256,11 +256,11 @@ test_that("nb var_thetahat_star is equal to var_thetahat", {
   expect_equivalent(
     round(
       x = var_thetahat,
-      digits = 2
+      digits = 1
     ),
     round(
       x = var_thetahat_star,
-      digits = 2
+      digits = 1
     )
   )
 })
@@ -270,21 +270,21 @@ test_that("wald alpha 0.05 is equal to cor.test", {
   expect_equivalent(
     round(
       x = ci_ll,
-      digits = 2
+      digits = 1
     ),
     round(
       x = wald["ci_2.5"],
-      digits = 2
+      digits = 1
     )
   )
   expect_equivalent(
     round(
       x = ci_ul,
-      digits = 2
+      digits = 1
     ),
     round(
       x = wald["ci_97.5"],
-      digits = 2
+      digits = 1
     )
   )
 })

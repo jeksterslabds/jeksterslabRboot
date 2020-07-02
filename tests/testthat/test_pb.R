@@ -242,11 +242,11 @@ test_that("pb mean_thetahat_star is equal to thetahat", {
   expect_equivalent(
     round(
       x = thetahat,
-      digits = 2
+      digits = 1
     ),
     round(
       x = mean_thetahat_star,
-      digits = 2
+      digits = 1
     )
   )
 })
@@ -256,11 +256,11 @@ test_that("pb var_thetahat_star is equal to var_thetahat", {
   expect_equivalent(
     round(
       x = var_thetahat,
-      digits = 2
+      digits = 1
     ),
     round(
       x = var_thetahat_star,
-      digits = 2
+      digits = 1
     )
   )
 })
