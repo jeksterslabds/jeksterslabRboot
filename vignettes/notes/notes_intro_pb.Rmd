@@ -1,0 +1,285 @@
+---
+title: "Notes: Introduction to Parametric Bootstrapping"
+author: "Ivan Jacob Agaloos Pesigan"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Notes: Introduction to Parametric Bootstrapping}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r}
+library(jeksterslabRboot)
+```
+
+## Random Variable
+
+```{r, echo = FALSE}
+set.seed(42)
+n <- 100
+mu <- 0
+sigma2 <- 1
+sigma <- sqrt(sigma2)
+B <- 100
+```
+
+Let $X$ be a random variable
+from a normal distribution with $\mu = `r mu`$
+and $\sigma = `r sigma`$.
+
+\begin{equation}
+  X
+  \sim
+  \mathcal{N}
+  \left(
+    \mu = `r mu`,
+    \sigma^2 = `r sigma2`
+  \right)
+\end{equation}
+
+This data generating function is referred to as $F$.
+
+## Realization of the Random Variable
+
+Let $\mathbf{x}$ be a realization of the random variable $X$. 
+
+```{r}
+x <- rnorm(
+  n = n,
+  mean = mu,
+  sd = sigma
+)
+```
+
+```{r, echo = FALSE}
+muhat <- mean(x)
+se_muhat <- sd(x) / sqrt(n)
+sigma2hat <- var(x)
+sigmahat <- sd(x)
+Variable <- c(
+  "`n`",
+  "`muhat`",
+  "`se_muhat`",
+  "`sigma2hat`",
+  "`sigmahat`"
+)
+Description <- c(
+  "Sample size ($n$)",
+  "Estimated mean ($\\hat{\\mu}$)",
+  "Standard error of the mean ($\\mathrm{se} \\left( \\hat{\\mu} \\right)$)",
+  "Estimated variance ($\\hat{\\sigma}^2$)",
+  "Estimated standard deviation ($\\hat{\\sigma}$)"
+)
+Value <- c(
+  n,
+  muhat,
+  se_muhat,
+  sigma2hat,
+  sigmahat
+)
+knitr::kable(
+  x = data.frame(
+    Variable,
+    Description,
+    Value
+  ),
+  row.names = FALSE,
+  caption = "Parameter Estimates"
+)
+```
+
+```{r, echo = FALSE}
+hist(x)
+qqnorm(x)
+qqline(x)
+```
+
+## Parametric Bootstrapping
+
+$\mathbf{x}$ which is a realization of the random variable $X$
+is used in bootstrapping.
+This sample data is referred to as the empirical distribution
+$\hat{F}$.
+
+In parametric bootstrapping we make a parametric assumption
+about the distribution of $\hat{F}$.
+In the current example,
+we assume a normal distribution $\hat{F}_{\mathcal{N} \left( \mu, \sigma^2 \right)}$.
+Data is generated $B$ number of times (`r B` in the current example)
+from the empirical distribution 
+$\hat{F}_{\mathcal{N} \left( \mu, \sigma^2 \right)}$
+using parameter estimates
+($\hat{\mu} = `r muhat`$ and $\hat{\sigma}^2 = `r sigma2hat`$).
+
+### $x^{*} = \left\{ x^{*1}, x^{*2}, x^{*3}, x^{*b}, \dots, x^{*B} \right\}$
+
+$x^{*}$ is a set of $B$ bootstrap samples.
+
+```{r}
+x_star <- pb_univ(
+  rFUN = rnorm,
+  n = n,
+  B = B,
+  mean = muhat,
+  sd = sigmahat
+)
+```
+
+### $\hat{\theta}^{*} = \left\{ \hat{\theta}^{*} \left( 1 \right), \hat{\theta}^{*} \left( 2 \right), \hat{\theta}^{*} \left( 3 \right), \hat{\theta}^{*} \left( b \right), \dots, \hat{\theta}^{*} \left( B \right)\right\}$
+
+The parameter is estimated for each of the $B$
+bootstrap samples.
+For example,
+if we are interested in making inferences about the mean,
+we estimate the mean $B$ times.
+The estimated parameters form the bootstrap sampling distribution
+$\hat{\theta}^{*}$.
+
+```{r}
+thetahat_star <- lapply(
+  X = x_star,
+  FUN = mean
+)
+thetahat_star <- as.vector(
+  do.call(
+    what = "rbind",
+    args = thetahat_star
+  )
+)
+```
+
+```{r, echo = FALSE}
+hist(thetahat_star)
+qqnorm(thetahat_star)
+qqline(thetahat_star)
+```
+
+### $\mathrm{se} \left( \hat{\theta}^{*} \right)$
+
+```{r, echo = FALSE}
+se_thetahat_star <- sd(thetahat_star)
+mean_thetahat_star <- mean(thetahat_star)
+```
+
+The standard error of the bootstrap sampling distribution
+$\hat{\theta}^{*}$
+is given by
+
+\begin{equation}
+  \mathrm{se}
+  \left(
+    \hat{\theta}^{*}
+  \right)
+  =
+  \sqrt{
+    \frac{1}{B - 1}
+    \sum_{b = 1}^{B}
+    \left[
+      \hat{\theta}^{*} \left( b \right)
+      -
+      \hat{\theta}^{*} \left( \cdot \right)
+    \right]^2
+  }
+  =
+  `r se_thetahat_star`
+\end{equation}
+
+where
+the mean of the bootstrap sampling distribution
+$\hat{\theta}^{*}$
+is given by
+
+\begin{equation}
+  \hat{\theta}^{*}
+  \left(
+    \cdot
+  \right)
+  =
+  \frac{1}{B}
+  \sum_{b = 1}^{B}
+  \hat{\theta}^{*} \left( b \right) 
+  =
+  `r mean_thetahat_star`
+  .
+\end{equation}
+
+The standard error can be used to make inferences about $\hat{\theta}$.
+
+### Confidence Intervals
+
+Confidence intervals can be constructed
+to make inferences about the stability of $\hat{\theta}$.
+
+```{r}
+wald <- wald(
+  thetahat = muhat,
+  se_thetahat = se_muhat,
+  theta_null = 0,
+  alpha = c(
+    0.001,
+    0.01,
+    0.05
+  ),
+  distribution = "z"
+)
+pc <- pc(
+  thetahat_star = thetahat_star,
+  alpha = c(
+    0.001,
+    0.01,
+    0.05
+  ),
+  wald = TRUE,
+  thetahat = muhat,
+  theta_null = 0,
+  distribution = "z"
+)
+bc <- bc(
+  thetahat_star = thetahat_star,
+  thetahat = muhat,
+  alpha = c(
+    0.001,
+    0.01,
+    0.05
+  ),
+  wald = TRUE,
+  theta_null = 0,
+  distribution = "z"
+)
+bca <- bca(
+  thetahat_star = thetahat_star,
+  thetahat = muhat,
+  data = x,
+  fitFUN = mean,
+  alpha = c(
+    0.001,
+    0.01,
+    0.05
+  ),
+  wald = TRUE,
+  theta_null = 0,
+  distribution = "z"
+)
+```
+
+```{r}
+knitr::kable(
+  x = as.data.frame(
+    rbind(
+      wald,
+      pc,
+      bc,
+      bca
+    )
+  ),
+  caption = "Confidence Intervals"
+)
+```
