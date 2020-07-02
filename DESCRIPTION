@@ -25,8 +25,13 @@ Depends:
 	R (>= 3.5.0)
 Imports:
 	utils,
-	stats
+	stats,
+    MASS,
+    jeksterslabRutils
+Remotes:
+    jeksterslabds/jeksterslabRutils
 Suggests:
 	knitr,
 	rmarkdown,
 	testthat
+RoxygenNote: 7.1.0
