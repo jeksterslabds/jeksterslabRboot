@@ -23,12 +23,17 @@ library(jeksterslabRboot)
 ## Random Variable
 
 ```{r, echo = FALSE}
+set.seed(42)
 n <- 100
 mu <- 0
 sigma2 <- 1
 sigma <- sqrt(sigma2)
 B <- 100
 ```
+
+Let $X$ be a random variable
+from a normal distribution with $\mu = `r mu`$
+and $\sigma = `r sigma`$.
 
 \begin{equation}
   X
@@ -40,9 +45,11 @@ B <- 100
   \right)
 \end{equation}
 
-This data generating function is refered to as $F$.
+This data generating function is referred to as $F$.
 
 ## Realization of the Random Variable
+
+Let $\mathbf{x}$ be a realization of the random variable $X$. 
 
 ```{r}
 x <- rnorm(
@@ -50,8 +57,46 @@ x <- rnorm(
   mean = mu,
   sd = sigma
 )
-mean(x)
-var(x)
+```
+
+```{r, echo = FALSE}
+muhat <- mean(x)
+se_muhat <- sd(x) / sqrt(n)
+sigma2hat <- var(x)
+sigmahat <- sd(x)
+Variable <- c(
+  "`n`",
+  "`muhat`",
+  "`se_muhat`",
+  "`sigma2hat`",
+  "`sigmahat`"
+)
+Description <- c(
+  "Sample size ($n$)",
+  "Estimated mean ($\\hat{\\mu}$)",
+  "Standard error of the mean ($\\mathrm{se} \\left( \\hat{\\mu} \\right)$)",
+  "Estimated variance ($\\hat{\\sigma}^2$)",
+  "Estimated standard deviation ($\\hat{\\sigma}$)"
+)
+Value <- c(
+  n,
+  muhat,
+  se_muhat,
+  sigma2hat,
+  sigmahat
+)
+knitr::kable(
+  x = data.frame(
+    Variable,
+    Description,
+    Value
+  ),
+  row.names = FALSE,
+  caption = "Parameter Estimates"
+)
+```
+
+```{r, echo = FALSE}
 hist(x)
 qqnorm(x)
 qqline(x)
@@ -59,8 +104,8 @@ qqline(x)
 
 ## Nonparametric Bootstrapping
 
-A realization of the random variable
-which is the sample data is used in bootstrapping.
+$\mathbf{x}$ which is a realization of the random variable $X$
+is used in bootstrapping.
 This sample data is referred to as the empirical distribution
 $\hat{F}$.
 
@@ -68,22 +113,28 @@ In nonparametric bootstrapping,
 the empirical distribution
 $\hat{F}$
 is resampled
-$B$ number of times with replacement.
+$B$ number of times (`r B` in the current example) with replacement.
 
 ### $x^{*} = \left\{ x^{*1}, x^{*2}, x^{*3}, x^{*b}, \dots, x^{*B} \right\}$
+
+$x^{*}$ is a set of $B$ bootstrap samples.
 
 ```{r}
 x_star <- nb(
   data = x,
   B = B
 )
-head(x_star)
 ```
 
-### $\hat{\theta}^{*}$
+### $\hat{\theta}^{*} = \left\{ \hat{\theta}^{*} \left( 1 \right), \hat{\theta}^{*} \left( 2 \right), \hat{\theta}^{*} \left( 3 \right), \hat{\theta}^{*} \left( b \right), \dots, \hat{\theta}^{*} \left( B \right)\right\}$
 
 The parameter is estimated for each of the $B$
 bootstrap samples.
+For example,
+if we are interested in making inferences about the mean,
+we estimate the mean $B$ times.
+The estimated parameters form the bootstrap sampling distribution
+$\hat{\theta}^{*}$.
 
 ```{r}
 thetahat_star <- lapply(
@@ -96,12 +147,17 @@ thetahat_star <- as.vector(
     args = thetahat_star
   )
 )
+```
+
+```{r, echo = FALSE}
 hist(thetahat_star)
+qqnorm(thetahat_star)
+qqline(thetahat_star)
 ```
 
 ### $\mathrm{se} \left( \hat{\theta}^{*} \right)$
 
-```{r}
+```{r, echo = FALSE}
 se_thetahat_star <- sd(thetahat_star)
 mean_thetahat_star <- mean(thetahat_star)
 ```
@@ -140,7 +196,7 @@ is given by
     \cdot
   \right)
   =
-  \frac{1}{n}
+  \frac{1}{B}
   \sum_{b = 1}^{B}
   \hat{\theta}^{*} \left( b \right) 
   =
@@ -149,3 +205,74 @@ is given by
 \end{equation}
 
 The standard error can be used to make inferences about $\hat{\theta}$.
+
+### Confidence Intervals
+
+Confidence intervals can be constructed
+to make inferences about the stability of $\hat{\theta}$.
+
+```{r}
+wald <- wald(
+  thetahat = muhat,
+  se_thetahat = se_muhat,
+  theta_null = 0,
+  alpha = c(
+    0.001,
+    0.01,
+    0.05
+  ),
+  distribution = "z"
+)
+pc <- pc(
+  thetahat_star = thetahat_star,
+  alpha = c(
+    0.001,
+    0.01,
+    0.05
+  ),
+  wald = TRUE,
+  thetahat = muhat,
+  theta_null = 0,
+  distribution = "z"
+)
+bc <- bc(
+  thetahat_star = thetahat_star,
+  thetahat = muhat,
+  alpha = c(
+    0.001,
+    0.01,
+    0.05
+  ),
+  wald = TRUE,
+  theta_null = 0,
+  distribution = "z"
+)
+bca <- bca(
+  thetahat_star = thetahat_star,
+  thetahat = muhat,
+  data = x,
+  fitFUN = mean,
+  alpha = c(
+    0.001,
+    0.01,
+    0.05
+  ),
+  wald = TRUE,
+  theta_null = 0,
+  distribution = "z"
+)
+```
+
+```{r}
+knitr::kable(
+  x = as.data.frame(
+    rbind(
+      wald,
+      pc,
+      bc,
+      bca
+    )
+  ),
+  caption = "Confidence Intervals"
+)
+```
