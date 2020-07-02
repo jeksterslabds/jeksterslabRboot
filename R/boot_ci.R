@@ -65,7 +65,6 @@
 #'   `p = NA`.
 #'   If `FALSE`,
 #'   the arguments
-#'   `thetahat`,
 #'   `theta_null`,
 #'   `distribution`,
 #'   and
@@ -77,7 +76,15 @@
 #'     \item{statistic}{Square root of Wald test statistic. `NA` if `wald = FALSE`.}
 #'     \item{p}{p-value. `NA` if `wald = FALSE`.}
 #'     \item{se}{Standard error of thetahat_star (\eqn{\mathrm{se} \left( \hat{\theta}^{*} \right)}), i.e., standard deviation of thetahat_star (\eqn{\mathrm{sd} \left( \hat{\theta}^{*} \right)}).}
-#'     \item{ci_*}{Estimated percentile confidence limits corresponding to alpha from the bootstrap sampling distribution thetahat_star (\eqn{\hat{\theta}^{*}}).}
+#'     \item{ci_}{Estimated percentile confidence limits corresponding to alpha from the bootstrap sampling distribution thetahat_star (\eqn{\hat{\theta}^{*}}).}
+#'   }
+#' If `eval = TRUE`,
+#' also returns
+#'   \describe{
+#'     \item{zero_hit_}{Logical. Tests if confidence interval contains zero.}
+#'     \item{theta_hit_}{Logical. Tests if confidence interval contains theta.}
+#'     \item{length_}{Length of confidence interval.}
+#'     \item{shape_}{Shape of confidence interval.}
 #'   }
 #' @importFrom stats quantile
 #' @importFrom stats sd
@@ -142,7 +149,8 @@
 #'
 #' # Without square root of Wald test statistic and p-value
 #' pc(
-#'   thetahat_star = thetahat_star
+#'   thetahat_star = thetahat_star,
+#'   thetahat = thetahat
 #' )
 #' @references
 #' Efron, B., & Tibshirani, R. J. (1993).
@@ -160,7 +168,9 @@ pc <- function(thetahat_star,
                thetahat,
                theta_null = 0,
                distribution = "z",
-               df) {
+               df,
+               eval = FALSE,
+               theta = 0) {
   se_thetahat_star <- sd(thetahat_star)
   if (wald) {
     sqrt_W <- sqrt_wald_test(
@@ -186,11 +196,24 @@ pc <- function(thetahat_star,
     "ci_",
     probs * 100
   )
-  c(
+  out <- c(
     sqrt_W,
     se = se_thetahat_star,
     ci
   )
+  if (eval) {
+    ci_eval <- ci_eval(
+      ci = ci,
+      thetahat = thetahat,
+      theta = theta,
+      label = alpha
+    )
+    out <- c(
+      out,
+      ci_eval
+    )
+  }
+  out
 }
 
 #' Confidence Interval - Bias Corrected
@@ -218,7 +241,15 @@ pc <- function(thetahat_star,
 #'     \item{statistic}{Square root of Wald test statistic. `NA` if `wald = FALSE`.}
 #'     \item{p}{p-value. `NA` if `wald = FALSE`.}
 #'     \item{se}{Standard error of thetahat_star (\eqn{\mathrm{se} \left( \hat{\theta}^{*} \right)}), i.e., standard deviation of thetahat_star (\eqn{\mathrm{sd} \left( \hat{\theta}^{*} \right)}).}
-#'     \item{ci_*}{Estimated bias corrected confidence limits corresponding to alpha from the bootstrap sampling distribution thetahat_star (\eqn{\hat{\theta}^{*}}).}
+#'     \item{ci_}{Estimated bias corrected confidence limits corresponding to alpha from the bootstrap sampling distribution thetahat_star (\eqn{\hat{\theta}^{*}}).}
+#'   }
+#' If `eval = TRUE`,
+#' also returns
+#'   \describe{
+#'     \item{zero_hit_}{Logical. Tests if confidence interval contains zero.}
+#'     \item{theta_hit_}{Logical. Tests if confidence interval contains theta.}
+#'     \item{length_}{Length of confidence interval.}
+#'     \item{shape_}{Shape of confidence interval.}
 #'   }
 #' @examples
 #' #############################################################
@@ -298,7 +329,9 @@ bc <- function(thetahat_star,
                wald = FALSE,
                theta_null = 0,
                distribution = "z",
-               df) {
+               df,
+               eval = FALSE,
+               theta = 0) {
   z0 <- qnorm(
     sum(thetahat_star < thetahat) / length(thetahat_star)
   )
@@ -332,11 +365,24 @@ bc <- function(thetahat_star,
     "ci_",
     probs * 100
   )
-  c(
+  out <- c(
     sqrt_W,
     se = se_thetahat_star,
     ci
   )
+  if (eval) {
+    ci_eval <- ci_eval(
+      ci = ci,
+      thetahat = thetahat,
+      theta = theta,
+      label = alpha
+    )
+    out <- c(
+      out,
+      ci_eval
+    )
+  }
+  out
 }
 
 #' Confidence Interval - Bias Corrected and Accelerated
@@ -359,7 +405,15 @@ bc <- function(thetahat_star,
 #'     \item{statistic}{Square root of Wald test statistic. `NA` if `wald = FALSE`.}
 #'     \item{p}{p-value. `NA` if `wald = FALSE`.}
 #'     \item{se}{Standard error of thetahat_star (\eqn{\mathrm{se} \left( \hat{\theta}^{*} \right)}), i.e., standard deviation of thetahat_star (\eqn{\mathrm{sd} \left( \hat{\theta}^{*} \right)}).}
-#'     \item{ci_*}{Estimated bias corrected and accelerated confidence limits corresponding to alpha from the bootstrap sampling distribution thetahat_star (\eqn{\hat{\theta}^{*}}).}
+#'     \item{ci_}{Estimated bias corrected and accelerated confidence limits corresponding to alpha from the bootstrap sampling distribution thetahat_star (\eqn{\hat{\theta}^{*}}).}
+#'   }
+#' If `eval = TRUE`,
+#' also returns
+#'   \describe{
+#'     \item{zero_hit_}{Logical. Tests if confidence interval contains zero.}
+#'     \item{theta_hit_}{Logical. Tests if confidence interval contains theta.}
+#'     \item{length_}{Length of confidence interval.}
+#'     \item{shape_}{Shape of confidence interval.}
 #'   }
 #' @examples
 #' #############################################################
@@ -446,6 +500,8 @@ bca <- function(thetahat_star,
                 theta_null = 0,
                 distribution = "z",
                 df,
+                eval = FALSE,
+                theta = 0,
                 ...) {
   n <- length(thetahat_star)
   z0 <- qnorm(
@@ -497,9 +553,22 @@ bca <- function(thetahat_star,
     "ci_",
     probs * 100
   )
-  c(
+  out <- c(
     sqrt_W,
     se = se_thetahat_star,
     ci
   )
+  if (eval) {
+    ci_eval <- ci_eval(
+      ci = ci,
+      thetahat = thetahat,
+      theta = theta,
+      label = alpha
+    )
+    out <- c(
+      out,
+      ci_eval
+    )
+  }
+  out
 }

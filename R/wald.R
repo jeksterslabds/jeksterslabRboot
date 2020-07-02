@@ -242,8 +242,16 @@ sqrt_wald_test <- function(thetahat,
 #' \eqn{t} converges to \eqn{z}.
 #'
 #' @author Ivan Jacob Agaloos Pesigan
+#' @param eval Logical.
+#'   Evaluate confidence intervals using
+#'   [`zero_hit()`],
+#'   [`theta_hit()`],
+#'   [`len()`],
+#'   and
+#'   [`shape()`].
 #' @inheritParams sqrt_wald_test
 #' @inheritParams alpha2prob
+#' @inheritParams ci_eval
 #' @importFrom stats qnorm
 #' @importFrom stats qt
 #' @return Returns a vector with the following elements:
@@ -251,7 +259,15 @@ sqrt_wald_test <- function(thetahat,
 #'     \item{statistic}{Square root of Wald test statistic.}
 #'     \item{p}{p-value.}
 #'     \item{se}{Standard error of thetahat (\eqn{\mathrm{se} \left( \hat{\theta} \right)}).}
-#'     \item{ci_*}{Estimated confidence limits corresponding to alpha.}
+#'     \item{ci_}{Estimated confidence limits corresponding to alpha.}
+#'   }
+#' If `eval = TRUE`,
+#' also returns
+#'   \describe{
+#'     \item{zero_hit_}{Logical. Tests if confidence interval contains zero.}
+#'     \item{theta_hit_}{Logical. Tests if confidence interval contains theta.}
+#'     \item{length_}{Length of confidence interval.}
+#'     \item{shape_}{Shape of confidence interval.}
 #'   }
 #' @examples
 #' #############################################################
@@ -294,7 +310,9 @@ wald <- function(thetahat,
                    0.05
                  ),
                  distribution = "z",
-                 df) {
+                 df,
+                 eval = FALSE,
+                 theta = 0) {
   sqrt_W <- sqrt_wald_test(
     thetahat = thetahat,
     se_thetahat = se_thetahat,
@@ -322,9 +340,22 @@ wald <- function(thetahat,
     "ci_",
     prob * 100
   )
-  c(
+  out <- c(
     sqrt_W,
     se = se_thetahat,
     ci
   )
+  if (eval) {
+    ci_eval <- ci_eval(
+      ci = ci,
+      thetahat = thetahat,
+      theta = theta,
+      label = alpha
+    )
+    out <- c(
+      out,
+      ci_eval
+    )
+  }
+  out
 }
