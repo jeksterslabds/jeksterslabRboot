@@ -206,3 +206,49 @@ pb_mvn <- function(data,
     ncores = ncores
   )
 }
+
+#' Parametric Bootstrap (Univariate)
+#'
+#' @author Ivan Jacob Agaloos Pesigan
+#' @param rFUN Function.
+#'   Data generating function to generate univariate data.
+#' @param n Integer.
+#'   Sample size.
+#' @param ... Arguments to pass to rFUN.
+#' @inheritParams nb
+#' @importFrom stats rnorm
+#' @examples
+#' pb_univ(
+#'   rFUN = rexp,
+#'   n = 100,
+#'   rate = 1
+#' )
+#' @export
+pb_univ <- function(rFUN = rnorm,
+                    n,
+                    B = 2000L,
+                    par = FALSE,
+                    ncores = NULL,
+                    ...) {
+  args <- list(
+    x = 1:B,
+    rFUN = rFUN,
+    n = n,
+    ...
+  )
+  foo <- function(x,
+                  rFUN,
+                  n,
+                  ...) {
+    rFUN(
+      n = n,
+      ...
+    )
+  }
+  util_lapply(
+    FUN = foo,
+    args = args,
+    par = par,
+    ncores = ncores
+  )
+}

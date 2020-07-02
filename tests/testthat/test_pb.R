@@ -270,21 +270,21 @@ test_that("wald alpha 0.05 is equal to cor.test", {
   expect_equivalent(
     round(
       x = ci_ll,
-      digits = 2
+      digits = 1
     ),
     round(
       x = wald["ci_2.5"],
-      digits = 2
+      digits = 1
     )
   )
   expect_equivalent(
     round(
       x = ci_ul,
-      digits = 2
+      digits = 1
     ),
     round(
       x = wald["ci_97.5"],
-      digits = 2
+      digits = 1
     )
   )
 })
