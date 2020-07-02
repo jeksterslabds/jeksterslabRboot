@@ -546,7 +546,7 @@ wald <- function(thetahat,
 #'     \cdot
 #'   \right)
 #'   =
-#'   \frac{1}{n}
+#'   \frac{1}{B}
 #'   \sum_{b = 1}^{B}
 #'   \hat{\theta}^{*} \left( b \right) .
 #' }
@@ -660,7 +660,8 @@ wald <- function(thetahat,
 #'   thetahat_star = thetahat_star
 #' )
 #' @references
-#' Bradley Efron and Robert J. Tibshirani, 1993, "An Introduction to the Bootstrap"
+#' Efron, B., & Tibshirani, R. J. (1993).
+#' An introduction to the bootstrap. New York, N.Y: Chapman & Hall.
 #' @export
 pc <- function(thetahat_star,
                alpha = c(
