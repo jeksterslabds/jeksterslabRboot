@@ -220,7 +220,8 @@ pb_mvn <- function(data,
 #' @examples
 #' pb_univ(
 #'   rFUN = rexp,
-#'   n = 100,
+#'   n = 5,
+#'   B = 5,
 #'   rate = 1
 #' )
 #' @export

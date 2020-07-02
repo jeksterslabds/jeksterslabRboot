@@ -1,0 +1,151 @@
+---
+title: "Notes: Introduction to Nonparametric Bootstrapping"
+author: "Ivan Jacob Agaloos Pesigan"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Notes: Introduction to Nonparametric Bootstrapping}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r}
+library(jeksterslabRboot)
+```
+
+## Random Variable
+
+```{r, echo = FALSE}
+n <- 100
+mu <- 0
+sigma2 <- 1
+sigma <- sqrt(sigma2)
+B <- 100
+```
+
+\begin{equation}
+  X
+  \sim
+  \mathcal{N}
+  \left(
+    \mu = `r mu`,
+    \sigma^2 = `r sigma2`
+  \right)
+\end{equation}
+
+This data generating function is refered to as $F$.
+
+## Realization of the Random Variable
+
+```{r}
+x <- rnorm(
+  n = n,
+  mean = mu,
+  sd = sigma
+)
+mean(x)
+var(x)
+hist(x)
+qqnorm(x)
+qqline(x)
+```
+
+## Nonparametric Bootstrapping
+
+A realization of the random variable
+which is the sample data is used in bootstrapping.
+This sample data is referred to as the empirical distribution
+$\hat{F}$.
+
+In nonparametric bootstrapping,
+the empirical distribution
+$\hat{F}$
+is resampled
+$B$ number of times with replacement.
+
+### $x^{*} = \left\{ x^{*1}, x^{*2}, x^{*3}, x^{*b}, \dots, x^{*B} \right\}$
+
+```{r}
+x_star <- nb(
+  data = x,
+  B = B
+)
+head(x_star)
+```
+
+### $\hat{\theta}^{*}$
+
+The parameter is estimated for each of the $B$
+bootstrap samples.
+
+```{r}
+thetahat_star <- lapply(
+  X = x_star,
+  FUN = mean
+)
+thetahat_star <- as.vector(
+  do.call(
+    what = "rbind",
+    args = thetahat_star
+  )
+)
+hist(thetahat_star)
+```
+
+### $\mathrm{se} \left( \hat{\theta}^{*} \right)$
+
+```{r}
+se_thetahat_star <- sd(thetahat_star)
+mean_thetahat_star <- mean(thetahat_star)
+```
+
+The standard error of the bootstrap sampling distribution
+$\hat{\theta}^{*}$
+is given by
+
+\begin{equation}
+  \mathrm{se}
+  \left(
+    \hat{\theta}^{*}
+  \right)
+  =
+  \sqrt{
+    \frac{1}{B - 1}
+    \sum_{b = 1}^{B}
+    \left[
+      \hat{\theta}^{*} \left( b \right)
+      -
+      \hat{\theta}^{*} \left( \cdot \right)
+    \right]^2
+  }
+  =
+  `r se_thetahat_star`
+\end{equation}
+
+where
+the mean of the bootstrap sampling distribution
+$\hat{\theta}^{*}$
+is given by
+
+\begin{equation}
+  \hat{\theta}^{*}
+  \left(
+    \cdot
+  \right)
+  =
+  \frac{1}{n}
+  \sum_{b = 1}^{B}
+  \hat{\theta}^{*} \left( b \right) 
+  =
+  `r mean_thetahat_star`
+  .
+\end{equation}
+
+The standard error can be used to make inferences about $\hat{\theta}$.
