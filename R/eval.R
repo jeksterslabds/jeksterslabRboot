@@ -88,10 +88,10 @@ ci_eval <- function(ci,
                     thetahat,
                     theta = 0,
                     label = NULL) {
+  half_ci <- length(ci) / 2
   if (is.null(label)) {
     label <- 1:half_ci
   }
-  half_ci <- length(ci) / 2
   shape_vector <- len_vector <- zero_hit_vector <- theta_hit_vector <- rep(x = NA, times = half_ci)
   for (i in 1:half_ci) {
     thetahat_lo <- ci[i]
