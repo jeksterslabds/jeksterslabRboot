@@ -358,3 +358,39 @@ thetahat_star_binomial <- sapply(
 #    )
 #  )
 # })
+
+#+ for_coverage
+ R <- 10L
+ # length 1
+ thetahat <- 100
+ covhat_thetahat <- 1.5
+ mc_star_length_1 <- mc(
+   thetahat = thetahat,
+   covhat_thetahat = covhat_thetahat,
+   R = R
+ )
+ head(mc_star_length_1)
+ # length greater than 1
+ alphahat <- 0.3386
+ betahat <- 0.4510
+ alphahat_betahat <- alphahat * betahat
+ varhat_alphahat <- 0.1224^2
+ varhat_betahat <- 0.1460^2
+ thetahat <- c(
+   alphahat,
+   betahat
+ )
+ covhat_thetahat <- matrix(
+   data = c(
+     varhat_alphahat,
+     0.00,
+     0.00,
+     varhat_betahat
+   ),
+   ncol = 2
+ )
+ mc_star_length_2 <- mc(
+   thetahat = thetahat,
+   covhat_thetahat = covhat_thetahat,
+   R = R
+ )

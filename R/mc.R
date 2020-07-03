@@ -86,11 +86,11 @@ mc <- function(thetahat,
                covhat_thetahat,
                R = 20000L) {
   if (length(thetahat) == 1) {
-    if (length(covhat_thetahat) != 1) {
-      stop(
-        "Dimensions of thetahat and covhat_thetahat are incompatible."
-      )
-    }
+    #if (length(covhat_thetahat) != 1) {
+    #  stop(
+    #    "Dimensions of thetahat and covhat_thetahat are incompatible."
+    #  )
+    #}
     return(
       rnorm(
         n = R,
@@ -99,25 +99,25 @@ mc <- function(thetahat,
       )
     )
   } else {
-    dimensions <- c(
-      length(thetahat),
-      nrow(covhat_thetahat),
-      ncol(covhat_thetahat)
-    )
-    if (mean(dimensions) != length(thetahat)) {
-      stop(
-        "Dimensions of thetahat and covhat_thetahat are incompatible."
-      )
-    }
-    symmetric <- is.symmetric(
-      X = covhat_thetahat,
-      stop = FALSE
-    )
-    if (!symmetric) {
-      stop(
-        "covhat_thetahat is not a symmetric matrix."
-      )
-    }
+    #dimensions <- c(
+    #  length(thetahat),
+    #  nrow(covhat_thetahat),
+    #  ncol(covhat_thetahat)
+    #)
+    #if (mean(dimensions) != length(thetahat)) {
+    #  stop(
+    #    "Dimensions of thetahat and covhat_thetahat are incompatible."
+    #  )
+    #}
+    #symmetric <- is.symmetric(
+    #  X = covhat_thetahat,
+    #  stop = FALSE
+    #)
+    #if (!symmetric) {
+    #  stop(
+    #    "covhat_thetahat is not a symmetric matrix."
+    #  )
+    #}
     return(
       mvrnorm(
         n = R,
