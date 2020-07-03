@@ -19,9 +19,15 @@ knitr::opts_chunk$set(
 #'
 #+ setup
 library(testthat)
-library(MASS)
 library(jeksterslabRboot)
 context("Test eval.")
+
+#+ results
+result <- ci_eval(
+  ci = c(1, 3),
+  thetahat = 2,
+  theta = 2
+)
 
 #+ testthat_01
 test_that("TRUE", {
@@ -65,6 +71,36 @@ test_that("1", {
       thetahat = 0,
       thetahat_up = 1
     ),
+    1
+  )
+})
+
+#+ testthat_04
+test_that("zero_hit", {
+  expect_false(
+    as.logical(result[1])
+  )
+})
+
+#+ testthat_05
+test_that("theta_hit", {
+  expect_true(
+    as.logical(result[2])
+  )
+})
+
+#+ testthat_06
+test_that("len", {
+  expect_equivalent(
+    result[3],
+    2
+  )
+})
+
+#+ testthat_07
+test_that("shape", {
+  expect_equivalent(
+    result[4],
     1
   )
 })
