@@ -13,7 +13,7 @@
 #'       \right)^2
 #'     }
 #'     {
-#'       \mathrm{Var}
+#'       \hat{\mathrm{Var}}
 #'       \left(
 #'         \hat{\theta}
 #'       \right)
@@ -26,13 +26,13 @@
 #' @author Ivan Jacob Agaloos Pesigan
 #' @param thetahat Numeric.
 #'   Parameter estimate
-#'   (\eqn{\hat{\theta}}).
-#' @param var_thetahat Numeric.
-#'   Variance of `thetahat`
-#'   (\eqn{\mathrm{Var} \left( \hat{\theta} \right)}).
+#'   \eqn{\left( \hat{\theta} \right)}.
+#' @param varhat_thetahat Numeric.
+#'   Estimated variance of `thetahat`
+#'   \eqn{\left( \hat{\mathrm{Var}} \left( \hat{\theta} \right) \right)}.
 #' @param theta_null Numeric.
 #'   Hypothesized value of `theta`
-#'   (\eqn{\theta_{0}}).
+#'   \eqn{\left( \theta_{0} \right)}.
 #'   Set to zero by default.
 #' @return Returns a vector with the following elements:
 #'   \describe{
@@ -46,9 +46,9 @@
 #' @keywords Wald test
 #' @export
 wald_test <- function(thetahat,
-                      var_thetahat,
+                      varhat_thetahat,
                       theta_null) {
-  statistic <- (thetahat - theta_null)^2 / var_thetahat
+  statistic <- (thetahat - theta_null)^2 / varhat_thetahat
   p <- 2 * pchisq(
     q = statistic,
     df = 1,
@@ -73,20 +73,20 @@ wald_test <- function(thetahat,
 #'       \hat{\theta} - \theta_0
 #'     }
 #'     {
-#'       \mathrm{se}
+#'       \hat{\mathrm{se}}
 #'       \left(
 #'         \hat{\theta}
 #'       \right)
-#'     }
+#'     } .
 #'   }
 #' The associated `p`-value
 #' from the `z` or `t` distribution is calculated
 #' using [`pnorm()`] or [`pt()`].
 #'
 #' @author Ivan Jacob Agaloos Pesigan
-#' @param se_thetahat Numeric.
-#'   Standard error of `thetahat`
-#'   (\eqn{\mathrm{se} \left( \hat{\theta} \right)}).
+#' @param sehat_thetahat Numeric.
+#'   Estimated standard error of `thetahat`
+#'   \eqn{\left( \hat{\mathrm{se}} \left( \hat{\theta} \right) \right)}.
 #' @param distribution Character string.
 #'   `distribution = "z"` for the standard normal distribution.
 #'   `distribution = "t"` for the t distribution.
@@ -106,11 +106,11 @@ wald_test <- function(thetahat,
 #' @keywords Wald test
 #' @export
 sqrt_wald_test <- function(thetahat,
-                           se_thetahat,
+                           sehat_thetahat,
                            theta_null = 0,
                            distribution = "z",
                            df) {
-  statistic <- (thetahat - theta_null) / se_thetahat
+  statistic <- (thetahat - theta_null) / sehat_thetahat
   if (distribution == "z") {
     p <- 2 * pnorm(
       q = statistic,
@@ -134,18 +134,18 @@ sqrt_wald_test <- function(thetahat,
 #'
 #' Calculates symmetric Wald confidence intervals.
 #'
-#' As the sample size approaches infinity (\eqn{n \to \infty}),
+#' As the sample size approaches infinity \eqn{\left( n \to \infty \right)},
 #' the distribution of \eqn{\hat{\theta}}
 #' approaches the normal distribution
 #' with mean equal to \eqn{\theta}
-#' and variance equal to \eqn{\mathrm{Var} \left( \hat{\theta} \right)}
+#' and variance equal to \eqn{\hat{\mathrm{Var}} \left( \hat{\theta} \right)}
 #'   \deqn{
 #'     \hat{\theta}
 #'     \mathrel{\dot\sim}
 #'     \mathcal{N}
 #'     \left(
 #'       \theta,
-#'       \mathrm{Var}
+#'       \hat{\mathrm{Var}}
 #'       \left(
 #'         \hat{\theta}
 #'       \right)
@@ -163,7 +163,7 @@ sqrt_wald_test <- function(thetahat,
 #'       \hat{\theta} - \theta
 #'     }
 #'     {
-#'       \mathrm{se}
+#'       \hat{\mathrm{se}}
 #'       \left(
 #'         \hat{\theta}
 #'       \right)
@@ -177,13 +177,13 @@ sqrt_wald_test <- function(thetahat,
 #'   }
 #' where
 #'   \eqn{
-#'     \mathrm{se}
+#'     \hat{\mathrm{se}}
 #'       \left(
 #'         \hat{\theta}
 #'       \right)
 #'     =
 #'     \sqrt{
-#'       \mathrm{Var}
+#'       \hat{\mathrm{Var}}
 #'       \left(
 #'         \hat{\theta}
 #'       \right)
@@ -199,7 +199,7 @@ sqrt_wald_test <- function(thetahat,
 #'     \pm
 #'     z_{\frac{\alpha}{2}}
 #'     \times
-#'     \mathrm{se}
+#'     \hat{\mathrm{se}}
 #'       \left(
 #'         \hat{\theta}
 #'       \right)
@@ -215,7 +215,7 @@ sqrt_wald_test <- function(thetahat,
 #'       \hat{\theta} - \theta
 #'     }
 #'     {
-#'       \mathrm{se}
+#'       \hat{\mathrm{se}}
 #'       \left(
 #'         \hat{\theta}
 #'       \right)
@@ -223,7 +223,12 @@ sqrt_wald_test <- function(thetahat,
 #'     \mathrel{\dot\sim}
 #'     t \left( \nu \right)
 #'   }
-#' where \eqn{\nu} is the degrees of freedom
+#' where
+#' \eqn{t}
+#' is the Student's
+#' \eqn{t} distribution
+#' and
+#' \eqn{\nu} is the degrees of freedom
 #' \eqn{n - 1}.
 #' As such,
 #' the symmetric Wald confidence interval is given by
@@ -232,7 +237,7 @@ sqrt_wald_test <- function(thetahat,
 #'     \pm
 #'     t_{\frac{\alpha}{2}}
 #'     \times
-#'     \mathrm{se}
+#'     \hat{\mathrm{se}}
 #'       \left(
 #'         \hat{\theta}
 #'       \right)
@@ -258,7 +263,7 @@ sqrt_wald_test <- function(thetahat,
 #'   \describe{
 #'     \item{statistic}{Square root of Wald test statistic.}
 #'     \item{p}{p-value.}
-#'     \item{se}{Standard error of thetahat (\eqn{\mathrm{se} \left( \hat{\theta} \right)}).}
+#'     \item{se}{Estimated d=standard error of thetahat \eqn{\left( \hat{\mathrm{se}} \left( \hat{\theta} \right) \right)}.}
 #'     \item{ci_}{Estimated confidence limits corresponding to alpha.}
 #'   }
 #' If `eval = TRUE`,
@@ -285,8 +290,8 @@ sqrt_wald_test <- function(thetahat,
 #' thetahat <- mean(x)
 #' thetahat
 #' # Closed form solution for the standard error of the mean
-#' se_thetahat <- sd(x) / sqrt(n)
-#' se_thetahat
+#' sehat_thetahat <- sd(x) / sqrt(n)
+#' sehat_thetahat
 #'
 #' #############################################################
 #' # Generate Wald confidence intervals
@@ -294,7 +299,7 @@ sqrt_wald_test <- function(thetahat,
 #' #############################################################
 #' wald(
 #'   thetahat = thetahat,
-#'   se_thetahat = se_thetahat
+#'   sehat_thetahat = sehat_thetahat
 #' )
 #' @references
 #' [Wikipedia: Confidence interval](https://en.wikipedia.org/wiki/Confidence_interval)
@@ -302,7 +307,7 @@ sqrt_wald_test <- function(thetahat,
 #' @keywords confidence interval, Wald test
 #' @export
 wald <- function(thetahat,
-                 se_thetahat,
+                 sehat_thetahat,
                  theta_null = 0,
                  alpha = c(
                    0.001,
@@ -315,7 +320,7 @@ wald <- function(thetahat,
                  theta = 0) {
   sqrt_W <- sqrt_wald_test(
     thetahat = thetahat,
-    se_thetahat = se_thetahat,
+    sehat_thetahat = sehat_thetahat,
     theta_null = theta_null,
     distribution = distribution,
     df = df
@@ -334,7 +339,7 @@ wald <- function(thetahat,
   }
   ci <- rep(x = NA, times = length(critical))
   for (i in seq_along(critical)) {
-    ci[i] <- thetahat + (critical[i] * se_thetahat)
+    ci[i] <- thetahat + (critical[i] * sehat_thetahat)
   }
   names(ci) <- paste0(
     "ci_",
@@ -342,7 +347,7 @@ wald <- function(thetahat,
   )
   out <- c(
     sqrt_W,
-    se = se_thetahat,
+    se = sehat_thetahat,
     ci
   )
   if (eval) {
