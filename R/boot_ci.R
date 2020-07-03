@@ -507,7 +507,22 @@ pc <- function(thetahat_star,
 #'     args = thetahat_star
 #'   )
 #' )
-#' hist(thetahat_star)
+#' hist(
+#'   thetahat_star,
+#'   main = expression(
+#'     paste(
+#'       "Histogram of ",
+#'       hat(theta),
+#'       "*"
+#'     )
+#'   ),
+#'   xlab = expression(
+#'     paste(
+#'       hat(theta),
+#'       "*"
+#'     )
+#'   )
+#' )
 #' summary(thetahat_star)
 #'
 #' #############################################################
@@ -940,7 +955,22 @@ bc <- function(thetahat_star,
 #'     args = thetahat_star
 #'   )
 #' )
-#' hist(thetahat_star)
+#' hist(
+#'   thetahat_star,
+#'   main = expression(
+#'     paste(
+#'       "Histogram of ",
+#'       hat(theta),
+#'       "*"
+#'     )
+#'   ),
+#'   xlab = expression(
+#'     paste(
+#'       hat(theta),
+#'       "*"
+#'     )
+#'   )
+#' )
 #' summary(thetahat_star)
 #'
 #' #############################################################
