@@ -1,16 +1,16 @@
 #' Nonparametric Bootstrap
 #'
 #' Generates `B` number of nonparametric bootstrap
-#' samples from the original sample `data`
-#' (the empirical distribution \eqn{\hat{F}}).
+#' samples from the original sample `data`.
+#' `data` is referred to as the empirical distribution \eqn{\hat{F}}.
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #' @param data Vector, matrix or data frame.
-#'   Sample data to bootstrap
-#'   (the empirical distribution \eqn{\hat{F}}).
+#'   Sample data to bootstrap.
+#'   The empirical distribution \eqn{\hat{F}}.
 #' @param B Integer. Number of bootstrap samples.
 #' @inheritParams jeksterslabRutils::util_lapply
-#' @return Returns a list of nonparametric bootstrap samples.
+#' @return Returns a list of length `B` of nonparametric bootstrap samples.
 #' @examples
 #' B <- 5L
 #' n <- 5
@@ -22,15 +22,15 @@
 #' )
 #' # matrix
 #' X <- rnorm(n = n)
-#' M <- rnorm(n = n)
 #' Y <- rnorm(n = n)
-#' data_matrix <- cbind(X, M, Y)
+#' Z <- rnorm(n = n)
+#' data_matrix <- cbind(X, Y, Z)
 #' nb(
 #'   data = data_matrix,
 #'   B = B
 #' )
 #' # data frame
-#' data_dataframe <- data.frame(X, M, Y)
+#' data_dataframe <- data.frame(X, Y, Z)
 #' nb(
 #'   data = data_dataframe,
 #'   B = B
@@ -41,7 +41,7 @@
 #'
 #' [Wikipedia: Bootstrapping (statistics)](https://en.wikipedia.org/wiki/Bootstrapping_(statistics))
 #' @family bootstrap functions
-#' @keywords bootstraping
+#' @keywords bootstrap
 #' @importFrom jeksterslabRutils util_lapply
 #' @export
 nb <- function(data,
@@ -87,8 +87,8 @@ nb <- function(data,
 #' \eqn{\boldsymbol{\hat{\mu}}}
 #'
 #' Generates `B` number of parametric bootstrap
-#' samples from the original sample `data`
-#' (the empirical distribution
+#' samples from the original sample `data`.
+#' `data` is referred to as the empirical distribution
 #' \eqn{
 #'   \hat{F}_{
 #'     \mathrm{MVN}
@@ -97,7 +97,7 @@ nb <- function(data,
 #'       \boldsymbol{\hat{\mu}}
 #'     \right)
 #'   }
-#' }).
+#' } .
 #' Data is generated from a multivariate normal distribution
 #' using the estimated variance-covariance matrix
 #' \eqn{\boldsymbol{\hat{\Sigma}}}
@@ -115,7 +115,7 @@ nb <- function(data,
 #' @param muhat Vector.
 #'   Estimated mean vector from the original sample data.
 #' @inheritParams nb
-#' @return Returns a list of parametric bootstrap samples.
+#' @return Returns a list of length `B` of parametric bootstrap samples.
 #' @importFrom MASS mvrnorm
 #' @examples
 #' B <- 5L
@@ -146,7 +146,7 @@ nb <- function(data,
 #' )
 #' @inherit nb references
 #' @family bootstrap functions
-#' @keywords bootstraping
+#' @keywords bootstrap
 #' @export
 .pb_mvn <- function(n,
                     Sigmahat,
@@ -211,7 +211,7 @@ nb <- function(data,
 #' @inherit .pb_mvn references description return
 #' @importFrom stats cov
 #' @family bootstrap functions
-#' @keywords bootstraping
+#' @keywords bootstrap
 #' @export
 pb_mvn <- function(data,
                    B = 2000L,
@@ -233,8 +233,19 @@ pb_mvn <- function(data,
 #' Parametric Bootstrap (Univariate)
 #'
 #' Generates `B` number of parametric bootstrap
-#' samples from estimated parameters of original univariate sample `data`
-#' (the empirical distribution \eqn{\hat{F}}).
+#' samples from estimated parameters of original univariate sample `data`.
+#' `data` is referred to as the empirical distribution
+#' \eqn{\hat{F}_{\mathcal{Distribution}}}.
+#' The default distribution is
+#' \eqn{
+#'   \mathcal{N}
+#'   \left(
+#'     \hat{\mu},
+#'     \hat{\sigma}^2
+#'   \right)
+#' }.
+#' The univariate distribution and parameters used in the
+#' data generating process can be specified using `rFUN` and `...`.
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #' @param rFUN Function.
@@ -282,7 +293,7 @@ pb_mvn <- function(data,
 #' )
 #' @inherit .pb_mvn references return
 #' @family bootstrap functions
-#' @keywords bootstraping
+#' @keywords bootstrap
 #' @importFrom stats rnorm
 #' @export
 pb_univ <- function(rFUN = rnorm,
