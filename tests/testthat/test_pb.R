@@ -168,7 +168,7 @@ hist(
 #+ wald
 wald <- wald(
   thetahat = thetahat,
-  se_thetahat = sqrt(var_thetahat),
+  sehat_thetahat = sqrt(var_thetahat),
   theta_null = 0,
   alpha = c(
     0.001,

@@ -25,15 +25,17 @@ library(jeksterslabRboot)
 ```{r, echo = FALSE}
 set.seed(42)
 n <- 100
-mu <- 0
-sigma2 <- 1
+mu <- 100
+theta <- mu
+sigma2 <- 225
 sigma <- sqrt(sigma2)
-B <- 100
+se_muhat <- sqrt(sigma2 / n)
+B <- 1000
 ```
 
 Let $X$ be a random variable
 from a normal distribution with $\mu = `r mu`$
-and $\sigma = `r sigma`$.
+and $\sigma^2 = `r sigma2`$.
 
 \begin{equation}
   X
@@ -47,9 +49,67 @@ and $\sigma = `r sigma`$.
 
 This data generating function is referred to as $F$.
 
-## Realization of the Random Variable
+For a sample size of
+$n = `r n`$,
+using the know parameters,
+the standard error of the mean is
 
-Let $\mathbf{x}$ be a realization of the random variable $X$. 
+\begin{equation}
+  \mathrm{se}
+  \left(
+    \hat{\mu}
+  \right)
+  =
+  \sqrt{
+    \frac{
+      \sigma^2
+    }
+    {
+      n
+    }
+  }
+  =
+  `r se_muhat`
+\end{equation}
+
+
+```{r, echo = FALSE}
+Variable <- c(
+  "`n`",
+  "`mu`",
+  "`sigma2`",
+  "`sigma`",
+  "`se_muhat`"
+)
+Description <- c(
+  "Sample size $\\left( n \\right)$",
+  "Population mean $\\left( \\mu  \\right)$",
+  "Population variance $\\left( \\sigma^2 \\right)$",
+  "Population standard deviation $\\left( \\sigma \\right)$",
+  "Standard error of the sample mean $\\left( \\mathrm{se} \\left( \\hat{\\mu} \\right) = \\sqrt{\\frac{\\sigma^2}{n}} \\right)$"
+)
+Value <- c(
+  n,
+  mu,
+  sigma2,
+  sigma,
+  se_muhat
+)
+knitr::kable(
+  x = data.frame(
+    Variable,
+    Description,
+    Value
+  ),
+  row.names = FALSE,
+  caption = "Population Parameters"
+)
+```
+
+## Realizations of the Random Variable
+
+Let $\mathbf{x}$ be a vector of length $n = `r n`$
+of realizations of the random variable $X$. 
 
 ```{r}
 x <- rnorm(
@@ -61,29 +121,29 @@ x <- rnorm(
 
 ```{r, echo = FALSE}
 muhat <- mean(x)
-se_muhat <- sd(x) / sqrt(n)
 sigma2hat <- var(x)
-sigmahat <- sd(x)
+sigmahat <- sqrt(sigma2hat)
+sehat_muhat <- sqrt(sigma2hat / n)
 Variable <- c(
   "`n`",
   "`muhat`",
-  "`se_muhat`",
   "`sigma2hat`",
-  "`sigmahat`"
+  "`sigmahat`",
+  "`sehat_muhat`"
 )
 Description <- c(
-  "Sample size ($n$)",
-  "Estimated mean ($\\hat{\\mu}$)",
-  "Standard error of the mean ($\\mathrm{se} \\left( \\hat{\\mu} \\right)$)",
-  "Estimated variance ($\\hat{\\sigma}^2$)",
-  "Estimated standard deviation ($\\hat{\\sigma}$)"
+  "Sample size $\\left( n \\right)$",
+  "Estimated mean $\\left( \\hat{\\mu} \\right)$",
+  "Estimated variance $\\left( \\hat{\\sigma}^2 \\right)$",
+  "Estimated standard deviation $\\left( \\hat{\\sigma} \\right)$",
+  "Estimated standard error of the sample mean $\\left( \\hat{\\mathrm{se}} \\left( \\hat{\\mu} \\right) = \\sqrt{\\frac{\\hat{\\sigma}^2}{n}} \\right)$"
 )
 Value <- c(
   n,
   muhat,
-  se_muhat,
   sigma2hat,
-  sigmahat
+  sigmahat,
+  sehat_muhat
 )
 knitr::kable(
   x = data.frame(
@@ -104,7 +164,7 @@ qqline(x)
 
 ## Parametric Bootstrapping
 
-$\mathbf{x}$ which is a realization of the random variable $X$
+$\mathbf{x}$ which is a vector of realizations of the random variable $X$
 is used in bootstrapping.
 This sample data is referred to as the empirical distribution
 $\hat{F}$.
@@ -115,7 +175,7 @@ In the current example,
 we assume a normal distribution $\hat{F}_{\mathcal{N} \left( \mu, \sigma^2 \right)}$.
 Data is generated $B$ number of times (`r B` in the current example)
 from the empirical distribution 
-$\hat{F}_{\mathcal{N} \left( \mu, \sigma^2 \right)}$
+$\hat{F}_{\mathcal{N} \left( \hat{\mu}, \hat{\sigma^2} \right)}$
 using parameter estimates
 ($\hat{\mu} = `r muhat`$ and $\hat{\sigma}^2 = `r sigma2hat`$).
 
@@ -123,13 +183,15 @@ using parameter estimates
 
 $x^{*}$ is a set of $B$ bootstrap samples.
 
+The function `pb_univ()`
+from the `jeksterslabRboot` package
+can be used to generate `B`
+parametric bootstrap samples from a univariate probability distribution.
+
 ```{r}
-x_star <- pb_univ(
-  rFUN = rnorm,
-  n = n,
-  B = B,
-  mean = muhat,
-  sd = sigmahat
+x_star <- nb(
+  data = x,
+  B = B
 )
 ```
 
@@ -144,39 +206,47 @@ The estimated parameters form the bootstrap sampling distribution
 $\hat{\theta}^{*}$.
 
 ```{r}
-thetahat_star <- lapply(
+thetahat_star <- sapply(
   X = x_star,
   FUN = mean
-)
-thetahat_star <- as.vector(
-  do.call(
-    what = "rbind",
-    args = thetahat_star
-  )
 )
 ```
 
 ```{r, echo = FALSE}
-hist(thetahat_star)
+hist(
+  thetahat_star,
+  main = expression(
+    paste(
+      "Histogram of ",
+      hat(theta),
+      "*"
+    )
+  ),
+  xlab = expression(
+    paste(
+      hat(theta),
+      "*"
+    )
+  )
+)
 qqnorm(thetahat_star)
 qqline(thetahat_star)
 ```
 
-### $\mathrm{se} \left( \hat{\theta}^{*} \right)$
+### $\hat{\mathrm{se}}_{\mathrm{B}} \left( \hat{\theta} \right)$
 
 ```{r, echo = FALSE}
-se_thetahat_star <- sd(thetahat_star)
+sd_thetahat_star <- sd(thetahat_star)
 mean_thetahat_star <- mean(thetahat_star)
 ```
 
-The standard error of the bootstrap sampling distribution
-$\hat{\theta}^{*}$
+The estimated bootstrap standard error
 is given by
 
 \begin{equation}
-  \mathrm{se}
+  \hat{\mathrm{se}}_{\mathrm{B}}
   \left(
-    \hat{\theta}^{*}
+    \hat{\theta}
   \right)
   =
   \sqrt{
@@ -189,13 +259,10 @@ is given by
     \right]^2
   }
   =
-  `r se_thetahat_star`
+  `r sd_thetahat_star`
 \end{equation}
 
-where
-the mean of the bootstrap sampling distribution
-$\hat{\theta}^{*}$
-is given by
+\noindent where
 
 \begin{equation}
   \hat{\theta}^{*}
@@ -211,62 +278,80 @@ is given by
   .
 \end{equation}
 
-The standard error can be used to make inferences about $\hat{\theta}$.
+Note that
+$\hat{\mathrm{se}}_{\mathrm{B}} \left( \hat{\theta} \right)$
+is the standard deviation of
+$\hat{\theta}^{*}$
+and
+$\hat{\theta}^{*} \left( \cdot \right)$
+is the mean of
+$\hat{\theta}^{*}$ .
 
 ### Confidence Intervals
 
 Confidence intervals can be constructed
-to make inferences about the stability of $\hat{\theta}$.
+around
+$\hat{\theta}$ .
+The functions
+`pc()`,
+`bc()`,
+and
+`bca()`
+from
+the `jeksterslabRboot` package
+can be used to construct
+confidence intervals
+using the default alphas
+of
+$0.001$,
+$0.01$,
+and
+$0.05$.
+Walds confidence intervals (`wald()`)
+are added for comparison.
+The confidence intervals can also be evaluated.
+See
+`zero_hit()`,
+`theta_hit()`,
+`len()`,
+and
+`shape()`
+from
+the `jeksterslabRboot` package.
+Since we know the population parameter theta
+$\left(\theta = \mu = `r theta` \right)$,
+we can check if our confidence intervals contain
+the population parameter.
 
 ```{r}
 wald <- wald(
   thetahat = muhat,
-  se_thetahat = se_muhat,
-  theta_null = 0,
-  alpha = c(
-    0.001,
-    0.01,
-    0.05
-  ),
-  distribution = "z"
+  sehat_thetahat = sehat_muhat,
+  eval = TRUE,
+  theta = theta
 )
 pc <- pc(
   thetahat_star = thetahat_star,
-  alpha = c(
-    0.001,
-    0.01,
-    0.05
-  ),
-  wald = TRUE,
   thetahat = muhat,
-  theta_null = 0,
-  distribution = "z"
+  wald = TRUE,
+  eval = TRUE,
+  theta = theta
 )
 bc <- bc(
   thetahat_star = thetahat_star,
   thetahat = muhat,
-  alpha = c(
-    0.001,
-    0.01,
-    0.05
-  ),
   wald = TRUE,
-  theta_null = 0,
-  distribution = "z"
+  eval = TRUE,
+  theta = theta
 )
 bca <- bca(
   thetahat_star = thetahat_star,
   thetahat = muhat,
   data = x,
   fitFUN = mean,
-  alpha = c(
-    0.001,
-    0.01,
-    0.05
-  ),
   wald = TRUE,
-  theta_null = 0,
-  distribution = "z"
+  eval = TRUE,
+  theta = theta
 )
 ```
 
@@ -283,3 +368,15 @@ knitr::kable(
   caption = "Confidence Intervals"
 )
 ```
+
+## Notes
+
+The estimated bootstrap standard error
+is similar to results from the closed form solution.
+The estimated bootstrap confidence intervals
+are also close to the Wald's confidence intervals.
+While a closed form solution for the standard error is available
+in this simple example,
+bootstrap standard errors and confidence intervals
+can be used in situations
+when standard errors are not easy to calculate.
