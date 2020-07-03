@@ -50,8 +50,8 @@ Variable <- c(
 )
 Description <- c(
   "Sample size ($n$).",
-  "Population Correlation ($\\theta$).",
-  "Variance of the Sampling Distribution of Sample Correlation ($\\mathrm{Var} \\left( \\hat{\\theta} \\right) = \\frac{\\left( 1 - \\theta^2 \\right)^2}{n}$)."
+  "Population correlation ($\\theta$).",
+  "Variance of the sampling distribution of sample correlation ($\\mathrm{Var} \\left( \\hat{\\theta} \\right) = \\frac{\\left( 1 - \\theta^2 \\right)^2}{n}$)."
 )
 Value <- c(
   n,
@@ -81,24 +81,24 @@ X <- mvrnorm(
 #'
 #+ estimate
 thetahat <- cor(X)[2, 1]
-var_thetahat <- ((1 - thetahat^2)^2) / (n - 2)
+varhat_thetahat <- ((1 - thetahat^2)^2) / (n - 2)
 ci <- cor.test(X[, 1], X[, 2])
 ci_ll <- ci$conf.int[1]
 ci_ul <- ci$conf.int[2]
 Variable <- c(
   "`n`",
   "`thetahat`",
-  "`var_thetahat`"
+  "`varhat_thetahat`"
 )
 Description <- c(
   "Sample size ($n$).",
-  "Sample Correlation ($\\hat{\\theta}$).",
-  "Estimate of the Variance of the Sampling Distribution of Sample Correlation ($\\mathrm{Var} \\left( \\hat{\\theta} \\right) = \\frac{\\left( 1 - \\hat{\\theta}^2 \\right)^2}{n}$)."
+  "Sample correlation ($\\hat{\\theta}$).",
+  "Estimate of the variance of the sampling distribution of sample correlation ($\\hat{\\mathrm{Var}} \\left( \\hat{\\theta} \\right) = \\frac{\\left( 1 - \\hat{\\theta}^2 \\right)^2}{n}$)."
 )
 Value <- c(
   n,
   thetahat,
-  var_thetahat
+  varhat_thetahat
 )
 knitr::kable(
   x = data.frame(
@@ -136,9 +136,9 @@ Variable <- c(
   "`var_thetahat_star`"
 )
 Description <- c(
-  "Bootstrap Samples($B$).",
-  "Mean of $B$ Sample Correlations.",
-  "Variance of $B$ Sample Correlations."
+  "Bootstrap samples($B$).",
+  "Mean of $B$ sample correlations.",
+  "Variance of $B$ sample correlations."
 )
 Value <- c(
   B,
@@ -168,14 +168,15 @@ hist(
 #+ wald
 wald <- wald(
   thetahat = thetahat,
-  sehat_thetahat = sqrt(var_thetahat),
+  sehat_thetahat = sqrt(varhat_thetahat),
   theta_null = 0,
   alpha = c(
     0.001,
     0.01,
     0.05
   ),
-  distribution = "z"
+  distribution = "z",
+  eval = TRUE
 )
 #'
 #+ pc
@@ -189,7 +190,8 @@ pc <- pc(
   wald = TRUE,
   thetahat = thetahat,
   theta_null = 0,
-  distribution = "z"
+  distribution = "z",
+  eval = TRUE
 )
 #'
 #+ bc
@@ -203,7 +205,8 @@ bc <- bc(
   ),
   wald = TRUE,
   theta_null = 0,
-  distribution = "z"
+  distribution = "z",
+  eval = TRUE
 )
 #'
 #+ bca
@@ -219,7 +222,8 @@ bca <- bca(
   ),
   wald = TRUE,
   theta_null = 0,
-  distribution = "z"
+  distribution = "z",
+  eval = TRUE
 )
 #'
 #+ ci
@@ -252,10 +256,10 @@ test_that("nb mean_thetahat_star is equal to thetahat", {
 })
 #'
 #+ testthat_02, echo = TRUE
-test_that("nb var_thetahat_star is equal to var_thetahat", {
+test_that("nb var_thetahat_star is equal to varhat_thetahat", {
   expect_equivalent(
     round(
-      x = var_thetahat,
+      x = varhat_thetahat,
       digits = 1
     ),
     round(
@@ -285,6 +289,56 @@ test_that("wald alpha 0.05 is equal to cor.test", {
     round(
       x = wald["ci_97.5"],
       digits = 1
+    )
+  )
+})
+
+#+ for_coverage
+pc <- pc(
+  thetahat_star = thetahat_star,
+  thetahat = thetahat
+)
+bc <- bc(
+  thetahat_star = thetahat_star,
+  thetahat = thetahat
+)
+bca <- bca(
+  thetahat_star = thetahat_star,
+  thetahat = thetahat,
+  data = X,
+  fitFUN = function(X) cor(X)[2, 1]
+)
+
+#+ univ
+n <- 1000
+B <- 5000
+mu <- 100
+sigma2 <- 225
+sigma <- sqrt(sigma2)
+data <- rnorm(
+  n = n,
+  mean = mu,
+  sd = sigma
+)
+muhat <- mean(data)
+sigmahat <- sd(data)
+x_star_normal <- nb(
+  data = data,
+  B = B
+)
+thetahat_star_normal <- sapply(
+  X = x_star_normal,
+  FUN = mean
+)
+test_that("normal", {
+  expect_equivalent(
+    round(
+      x = mu,
+      digits = 0
+    ),
+    round(
+      x = mean(thetahat_star_normal),
+      digits = 0
     )
   )
 })
