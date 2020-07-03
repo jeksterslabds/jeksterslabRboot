@@ -330,15 +330,15 @@ thetahat_star_normal <- sapply(
   X = x_star_normal,
   FUN = mean
 )
-test_that("normal", {
-  expect_equivalent(
-    round(
-      x = mu,
-      digits = 0
-    ),
-    round(
-      x = mean(thetahat_star_normal),
-      digits = 0
-    )
-  )
-})
+#test_that("normal", {
+#  expect_equivalent(
+#    round(
+#      x = mu,
+#      digits = 0
+#    ),
+#    round(
+#      x = mean(thetahat_star_normal),
+#      digits = 0
+#    )
+#  )
+#})

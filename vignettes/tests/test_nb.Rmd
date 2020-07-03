@@ -1,31 +1,38 @@
-#' ---
-#' title: "Test: Parametric Bootstrap"
-#' author: "Ivan Jacob Agaloos Pesigan"
-#' date: "`r Sys.Date()`"
-#' output: rmarkdown::html_vignette
-#' vignette: >
-#'   %\VignetteIndexEntry{Test: Parametric Bootstrap}
-#'   %\VignetteEngine{knitr::rmarkdown}
-#'   %\VignetteEncoding{UTF-8}
-#' ---
-#'
-#+ knitr_options, include=FALSE, cache=FALSE
+---
+title: "Test: Nonparametric Bootstrap"
+author: "Ivan Jacob Agaloos Pesigan"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Test: Nonparametric Bootstrap}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r knitr_options, include=FALSE, cache=FALSE}
 knitr::opts_chunk$set(
   error = TRUE,
   collapse = TRUE,
   comment = "#>",
   out.width = "100%"
 )
-#'
-#+ setup
+```
+
+
+
+```{r setup}
 library(testthat)
 library(MASS)
 library(jeksterslabRboot)
-context("Test Parametric Bootstrap.")
-#'
-#' ## Parameters
-#'
-#+ parameters
+context("Test Nonparametric Bootstrap.")
+```
+
+
+## Parameters
+
+
+```{r parameters}
 n <- 1000
 theta <- runif(
   n = 1,
@@ -67,19 +74,25 @@ knitr::kable(
   row.names = FALSE,
   caption = "Population Parameters"
 )
-#'
-#' ## Generate Data
-#'
-#+ generate_data
+```
+
+
+## Generate Data
+
+
+```{r generate_data}
 X <- mvrnorm(
   n = n,
   Sigma = Sigma,
   mu = mu
 )
-#'
-#' ## Estimate Correlation
-#'
-#+ estimate
+```
+
+
+## Estimate Correlation
+
+
+```{r estimate}
 thetahat <- cor(X)[2, 1]
 varhat_thetahat <- ((1 - thetahat^2)^2) / (n - 2)
 ci <- cor.test(X[, 1], X[, 2])
@@ -109,12 +122,15 @@ knitr::kable(
   row.names = FALSE,
   caption = "Sample Statistics"
 )
-#'
-#' ## Bootstrap
-#'
-#+ bootstrap
+```
+
+
+## Bootstrap
+
+
+```{r bootstrap}
 B <- 10000
-X_star <- pb_mvn(
+X_star <- nb(
   data = X,
   B = B
 )
@@ -152,20 +168,26 @@ knitr::kable(
     Value
   ),
   row.names = FALSE,
-  caption = "Parametric Bootstrapping Results"
+  caption = "Nonparametric Bootstrapping Results"
 )
-#'
-#' ### Bootstrap Sampling Distribution
-#'
-#+ plot
+```
+
+
+### Bootstrap Sampling Distribution
+
+
+```{r plot}
 hist(
   thetahat_star,
   breaks = 100
 )
-#'
-#' ### Confidence Intervals
-#'
-#+ wald
+```
+
+
+### Confidence Intervals
+
+
+```{r wald}
 wald <- wald(
   thetahat = thetahat,
   sehat_thetahat = sqrt(varhat_thetahat),
@@ -175,10 +197,14 @@ wald <- wald(
     0.01,
     0.05
   ),
-  distribution = "z"
+  distribution = "z",
+  eval = TRUE
 )
-#'
-#+ pc
+```
+
+
+
+```{r pc}
 pc <- pc(
   thetahat_star = thetahat_star,
   alpha = c(
@@ -189,10 +215,14 @@ pc <- pc(
   wald = TRUE,
   thetahat = thetahat,
   theta_null = 0,
-  distribution = "z"
+  distribution = "z",
+  eval = TRUE
 )
-#'
-#+ bc
+```
+
+
+
+```{r bc}
 bc <- bc(
   thetahat_star = thetahat_star,
   thetahat = thetahat,
@@ -203,10 +233,14 @@ bc <- bc(
   ),
   wald = TRUE,
   theta_null = 0,
-  distribution = "z"
+  distribution = "z",
+  eval = TRUE
 )
-#'
-#+ bca
+```
+
+
+
+```{r bca}
 bca <- bca(
   thetahat_star = thetahat_star,
   thetahat = thetahat,
@@ -219,10 +253,14 @@ bca <- bca(
   ),
   wald = TRUE,
   theta_null = 0,
-  distribution = "z"
+  distribution = "z",
+  eval = TRUE
 )
-#'
-#+ ci
+```
+
+
+
+```{r ci}
 knitr::kable(
   x = as.data.frame(
     rbind(
@@ -234,11 +272,14 @@ knitr::kable(
   ),
   caption = "Confidence Intervals"
 )
-#'
-#' ## testthat
-#'
-#+ testthat_01, echo = TRUE
-test_that("pb mean_thetahat_star is equal to thetahat", {
+```
+
+
+## testthat
+
+
+```{r testthat_01, echo = TRUE}
+test_that("nb mean_thetahat_star is equal to thetahat", {
   expect_equivalent(
     round(
       x = thetahat,
@@ -250,9 +291,12 @@ test_that("pb mean_thetahat_star is equal to thetahat", {
     )
   )
 })
-#'
-#+ testthat_02, echo = TRUE
-test_that("pb var_thetahat_star is equal to varhat_thetahat", {
+```
+
+
+
+```{r testthat_02, echo = TRUE}
+test_that("nb var_thetahat_star is equal to varhat_thetahat", {
   expect_equivalent(
     round(
       x = varhat_thetahat,
@@ -264,8 +308,11 @@ test_that("pb var_thetahat_star is equal to varhat_thetahat", {
     )
   )
 })
-#'
-#+ testthat_03, echo = TRUE
+```
+
+
+
+```{r testthat_03, echo = TRUE}
 test_that("wald alpha 0.05 is equal to cor.test", {
   expect_equivalent(
     round(
@@ -289,8 +336,25 @@ test_that("wald alpha 0.05 is equal to cor.test", {
   )
 })
 
-#+ univ
-# Normal distribution
+```
+```{r for_coverage}
+pc <- pc(
+  thetahat_star = thetahat_star,
+  thetahat = thetahat
+)
+bc <- bc(
+  thetahat_star = thetahat_star,
+  thetahat = thetahat
+)
+bca <- bca(
+  thetahat_star = thetahat_star,
+  thetahat = thetahat,
+  data = X,
+  fitFUN = function(X) cor(X)[2, 1]
+)
+
+```
+```{r univ}
 n <- 1000
 B <- 5000
 mu <- 100
@@ -303,58 +367,25 @@ data <- rnorm(
 )
 muhat <- mean(data)
 sigmahat <- sd(data)
-x_star_normal <- pb_univ(
-  rFUN = rnorm,
-  n = n,
-  B = B,
-  mean = muhat,
-  sd = sigmahat
+x_star_normal <- nb(
+  data = data,
+  B = B
 )
 thetahat_star_normal <- sapply(
   X = x_star_normal,
   FUN = mean
 )
-# Binomial distribution
-n_trials <- 1
-p <- 0.50
-data <- rbinom(
-  n = n,
-  size = n_trials,
-  prob = p
-)
-phat <- mean(data) / n_trials
-x_star_normal_binomial <- pb_univ(
-  rFUN = rbinom,
-  n = n,
-  B = B,
-  size = n_trials,
-  prob = phat
-)
-thetahat_star_binomial <- sapply(
-  X = x_star_normal_binomial,
-  FUN = mean
-)
-#test_that("normal", {
-#  expect_equivalent(
-#    round(
-#      x = mu,
-#      digits = 0
-#    ),
-#    round(
-#      x = mean(thetahat_star_normal),
-#      digits = 0
-#    )
-#  )
-#})
-#test_that("binomial", {
-#  expect_equivalent(
-#    round(
-#      x = p,
-#      digits = 1
-#    ),
-#    round(
-#      x = mean(thetahat_star_binomial) / n_trials,
-#      digits = 1
-#    )
-#  )
-#})
+test_that("normal", {
+  expect_equivalent(
+    round(
+      x = mu,
+      digits = 0
+    ),
+    round(
+      x = mean(thetahat_star_normal),
+      digits = 0
+    )
+  )
+})
+```
+
