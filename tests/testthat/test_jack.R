@@ -19,7 +19,6 @@ knitr::opts_chunk$set(
 #'
 #+ setup
 library(testthat)
-library(MASS)
 library(jeksterslabRboot)
 context("Test jackknife.")
 
