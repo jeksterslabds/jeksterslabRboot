@@ -47,7 +47,7 @@
 #' @export
 wald_test <- function(thetahat,
                       varhat_thetahat,
-                      theta_null) {
+                      theta_null = 0) {
   statistic <- (thetahat - theta_null)^2 / varhat_thetahat
   p <- 2 * pchisq(
     q = statistic,
