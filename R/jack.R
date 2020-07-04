@@ -170,6 +170,71 @@ jack <- function(data,
 #'   } .
 #' }
 #'
+#' Pseudo-values can be computed using
+#'
+#' \deqn{
+#'   \tilde{\theta}_{i}
+#'   =
+#'   n \hat{\theta}
+#'   -
+#'   \left(
+#'     n - 1
+#'   \right)
+#'   \hat{\theta}_{\left( i \right)}
+#' }.
+#'
+#' The standard error can be estimated using the pseudo-values
+#'
+#' \deqn{
+#'   \hat{\mathrm{se}}_{\mathrm{jack}}
+#'   \left(
+#'     \tilde{\theta}
+#'   \right)
+#'   =
+#'   \sqrt{
+#'     \sum_{i = 1}^{n}
+#'     \frac{
+#'       \left(
+#'         \tilde{\theta}_{i}
+#'         -
+#'         \tilde{\theta}
+#'       \right)^2
+#'     }
+#'     {
+#'       \left(
+#'         n
+#'         -
+#'         1
+#'       \right)
+#'       n
+#'     }
+#'   }
+#' }
+#'
+#' where
+#'
+#' \deqn{
+#'   \tilde{\theta}
+#'   =
+#'   \frac{1}{2}
+#'   \sum_{i = 1}^{n}
+#'   \tilde{\theta}_{i} .
+#' }
+#'
+#' An interval can be generated using
+#'
+#' \deqn{
+#'   \tilde{\theta}
+#'   \pm
+#'   t_{\frac{\alpha}{2}}
+#'   \times
+#'   \hat{\mathrm{se}}_{\mathrm{jack}}
+#'     \left(
+#'       \tilde{\theta}
+#'     \right)
+#' }
+#' with degrees of freedom \eqn{\nu = n - 1}.
+#'
 #' @author Ivan Jacob Agaloos Pesigan
 #' @param thetahat_star Numeric vector.
 #'   Jackknife sampling distribution,
@@ -187,7 +252,14 @@ jack <- function(data,
 #'   Parameter estimate
 #'   \eqn{\left( \hat{\theta} \right)}
 #'   from the original sample data.
-#' @return Returns a vector with the following elements:
+#' @inheritParams wald
+#' @return Returns a list with the following elements:
+#'   \describe{
+#'     \item{hat}{Jackknife estimates.}
+#'     \item{ps}{Pseudo-values.}
+#'     \item{ci}{Confidence intervals using pseudo-values.}
+#'   }
+#' The first list element `hat` contains the following:
 #'   \describe{
 #'     \item{mean}{Mean of `thetahat_star` \eqn{\left( \hat{\theta}_{\left( \cdot \right) } \right)}.}
 #'     \item{bias}{Jackknife estimate of bias \eqn{\left( \hat{\mathrm{bias}}_{\mathrm{jack}} \left( \theta \right) \right)}.}
@@ -216,16 +288,47 @@ jack <- function(data,
 #' )
 #' @export
 jack_hat <- function(thetahat_star,
-                     thetahat) {
+                     thetahat,
+                     alpha = c(
+                       0.001,
+                       0.01,
+                       0.05
+                     ),
+                     eval = FALSE,
+                     theta = 0) {
   n <- length(thetahat_star)
   mean_thetahat <- mean(thetahat_star)
   bias <- (n - 1) * (mean_thetahat - thetahat)
   se <- sqrt(((n - 1) / n) * sum(thetahat_star - mean_thetahat)^2)
   thetahat_jack <- mean_thetahat - bias
-  c(
+  # pseudo-values
+  pseudo_values <- n * thetahat - (n - 1) * thetahat_star
+  mean_pseudo_values <- mean(pseudo_values)
+  # research more on formula for se_pseudo_values
+  se_pseudo_values <- sqrt(sum(((pseudo_values - mean_pseudo_values)^2) / ((n - 1) * n)))
+  ci <- wald(
+    thetahat = mean_pseudo_values,
+    sehat_thetahat = se_pseudo_values,
+    theta_null = 0,
+    alpha = alpha,
+    distribution = "t",
+    df = n - 1,
+    eval = eval,
+    theta = theta
+  )
+  ci[1] <- NA
+  ci[2] <- NA
+  hat <- c(
     mean = mean_thetahat,
     bias = bias,
     se = se,
-    thetahat_jack = thetahat_jack
+    thetahat_jack = thetahat_jack,
+    mean_ps = mean_pseudo_values,
+    se_ps = se_pseudo_values
+  )
+  list(
+    hat = hat,
+    ps = pseudo_values,
+    ci = ci
   )
 }
