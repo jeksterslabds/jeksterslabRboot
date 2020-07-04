@@ -220,14 +220,14 @@ hist(
 #' ### Confidence Intervals
 #'
 #+ wald
-wald <- wald(
+wald_out <- wald(
   thetahat = thetahat,
   sehat_thetahat = sehat_thetahat,
   eval = TRUE
 )
 #'
 #+ pc
-pc <- pc(
+pc_out <- pc(
   thetahat_star = thetahat_star,
   thetahat = thetahat,
   wald = TRUE,
@@ -235,7 +235,7 @@ pc <- pc(
 )
 #'
 #+ bc
-bc <- bc(
+bc_out <- bc(
   thetahat_star = thetahat_star,
   thetahat = thetahat,
   wald = TRUE,
@@ -243,7 +243,7 @@ bc <- bc(
 )
 #'
 #+ bca
-bca <- bca(
+bca_out <- bca(
   thetahat_star = thetahat_star,
   thetahat = thetahat,
   data = X,
@@ -256,10 +256,10 @@ bca <- bca(
 knitr::kable(
   x = as.data.frame(
     rbind(
-      wald,
-      pc,
-      bc,
-      bca
+      wald = wald_out,
+      pc = pc_out,
+      bc = bc_out,
+      bca = bca_out
     )
   ),
   caption = "Confidence Intervals"
@@ -293,7 +293,7 @@ test_that("2.5 is equal to cor.test", {
       digits = 2
     ),
     round(
-      x = wald["ci_2.5"],
+      x = wald_out["ci_2.5"],
       digits = 2
     ),
     tolerance = 0.02
@@ -308,7 +308,7 @@ test_that("97.5 is equal to cor.test", {
       digits = 2
     ),
     round(
-      x = wald["ci_97.5"],
+      x = wald_out["ci_97.5"],
       digits = 2
     ),
     tolerance = 0.02
@@ -319,19 +319,19 @@ test_that("97.5 is equal to cor.test", {
 test_that("2.5", {
   expect_equivalent(
     round(
-      x = wald["ci_2.5"],
+      x = wald_out["ci_2.5"],
       digits = 2
     ),
     round(
-      x = pc["ci_2.5"],
+      x = pc_out["ci_2.5"],
       digits = 2
     ),
     round(
-      x = bc["ci_2.5"],
+      x = bc_out["ci_2.5"],
       digits = 2
     ),
     round(
-      x = bca["ci_2.5"],
+      x = bca_out["ci_2.5"],
       digits = 2
     ),
     tolerance = 0.05
@@ -342,19 +342,19 @@ test_that("2.5", {
 test_that("97.5", {
   expect_equivalent(
     round(
-      x = wald["ci_97.5"],
+      x = wald_out["ci_97.5"],
       digits = 2
     ),
     round(
-      x = pc["ci_97.5"],
+      x = pc_out["ci_97.5"],
       digits = 2
     ),
     round(
-      x = bc["ci_97.5"],
+      x = bc_out["ci_97.5"],
       digits = 2
     ),
     round(
-      x = bca["ci_97.5"],
+      x = bca_out["ci_97.5"],
       digits = 2
     ),
     tolerance = 0.05

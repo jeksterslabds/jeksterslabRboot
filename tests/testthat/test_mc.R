@@ -115,11 +115,11 @@ hist(
 )
 qqnorm(alphahat_betahat_star)
 qqline(alphahat_betahat_star)
-wald <- wald(
+wald_out <- wald(
   thetahat = alphahat_betahat,
   sehat_thetahat = sd(alphahat_betahat_star)
 )
-wald
+wald_out
 #'
 #' ## testthat
 #'
@@ -127,7 +127,7 @@ wald
 test_that("ci_2.5", {
   expect_equivalent(
     alphahat_betahat_ci_2.5,
-    wald["ci_2.5"],
+    wald_out["ci_2.5"],
     tolerance = 0.05
   )
 })
@@ -136,7 +136,7 @@ test_that("ci_2.5", {
 test_that("ci_97.5", {
   expect_equivalent(
     alphahat_betahat_ci_97.5,
-    wald["ci_97.5"],
+    wald_out["ci_97.5"],
     tolerance = 0.05
   )
 })

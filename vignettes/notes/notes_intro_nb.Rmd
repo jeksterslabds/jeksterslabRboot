@@ -401,13 +401,13 @@ we can check if our confidence intervals contain
 the population parameter.
 
 ```{r}
-wald <- wald(
+wald_out <- wald(
   thetahat = thetahat,
   sehat_thetahat = sehat_thetahat,
   eval = TRUE,
   theta = theta
 )
-waldt <- wald(
+wald_out_t <- wald(
   thetahat = thetahat,
   sehat_thetahat = sehat_thetahat,
   distribution = "t",
@@ -415,21 +415,21 @@ waldt <- wald(
   eval = TRUE,
   theta = theta
 )
-pc <- pc(
+pc_out <- pc(
   thetahat_star = thetahat_star,
   thetahat = thetahat,
   wald = TRUE,
   eval = TRUE,
   theta = theta
 )
-bc <- bc(
+bc_out <- bc(
   thetahat_star = thetahat_star,
   thetahat = thetahat,
   wald = TRUE,
   eval = TRUE,
   theta = theta
 )
-bca <- bca(
+bca_out <- bca(
   thetahat_star = thetahat_star,
   thetahat = thetahat,
   data = x,
@@ -444,11 +444,11 @@ bca <- bca(
 knitr::kable(
   x = as.data.frame(
     rbind(
-      wald,
-      waldt,
-      pc,
-      bc,
-      bca
+      wald = wald_out,
+      wald_t = wald_out_t,
+      pc = pc_out,
+      bc = bc_out,
+      bca = bca_out
     )
   ),
   caption = "Confidence Intervals"

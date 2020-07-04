@@ -223,12 +223,12 @@ hist(
 #' ### Confidence Intervals
 #'
 #+ wald
-wald <- wald(
+wald_out <- wald(
   thetahat = thetahat,
   sehat_thetahat = sehat_thetahat,
   eval = TRUE
 )
-waldt <- wald(
+wald_out_t <- wald(
   thetahat = thetahat,
   sehat_thetahat = sehat_thetahat,
   distribution = "t",
@@ -237,63 +237,40 @@ waldt <- wald(
 )
 #'
 #+ pc
-pc <- pc(
+pc_out <- pc(
   thetahat_star = thetahat_star,
   thetahat = thetahat,
   wald = TRUE,
   eval = TRUE
-)
-# for coverage
-pct <- pc(
-  thetahat_star = thetahat_star,
-  thetahat = thetahat,
-  distribution = "t",
-  df = df
 )
 #'
 #+ bc
-bc <- bc(
+bc_out <- bc(
   thetahat_star = thetahat_star,
   thetahat = thetahat,
   wald = TRUE,
   eval = TRUE
-)
-# for coverage
-bct <- bc(
-  thetahat_star = thetahat_star,
-  thetahat = thetahat,
-  distribution = "t",
-  df = df
 )
 #'
 #+ bca
-bca <- bca(
+bca_out <- bca(
   thetahat_star = thetahat_star,
   thetahat = thetahat,
   data = x,
   fitFUN = mean,
   wald = TRUE,
   eval = TRUE
-)
-# for coverage
-bcat <- bca(
-  thetahat_star = thetahat_star,
-  thetahat = thetahat,
-  data = x,
-  fitFUN = mean,
-  distribution = "t",
-  df = df
 )
 #'
 #+ ci
 knitr::kable(
   x = as.data.frame(
     rbind(
-      wald,
-      waldt,
-      pc,
-      bc,
-      bca
+      wald = wald_out,
+      wald_t = wald_out_t,
+      pc = pc_out,
+      bc = bc_out,
+      bca = bca_out
     )
   ),
   caption = "Confidence Intervals"
