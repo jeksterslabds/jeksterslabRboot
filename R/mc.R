@@ -21,7 +21,6 @@
 #'   \eqn{\hat{\mathrm{Cov}} \left( \boldsymbol{\hat{\theta}} \right)}.
 #' @param R Integer.
 #'   Number of Monte Carlo replications.
-#' @importFrom jeksterslabRmatrix is.symmetric
 #' @examples
 #' R <- 20000L
 #' # length 1
