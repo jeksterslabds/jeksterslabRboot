@@ -281,7 +281,22 @@ jack <- function(data,
 #'   X = jack_samples,
 #'   FUN = mean
 #' )
-#' hist(thetahat_star)
+#' hist(
+#'   thetahat_star,
+#'   main = expression(
+#'     paste(
+#'       "Histogram of ",
+#'       hat(theta),
+#'       "*"
+#'     )
+#'   ),
+#'   xlab = expression(
+#'     paste(
+#'       hat(theta),
+#'       "*"
+#'     )
+#'   )
+#' )
 #' jack_hat(
 #'   thetahat_star = thetahat_star,
 #'   thetahat = thetahat
