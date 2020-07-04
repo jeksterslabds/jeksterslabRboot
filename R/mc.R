@@ -33,6 +33,24 @@
 #'   R = R
 #' )
 #' head(mc_star_length_1)
+#' hist(
+#'   mc_star_length_1,
+#'   main = expression(
+#'     paste(
+#'       "Histogram of ",
+#'       hat(theta),
+#'       "*"
+#'     )
+#'   ),
+#'   xlab = expression(
+#'     paste(
+#'       hat(theta),
+#'       "*"
+#'     )
+#'   )
+#' )
+#' qqnorm(mc_star_length_1)
+#' qqline(mc_star_length_1)
 #' # length greater than 1
 #' alphahat <- 0.3386
 #' betahat <- 0.4510
@@ -77,6 +95,8 @@
 #'     )
 #'   )
 #' )
+#' qqnorm(alphahat_betahat_star)
+#' qqline(alphahat_betahat_star)
 #' wald(
 #'   thetahat = alphahat_betahat,
 #'   sehat_thetahat = sd(alphahat_betahat_star)
