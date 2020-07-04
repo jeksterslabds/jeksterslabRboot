@@ -56,6 +56,8 @@ hist(
     )
   )
 )
+qqnorm(mc_star_length_1)
+qqline(mc_star_length_1)
 #'
 #' ## Length Greater than 1
 #'
@@ -111,6 +113,8 @@ hist(
     )
   )
 )
+qqnorm(alphahat_betahat_star)
+qqline(alphahat_betahat_star)
 wald <- wald(
   thetahat = alphahat_betahat,
   sehat_thetahat = sd(alphahat_betahat_star)
