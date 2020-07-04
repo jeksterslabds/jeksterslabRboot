@@ -47,7 +47,7 @@ len <- function(thetahat_lo,
 #' @author Ivan Jacob Agaloos Pesigan
 #' @param thetahat Numeric.
 #'   Parameter estimate
-#'   (\eqn{\hat{\theta}}).
+#'   \eqn{\left( \hat{\theta} \right)}.
 #' @inheritParams theta_hit
 #' @family confidence interval evaluation functions
 #' @keywords confidence interval
@@ -60,6 +60,13 @@ shape <- function(thetahat_lo,
 
 #' Confidence Interval Evaluation
 #'
+#' Evaluates confidence interval using
+#' [`zero_hit()`],
+#' [`theta_hit()`],
+#' [`len()`],
+#' and
+#' [`shape()`].
+#'
 #' @author Ivan Jacob Agaloos Pesigan
 #' @param ci Vector.
 #'   Confidence intervals sorted from smallest to largest.
@@ -69,10 +76,10 @@ shape <- function(thetahat_lo,
 #'   And so on and so forth.
 #' @param thetahat Numeric.
 #'   Parameter estimate
-#'   (\eqn{\hat{\theta}}).
+#'   \eqn{\left( \hat{\theta} \right)}.
 #' @param theta Numeric.
 #'   Population parameter
-#'   (\eqn{\theta}).
+#'   \eqn{\left( \theta \right)}.
 #' @param label Vector.
 #'   Vector used to label results.
 #'   If not provided defaults to `label = 1:(length(ci)/2)`.

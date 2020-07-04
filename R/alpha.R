@@ -18,7 +18,7 @@
 #' alpha2prob(alpha = 0.05)
 #' @return Returns
 #'   probabilities associated with specified alpha levels.
-#'   The results are sorted from smallest to biggest.
+#'   The results are sorted from smallest to largest.
 #' @family alpha functions
 #' @keywords alpha
 #' @export
@@ -53,7 +53,7 @@ alpha2prob <- function(alpha = c(
 #' ci2prob(ci = 0.95)
 #' @return Returns
 #'   probabilities associated with specified confidence intervals.
-#'   The results are sorted from smallest to biggest.
+#'   The results are sorted from smallest to largest.
 #' @family alpha functions
 #' @keywords alpha
 #' @export

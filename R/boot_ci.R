@@ -63,14 +63,14 @@
 #'     \right]
 #'     =
 #'     \left[
-#'       \hat{\theta}^{*}_{\left( \frac{\alpha}{2} \right)},
-#'       \hat{\theta}^{*}_{\left( 1 - \frac{\alpha}{2} \right)}
+#'       \hat{\theta}^{*}_{z_{\left( \frac{\alpha}{2} \right)}},
+#'       \hat{\theta}^{*}_{z_{\left( 1 - \frac{\alpha}{2} \right)}}
 #'     \right] .
 #'   }
 #'
 #' The corresponding percentile value
 #' from the bootstrap sampling distribution `thetahat_star`
-#' (\eqn{\hat{\theta}^{*}}) is calculated using
+#' \eqn{\left( \hat{\theta}^{*} \right)} is calculated using
 #' [`quantile()`].
 #'
 #' @author Ivan Jacob Agaloos Pesigan

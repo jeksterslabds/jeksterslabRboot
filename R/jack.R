@@ -152,9 +152,9 @@ jack <- function(data,
 #'   =
 #'   \hat{\theta}
 #'   -
-#'   \hat{\mathrm{se}}_{\mathrm{jack}}
+#'   \hat{\mathrm{bias}}_{\mathrm{jack}}
 #'   \left(
-#'     \hat{\theta}
+#'     \theta
 #'   \right)
 #'   =
 #'   n
@@ -185,14 +185,14 @@ jack <- function(data,
 #'   } .
 #' @param thetahat Numeric.
 #'   Parameter estimate
-#'   (\eqn{\hat{\theta}})
+#'   \eqn{\left( \hat{\theta} \right)}
 #'   from the original sample data.
 #' @return Returns a vector with the following elements:
 #'   \describe{
-#'     \item{mean}{Mean of `thetahat_star` (\eqn{\hat{\theta}_{\left( \cdot \right) }}).}
-#'     \item{bias}{Jackknife estimate of bias (\eqn{\hat{\mathrm{bias}}_{\mathrm{jack}} \left( \theta \right)}).}
-#'     \item{se}{Jackknife estimate of standard error (\eqn{\hat{\mathrm{se}}_{\mathrm{jack}} \left( \hat{\theta} \right)}).}
-#'     \item{thetahat_jack}{Bias-corrected jackknife estimate (\eqn{\hat{\theta}_{\mathrm{jack}}}).}
+#'     \item{mean}{Mean of `thetahat_star` \eqn{\left( \hat{\theta}_{\left( \cdot \right) } \right)}.}
+#'     \item{bias}{Jackknife estimate of bias \eqn{\left( \hat{\mathrm{bias}}_{\mathrm{jack}} \left( \theta \right) \right)}.}
+#'     \item{se}{Jackknife estimate of standard error \eqn{\left( \hat{\mathrm{se}}_{\mathrm{jack}} \left( \hat{\theta} \right) \right)}.}
+#'     \item{thetahat_jack}{Bias-corrected jackknife estimate \eqn{\left( \hat{\theta}_{\mathrm{jack}} \right)}.}
 #'   }
 #' @family jackknife functions
 #' @keywords jackknife

@@ -3,27 +3,27 @@
 #' @author Ivan Jacob Agaloos Pesigan
 #' @param thetahat_lo Numeric.
 #'   Lower limit of the estimated confidence interval
-#'   (\eqn{\hat{\theta}_{\mathrm{lo}}}).
+#'   \eqn{\left( \hat{\theta}_{\mathrm{lo}} \right)}.
 #' @param theta Numeric.
 #'   Population parameter
-#'   (\eqn{\theta}).
+#'   \eqn{\left( \theta \right)}.
 #' @param thetahat_up Numeric.
 #'   Upper limit of the estimated confidence interval
-#'   (\eqn{\hat{\theta}_{\mathrm{up}}}).
+#'   \eqn{\left( \hat{\theta}_{\mathrm{up}} \right)}.
 #' @return Returns
-#'   `TRUE` if `theta` (\eqn{\theta}) is between the interval
+#'   `TRUE` if `theta` \eqn{\left( \theta \right)} is between the interval
 #'   `thetahat_lo`
-#'   (\eqn{\hat{\theta}_{\mathrm{lo}}})
+#'   \eqn{\left( \hat{\theta}_{\mathrm{lo}} \right)}
 #'   to
 #'   `thetahat_up`
-#'   (\eqn{\hat{\theta}_{\mathrm{up}}}).
+#'   \eqn{\left( \hat{\theta}_{\mathrm{up}} \right)}.
 #'   Returns
-#'   `FALSE` if `theta` (\eqn{\theta}) is outside the interval
+#'   `FALSE` if `theta` \eqn{\left( \theta \right)} is outside the interval
 #'   `thetahat_lo`
-#'   (\eqn{\hat{\theta}_{\mathrm{lo}}})
+#'   \eqn{\left( \hat{\theta}_{\mathrm{lo}} \right)}
 #'   to
 #'   `thetahat_up`
-#'   (\eqn{\hat{\theta}_{\mathrm{up}}}).
+#'   \eqn{\left( \hat{\theta}_{\mathrm{up}} \right)}.
 #' @examples
 #' # FALSE
 #' theta_hit(thetahat_lo = 1, theta = 0, thetahat_up = 2)
@@ -45,17 +45,17 @@ theta_hit <- function(thetahat_lo,
 #' @return Returns
 #'   `TRUE` if zero is between the interval
 #'   `thetahat_lo`
-#'   (\eqn{\hat{\theta}_{\mathrm{lo}}})
+#'   \eqn{\left( \hat{\theta}_{\mathrm{lo}} \right)}
 #'   to
 #'   `thetahat_up`
-#'   (\eqn{\hat{\theta}_{\mathrm{up}}}).
+#'   \eqn{\left( \hat{\theta}_{\mathrm{up}} \right)}.
 #'   Returns
 #'   `FALSE` if zero is outside the interval
 #'   `thetahat_lo`
-#'   (\eqn{\hat{\theta}_{\mathrm{lo}}})
+#'   \eqn{\left( \hat{\theta}_{\mathrm{lo}} \right)}
 #'   to
 #'   `thetahat_up`
-#'   (\eqn{\hat{\theta}_{\mathrm{up}}}).
+#'   \eqn{\left( \hat{\theta}_{\mathrm{up}} \right)}.
 #' @examples
 #' # FALSE
 #' zero_hit(thetahat_lo = 1, thetahat_up = 2)
@@ -72,4 +72,3 @@ zero_hit <- function(thetahat_lo,
     thetahat_up
   )
 }
-
