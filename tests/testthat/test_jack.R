@@ -21,7 +21,10 @@ knitr::opts_chunk$set(
 library(testthat)
 library(jeksterslabRboot)
 context("Test jackknife.")
-
+#'
+#' ## Parameters
+#'
+#+ parameters
 data <- c(
   11,
   22,
@@ -33,11 +36,17 @@ thetahat_star <- sapply(
   X = jack_samples,
   FUN = mean
 )
+#'
+#' ## Results
+#'
+#+ results
 results <- jack_hat(
   thetahat_star = thetahat_star,
   thetahat = thetahat
 )
-
+#'
+#' ## testthat
+#'
 #+ testthat_01
 test_that("mean", {
   expect_equivalent(
@@ -45,7 +54,7 @@ test_that("mean", {
     22
   )
 })
-
+#'
 #+ testthat_02
 test_that("bias", {
   expect_equivalent(
@@ -53,7 +62,7 @@ test_that("bias", {
     0
   )
 })
-
+#'
 #+ testthat_03
 test_that("se", {
   expect_equivalent(
@@ -61,7 +70,7 @@ test_that("se", {
     0
   )
 })
-
+#'
 #+ testthat_04
 test_that("thetahat_jack", {
   expect_equivalent(

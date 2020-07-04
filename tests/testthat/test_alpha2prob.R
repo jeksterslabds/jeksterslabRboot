@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 library(testthat)
 library(jeksterslabRboot)
 context("Test alpha2prob.")
-
+#'
 #+ testthat_01
 test_that("vector", {
   expect_equivalent(
@@ -63,7 +63,7 @@ test_that("vector", {
     )
   )
 })
-
+#'
 #+ testthat_02
 test_that("vector", {
   expect_equivalent(

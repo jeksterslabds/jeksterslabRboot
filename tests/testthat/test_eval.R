@@ -21,14 +21,18 @@ knitr::opts_chunk$set(
 library(testthat)
 library(jeksterslabRboot)
 context("Test eval.")
-
+#'
 #+ results
 result <- ci_eval(
   ci = c(1, 3),
   thetahat = 2,
   theta = 2
 )
-
+#'
+#' ## testthat
+#'
+#' Confidence interval contain zero.
+#'
 #+ testthat_01
 test_that("TRUE", {
   expect_true(
@@ -43,7 +47,9 @@ test_that("TRUE", {
     )
   )
 })
-
+#'
+#' Confidence interval does not contain zero.
+#'
 #+ testthat_02
 test_that("FALSE", {
   expect_false(
@@ -58,7 +64,7 @@ test_that("FALSE", {
     )
   )
 })
-
+#'
 #+ testthat_03
 test_that("1", {
   expect_equal(
@@ -74,21 +80,23 @@ test_that("1", {
     1
   )
 })
-
+#'
+#' `ci_eval`
+#'
 #+ testthat_04
 test_that("zero_hit", {
   expect_false(
     as.logical(result[1])
   )
 })
-
+#'
 #+ testthat_05
 test_that("theta_hit", {
   expect_true(
     as.logical(result[2])
   )
 })
-
+#'
 #+ testthat_06
 test_that("len", {
   expect_equivalent(
@@ -96,7 +104,7 @@ test_that("len", {
     2
   )
 })
-
+#'
 #+ testthat_07
 test_that("shape", {
   expect_equivalent(

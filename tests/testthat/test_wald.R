@@ -21,13 +21,17 @@ knitr::opts_chunk$set(
 library(testthat)
 library(jeksterslabRboot)
 context("Test wald.")
-
+#'
+#' ## Parameters
+#'
 #+ parameters
 thetahat <- 0.860
 sehat_thetahat <- 0.409
 sqrt_wald <- 2.10
 p <- 0.036
-
+#'
+#' ## Results
+#'
 #+ results
 result_01 <- sqrt_wald_test(
   thetahat = thetahat,
@@ -35,6 +39,7 @@ result_01 <- sqrt_wald_test(
   theta_null = 0,
   distribution = "z"
 )
+result_01
 result_02 <- sqrt_wald_test(
   thetahat = thetahat,
   sehat_thetahat = sehat_thetahat,
@@ -42,26 +47,15 @@ result_02 <- sqrt_wald_test(
   distribution = "t",
   df = 1000
 )
+result_02
 result_03 <- wald_test(
   thetahat = thetahat,
   varhat_thetahat = sehat_thetahat^2
 )
-wald(
-  thetahat = thetahat,
-  sehat_thetahat = sehat_thetahat,
-  distribution = "z",
-  eval = TRUE,
-  theta = 0
-)
-wald(
-  thetahat = thetahat,
-  sehat_thetahat = sehat_thetahat,
-  distribution = "t",
-  df = 1000,
-  eval = TRUE,
-  theta = 0
-)
-
+result_03
+#'
+#' ## testthat
+#'
 #+ testthat_01
 test_that("statistic", {
   expect_equivalent(
@@ -71,7 +65,7 @@ test_that("statistic", {
     sqrt_wald
   )
 })
-
+#'
 #+ testthat_02
 test_that("p", {
   expect_equivalent(
