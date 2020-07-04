@@ -27,11 +27,9 @@ Imports:
 	utils,
 	stats,
     MASS,
-    jeksterslabRutils,
-    jeksterslabRmatrix
+    jeksterslabRutils
 Remotes:
-    jeksterslabds/jeksterslabRutils,
-    jeksterslabds/jeksterslabRmatrix
+    jeksterslabds/jeksterslabRutils
 Suggests:
 	knitr,
 	rmarkdown,
