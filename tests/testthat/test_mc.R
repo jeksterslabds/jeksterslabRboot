@@ -1,13 +1,13 @@
----
-title: "Test: mc"
-author: "Ivan Jacob Agaloos Pesigan"
-date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Test: mc}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
+#' ---
+#' title: "Test: Parametric Bootstrap - Univariate"
+#' author: "Ivan Jacob Agaloos Pesigan"
+#' date: "`r Sys.Date()`"
+#' output: rmarkdown::html_vignette
+#' vignette: >
+#'   %\VignetteIndexEntry{Test: Parametric Bootstrap - Univariate}
+#'   %\VignetteEngine{knitr::rmarkdown}
+#'   %\VignetteEncoding{UTF-8}
+#' ---
 #'
 #+ knitr_options, include=FALSE, cache=FALSE
 knitr::opts_chunk$set(
