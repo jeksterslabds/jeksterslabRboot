@@ -301,29 +301,17 @@ knitr::kable(
 #+ testthat_01
 test_that("mean", {
   expect_equivalent(
-    round(
-      x = theta,
-      digits = 1
-    ),
-    round(
-      x = mean_thetahat_star,
-      digits = 1
-    ),
-    tolerance = 0.2
+    theta,
+    mean_thetahat_star,
+    tolerance = 0.05
   )
 })
 #'
 #+ testthat_02
 test_that("se", {
   expect_equivalent(
-    round(
-      x = se_thetahat,
-      digits = 2
-    ),
-    round(
-      x = sd_thetahat_star,
-      digits = 2
-    ),
-    tolerance = 0.02
+    se_thetahat,
+    sd_thetahat_star,
+    tolerance = 0.05
   )
 })

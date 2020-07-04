@@ -1,10 +1,10 @@
 #' ---
-#' title: "Test: Parametric Bootstrap - Univariate"
+#' title: "Test: Monte Carlo"
 #' author: "Ivan Jacob Agaloos Pesigan"
 #' date: "`r Sys.Date()`"
 #' output: rmarkdown::html_vignette
 #' vignette: >
-#'   %\VignetteIndexEntry{Test: Parametric Bootstrap - Univariate}
+#'   %\VignetteIndexEntry{Test: Monte Carlo}
 #'   %\VignetteEngine{knitr::rmarkdown}
 #'   %\VignetteEncoding{UTF-8}
 #' ---
@@ -21,22 +21,52 @@ knitr::opts_chunk$set(
 library(testthat)
 library(jeksterslabRboot)
 context("Test mc.")
-
-#+ coverage
+#'
+#' ## Length 1
+#'
+#' ### Parameters
+#'
+#+ parameters_01
 R <- 20000L
-# length 1
 thetahat <- 100
 covhat_thetahat <- 1.5
+#'
+#' ## Results
+#'
+#+ length_01
 mc_star_length_1 <- mc(
   thetahat = thetahat,
   covhat_thetahat = covhat_thetahat,
   R = R
 )
 head(mc_star_length_1)
-# length greater than 1
+hist(
+  mc_star_length_1,
+  main = expression(
+    paste(
+      "Histogram of ",
+      hat(theta),
+      "*"
+    )
+  ),
+  xlab = expression(
+    paste(
+      hat(theta),
+      "*"
+    )
+  )
+)
+#'
+#' ## Length Greater than 1
+#'
+#' ### Parameters
+#'
+#+ parameters_02
 alphahat <- 0.3386
 betahat <- 0.4510
 alphahat_betahat <- alphahat * betahat
+alphahat_betahat_ci_2.5 <- 0.0033
+alphahat_betahat_ci_97.5 <- 0.2979
 varhat_alphahat <- 0.1224^2
 varhat_betahat <- 0.1460^2
 thetahat <- c(
@@ -52,6 +82,10 @@ covhat_thetahat <- matrix(
   ),
   ncol = 2
 )
+#'
+#' ## Results
+#'
+#+ mediation
 mc_star_length_2 <- mc(
   thetahat = thetahat,
   covhat_thetahat = covhat_thetahat,
@@ -77,7 +111,28 @@ hist(
     )
   )
 )
-wald(
+wald <- wald(
   thetahat = alphahat_betahat,
   sehat_thetahat = sd(alphahat_betahat_star)
 )
+wald
+#'
+#' ## testthat
+#'
+#+ testthat_01
+test_that("ci_2.5", {
+  expect_equivalent(
+    alphahat_betahat_ci_2.5,
+    wald["ci_2.5"],
+    tolerance = 0.05
+  )
+})
+#'
+#+ testthat_02
+test_that("ci_97.5", {
+  expect_equivalent(
+    alphahat_betahat_ci_97.5,
+    wald["ci_97.5"],
+    tolerance = 0.05
+  )
+})
