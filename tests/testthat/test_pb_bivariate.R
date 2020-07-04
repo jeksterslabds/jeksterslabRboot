@@ -270,30 +270,18 @@ knitr::kable(
 #+ testthat_01
 test_that("mean", {
   expect_equivalent(
-    round(
-      x = theta,
-      digits = 1
-    ),
-    round(
-      x = mean_thetahat_star,
-      digits = 1
-    ),
-    tolerance = 0.2
+    theta,
+    mean_thetahat_star,
+    tolerance = 0.05
   )
 })
 #'
 #+ testthat_02
 test_that("se", {
   expect_equivalent(
-    round(
-      x = se_thetahat,
-      digits = 2
-    ),
-    round(
-      x = sd_thetahat_star,
-      digits = 2
-    ),
-    tolerance = 0.02
+    se_thetahat,
+    sd_thetahat_star,
+    tolerance = 0.05
   )
 })
 #'
@@ -304,6 +292,32 @@ test_that("2.5 is equal to cor.test", {
       x = ci_ll,
       digits = 2
     ),
+    round(
+      x = wald["ci_2.5"],
+      digits = 2
+    ),
+    tolerance = 0.01
+  )
+})
+#'
+#+ testthat_04
+test_that("97.5 is equal to cor.test", {
+  expect_equivalent(
+    round(
+      x = ci_ul,
+      digits = 2
+    ),
+    round(
+      x = wald["ci_97.5"],
+      digits = 2
+    ),
+    tolerance = 0.01
+  )
+})
+#'
+#+ testthat_05
+test_that("2.5", {
+  expect_equivalent(
     round(
       x = wald["ci_2.5"],
       digits = 2
@@ -324,13 +338,9 @@ test_that("2.5 is equal to cor.test", {
   )
 })
 #'
-#+ testthat_04
-test_that("97.5 is equal to cor.test", {
+#+ testthat_06
+test_that("97.5", {
   expect_equivalent(
-    round(
-      x = ci_ul,
-      digits = 2
-    ),
     round(
       x = wald["ci_97.5"],
       digits = 2

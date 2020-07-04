@@ -303,7 +303,7 @@ test_that("mean", {
   expect_equivalent(
     theta,
     mean_thetahat_star,
-    tolerance = 0.05
+    tolerance = 0.08
   )
 })
 #'
@@ -312,6 +312,6 @@ test_that("se", {
   expect_equivalent(
     se_thetahat,
     sd_thetahat_star,
-    tolerance = 0.05
+    tolerance = 0.08
   )
 })
