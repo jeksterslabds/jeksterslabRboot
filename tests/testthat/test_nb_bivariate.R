@@ -278,7 +278,7 @@ test_that("mean", {
       x = mean_thetahat_star,
       digits = 1
     ),
-    tolerance = 0.1
+    tolerance = 0.2
   )
 })
 #'
@@ -293,7 +293,7 @@ test_that("se", {
       x = sd_thetahat_star,
       digits = 2
     ),
-    tolerance = 0.01
+    tolerance = 0.02
   )
 })
 #'
@@ -308,7 +308,7 @@ test_that("wald alpha 0.05 is equal to cor.test", {
       x = wald["ci_2.5"],
       digits = 1
     ),
-    tolerance = 0.1
+    tolerance = 0.2
   )
   expect_equivalent(
     round(
@@ -319,6 +319,6 @@ test_that("wald alpha 0.05 is equal to cor.test", {
       x = wald["ci_97.5"],
       digits = 1
     ),
-    tolerance = 0.1
+    tolerance = 0.2
   )
 })

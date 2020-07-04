@@ -312,7 +312,7 @@ test_that("mean", {
       x = mean_thetahat_star,
       digits = 1
     ),
-    tolerance = 0.1
+    tolerance = 0.2
   )
 })
 #'
@@ -327,6 +327,6 @@ test_that("se", {
       x = sd_thetahat_star,
       digits = 2
     ),
-    tolerance = 0.01
+    tolerance = 0.02
   )
 })
