@@ -304,9 +304,9 @@ knitr::kable(
 #+ testthat_01
 test_that("mean", {
   expect_equivalent(
-    theta,
+    thetahat,
     mean_thetahat_star,
-    tolerance = 0.08
+    tolerance = 0.01
   )
 })
 #'
@@ -315,6 +315,6 @@ test_that("se", {
   expect_equivalent(
     se_thetahat,
     sd_thetahat_star,
-    tolerance = 0.08
+    tolerance = 0.01
   )
 })

@@ -270,9 +270,9 @@ knitr::kable(
 #+ testthat_01
 test_that("mean", {
   expect_equivalent(
-    theta,
+    thetahat,
     mean_thetahat_star,
-    tolerance = 0.05
+    tolerance = 0.01
   )
 })
 #'
@@ -281,7 +281,7 @@ test_that("se", {
   expect_equivalent(
     se_thetahat,
     sd_thetahat_star,
-    tolerance = 0.05
+    tolerance = 0.01
   )
 })
 #'
@@ -296,7 +296,7 @@ test_that("2.5 is equal to cor.test", {
       x = wald["ci_2.5"],
       digits = 2
     ),
-    tolerance = 0.01
+    tolerance = 0.02
   )
 })
 #'
@@ -311,7 +311,7 @@ test_that("97.5 is equal to cor.test", {
       x = wald["ci_97.5"],
       digits = 2
     ),
-    tolerance = 0.01
+    tolerance = 0.02
   )
 })
 #'
