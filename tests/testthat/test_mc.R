@@ -1,10 +1,10 @@
 #' ---
-#' title: "Test: Monte Carlo"
+#' title: "Test: mc"
 #' author: "Ivan Jacob Agaloos Pesigan"
 #' date: "`r Sys.Date()`"
 #' output: rmarkdown::html_vignette
 #' vignette: >
-#'   %\VignetteIndexEntry{Test: Monte Carlo}
+#'   %\VignetteIndexEntry{Test: mc}
 #'   %\VignetteEngine{knitr::rmarkdown}
 #'   %\VignetteEncoding{UTF-8}
 #' ---
