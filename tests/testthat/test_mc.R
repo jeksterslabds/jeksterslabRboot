@@ -39,7 +39,7 @@ mc_star_length_1 <- mc(
   covhat_thetahat = covhat_thetahat,
   R = R
 )
-head(mc_star_length_1)
+str(mc_star_length_1)
 hist(
   mc_star_length_1,
   main = expression(
@@ -93,7 +93,7 @@ mc_star_length_2 <- mc(
   covhat_thetahat = covhat_thetahat,
   R = R
 )
-head(mc_star_length_2)
+str(mc_star_length_2)
 alphahat_betahat_star <- mc_star_length_2[, 1] * mc_star_length_2[, 2]
 hist(
   alphahat_betahat_star,

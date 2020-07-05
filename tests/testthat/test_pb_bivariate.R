@@ -113,7 +113,7 @@ X <- mvrnorm(
   Sigma = Sigma,
   mu = mu
 )
-head(X)
+str(X)
 hist(X[, 1])
 qqnorm(X[, 1])
 qqline(X[, 1])

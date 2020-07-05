@@ -47,6 +47,7 @@ lsat <- cbind(
   GPA
 )
 head(lsat)
+str(lsat)
 #'
 #+ usedata
 usethis::use_data(
