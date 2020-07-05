@@ -245,7 +245,7 @@ jack <- function(data,
 #' with degrees of freedom \eqn{\nu = n - 1}.
 #'
 #' @author Ivan Jacob Agaloos Pesigan
-#' @param thetahat_star Numeric vector.
+#' @param thetahat_star_jack Numeric vector.
 #'   Jackknife sampling distribution,
 #'   that is,
 #'   the sampling distribution of `thetahat`
@@ -270,7 +270,7 @@ jack <- function(data,
 #'   }
 #' The first list element `hat` contains the following:
 #'   \describe{
-#'     \item{mean}{Mean of `thetahat_star` \eqn{\left( \hat{\theta}_{\left( \cdot \right) } \right)}.}
+#'     \item{mean}{Mean of `thetahat_star_jack` \eqn{\left( \hat{\theta}_{\left( \cdot \right) } \right)}.}
 #'     \item{bias}{Jackknife estimate of bias \eqn{\left( \widehat{\mathrm{bias}}_{\mathrm{jack}} \left( \theta \right) \right)}.}
 #'     \item{se}{Jackknife estimate of standard error \eqn{\left( \widehat{\mathrm{se}}_{\mathrm{jack}} \left( \hat{\theta} \right) \right)}.}
 #'     \item{thetahat_jack}{Bias-corrected jackknife estimate \eqn{\left( \hat{\theta}_{\mathrm{jack}} \right)}.}
@@ -285,13 +285,13 @@ jack <- function(data,
 #' x_star <- jack(
 #'   data = x
 #' )
-#' thetahat_star <- sapply(
+#' thetahat_star_jack <- sapply(
 #'   X = x_star,
 #'   FUN = mean
 #' )
 #' str(x_star)
 #' hist(
-#'   thetahat_star,
+#'   thetahat_star_jack,
 #'   main = expression(
 #'     paste(
 #'       "Histogram of ",
@@ -307,11 +307,11 @@ jack <- function(data,
 #'   )
 #' )
 #' jack_hat(
-#'   thetahat_star = thetahat_star,
+#'   thetahat_star_jack = thetahat_star_jack,
 #'   thetahat = thetahat
 #' )
 #' @export
-jack_hat <- function(thetahat_star,
+jack_hat <- function(thetahat_star_jack,
                      thetahat,
                      alpha = c(
                        0.001,
@@ -320,13 +320,13 @@ jack_hat <- function(thetahat_star,
                      ),
                      eval = FALSE,
                      theta = 0) {
-  n <- length(thetahat_star)
-  mean_thetahat <- mean(thetahat_star)
+  n <- length(thetahat_star_jack)
+  mean_thetahat <- mean(thetahat_star_jack)
   bias <- (n - 1) * (mean_thetahat - thetahat)
-  se <- sqrt(((n - 1) / n) * sum(thetahat_star - mean_thetahat)^2)
+  se <- sqrt(((n - 1) / n) * sum(thetahat_star_jack - mean_thetahat)^2)
   thetahat_jack <- mean_thetahat - bias
   # pseudo-values
-  pseudo_values <- n * thetahat - (n - 1) * thetahat_star
+  pseudo_values <- n * thetahat - (n - 1) * thetahat_star_jack
   mean_pseudo_values <- mean(pseudo_values)
   # research more on formula for se_pseudo_values
   se_pseudo_values <- sqrt(sum(((pseudo_values - mean_pseudo_values)^2) / ((n - 1) * n)))
