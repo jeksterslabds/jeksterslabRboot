@@ -4,6 +4,12 @@
 #' samples from the original sample `data`.
 #' `data` is referred to as the empirical distribution \eqn{\hat{F}}.
 #'
+#' For more details and examples see the following vignettes:
+#'
+#' [Notes: Introduction to Nonparametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_nb.html)
+#'
+#' [Notes: Introduction to Parametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_pb.html)
+#'
 #' @author Ivan Jacob Agaloos Pesigan
 #' @param data Vector, matrix or data frame.
 #'   Sample data to bootstrap.
@@ -105,6 +111,12 @@ nb <- function(data,
 #' mean vector
 #' \eqn{\boldsymbol{\hat{\mu}}}
 #' .
+#'
+#' For more details and examples see the following vignettes:
+#'
+#' [Notes: Introduction to Nonparametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_nb.html)
+#'
+#' [Notes: Introduction to Parametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_pb.html)
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #' @param n Integer.
@@ -208,7 +220,7 @@ nb <- function(data,
 #'   data = data,
 #'   B = 5L
 #' )
-#' @inherit .pb_mvn references description return
+#' @inherit .pb_mvn references description details return
 #' @importFrom stats cov
 #' @family bootstrap functions
 #' @keywords bootstrap
@@ -246,6 +258,12 @@ pb_mvn <- function(data,
 #' }.
 #' The univariate distribution and parameters used in the
 #' data generating process can be specified using `rFUN` and `...`.
+#'
+#' For more details and examples see the following vignettes:
+#'
+#' [Notes: Introduction to Nonparametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_nb.html)
+#'
+#' [Notes: Introduction to Parametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_pb.html)
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #' @param rFUN Function.
