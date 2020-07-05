@@ -298,7 +298,7 @@ $\mathbf{x}^{*}$ is a set of $B$ bootstrap samples.
     \mathbf{x}^{*3} = \left\{ x^{*3}_{1}, x^{*3}_{2}, x^{*3}_{3}, x^{*3}_{i}, \dots, x^{*3}_{n} \right\} \\
     \mathbf{x}^{*b} = \left\{ x^{*b}_{1}, x^{*b}_{2}, x^{*b}_{3}, x^{*b}_{i}, \dots, x^{*b}_{n} \right\} \\
     \vdots \\
-    \mathbf{x}^{*B} = \left\{ x^{*B}_{1}, x^{*B}_{2}, x^{*B}_{3}, \dots, x^{*B}_{n} \right\}
+    \mathbf{x}^{*B} = \left\{ x^{*B}_{1}, x^{*B}_{2}, x^{*B}_{3}, x^{*B}_{i}, \dots, x^{*B}_{n} \right\}
   \end{bmatrix}, \\
   b
   =
