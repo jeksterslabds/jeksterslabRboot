@@ -20,27 +20,36 @@
 #' @examples
 #' B <- 5L
 #' n <- 5
+#' #################################
 #' # vector
-#' data_vector <- rnorm(n = n)
-#' nb(
-#'   data = data_vector,
+#' #################################
+#' x <- rnorm(n = n)
+#' x_star <- nb(
+#'   data = x,
 #'   B = B
 #' )
+#' str(x_star)
+#' #################################
 #' # matrix
-#' X <- rnorm(n = n)
-#' Y <- rnorm(n = n)
-#' Z <- rnorm(n = n)
-#' data_matrix <- cbind(X, Y, Z)
-#' nb(
-#'   data = data_matrix,
+#' #################################
+#' x1 <- rnorm(n = n)
+#' x2 <- rnorm(n = n)
+#' x3 <- rnorm(n = n)
+#' X <- cbind(x1, x2, x3)
+#' X_star <- nb(
+#'   data = X,
 #'   B = B
 #' )
+#' str(X_star)
+#' #################################
 #' # data frame
-#' data_dataframe <- data.frame(X, Y, Z)
-#' nb(
-#'   data = data_dataframe,
+#' #################################
+#' X <- as.data.frame(X)
+#' X_star <- nb(
+#'   data = X,
 #'   B = B
 #' )
+#' str(X_star)
 #' @references
 #' Efron, B., & Tibshirani, R. J. (1993).
 #' An introduction to the bootstrap. New York, N.Y: Chapman & Hall.
@@ -150,12 +159,13 @@ nb <- function(data,
 #'   105.3324,
 #'   103.4009
 #' )
-#' .pb_mvn(
+#' X_star <- .pb_mvn(
 #'   n = 5,
 #'   Sigmahat = Sigmahat,
 #'   muhat = muhat,
 #'   B = B
 #' )
+#' str(X_star)
 #' @inherit nb references
 #' @family bootstrap functions
 #' @keywords bootstrap
@@ -196,7 +206,7 @@ nb <- function(data,
 #' @author Ivan Jacob Agaloos Pesigan
 #' @inheritParams nb
 #' @examples
-#' data <- matrix(
+#' X <- matrix(
 #'   data = c(
 #'     121.03482,
 #'     99.74874,
@@ -216,10 +226,11 @@ nb <- function(data,
 #'   ),
 #'   nrow = 5
 #' )
-#' pb_mvn(
-#'   data = data,
+#' X_star <- pb_mvn(
+#'   data = X,
 #'   B = 5L
 #' )
+#' str(X_star)
 #' @inherit .pb_mvn references description details return
 #' @importFrom stats cov
 #' @family bootstrap functions
@@ -273,42 +284,48 @@ pb_mvn <- function(data,
 #' @param ... Arguments to pass to rFUN.
 #' @inheritParams nb
 #' @examples
-#' # Normal distribution
 #' n <- 5
 #' B <- 5
+#' #################################
+#' # normal distribution
+#' #################################
 #' mu <- 100
 #' sigma2 <- 225
 #' sigma <- sqrt(sigma2)
-#' data <- rnorm(
+#' x <- rnorm(
 #'   n = n,
 #'   mean = mu,
 #'   sd = sigma
 #' )
-#' muhat <- mean(data)
-#' sigmahat <- sd(data)
-#' pb_univ(
+#' muhat <- mean(x)
+#' sigmahat <- sd(x)
+#' x_star <- pb_univ(
 #'   rFUN = rnorm,
 #'   n = n,
 #'   B = B,
 #'   mean = muhat,
 #'   sd = sigmahat
 #' )
-#' # Binomial distribution
+#' str(x_star)
+#' #################################
+#' # binomial distribution
+#' #################################
 #' n_trials <- 1
 #' p <- 0.50
-#' data <- rbinom(
+#' x <- rbinom(
 #'   n = n,
 #'   size = n_trials,
 #'   prob = p
 #' )
-#' phat <- mean(data) / n_trials
-#' pb_univ(
+#' phat <- mean(x) / n_trials
+#' x_star <- pb_univ(
 #'   rFUN = rbinom,
 #'   n = n,
 #'   B = B,
 #'   size = n_trials,
 #'   prob = phat
 #' )
+#' str(x_star)
 #' @inherit .pb_mvn references return
 #' @family bootstrap functions
 #' @keywords bootstrap

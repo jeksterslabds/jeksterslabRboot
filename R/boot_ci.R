@@ -5,7 +5,7 @@
 #' The estimated bootstrap standard error
 #' is given by
 #' \deqn{
-#'   \hat{\mathrm{se}}_{\mathrm{B}}
+#'   \widehat{\mathrm{se}}_{\mathrm{B}}
 #'   \left(
 #'     \hat{\theta}
 #'   \right)
@@ -34,7 +34,7 @@
 #'
 #' Note that
 #' \eqn{
-#'   \hat{\mathrm{se}}_{\mathrm{B}}
+#'   \widehat{\mathrm{se}}_{\mathrm{B}}
 #'   \left(
 #'     \hat{\theta}
 #'   \right)
@@ -77,7 +77,7 @@
 #' @author Ivan Jacob Agaloos Pesigan
 #' @param thetahat_star Numeric vector.
 #'   The bootstrap sampling distribution
-#'   \eqn{\left( \hat{\theta}^{*} \right)},
+#'   \eqn{\left( \boldsymbol{\hat{\theta}^{*}} \right)},
 #'   that is,
 #'   the sampling distribution of `thetahat`
 #'   estimated for each `b` bootstrap sample.
@@ -97,10 +97,18 @@
 #'   If `TRUE`,
 #'   calculates the square root of the Wald test statistic and p-value.
 #'   The estimated bootstrap standard error is used.
+#'   The arguments
+#'   `theta_null`,
+#'   `distribution`,
+#'   and
+#'   `df`
+#'   are used to calculate
+#'   the square root of the Wald test statistic and p-value
+#'   and are NOT used in constructing the bootstrap confidence interval.
 #'   If `FALSE`,
 #'   returns `statistic = NA`
 #'   and
-#'   `p = NA`.
+#'   `p = NA`
 #'   If `FALSE`,
 #'   the arguments
 #'   `theta_null`,
@@ -113,7 +121,7 @@
 #'   \describe{
 #'     \item{statistic}{Square root of Wald test statistic. `NA` if `wald = FALSE`.}
 #'     \item{p}{p-value. `NA` if `wald = FALSE`.}
-#'     \item{se}{Estimated bootstrap standard error \eqn{\left( \hat{\mathrm{se}}_{\mathrm{B}} \left( \hat{\theta} \right) \right)}.}
+#'     \item{se}{Estimated bootstrap standard error \eqn{\left( \widehat{\mathrm{se}}_{\mathrm{B}} \left( \hat{\theta} \right) \right)}.}
 #'     \item{ci_}{Estimated percentile confidence limits corresponding to alpha from the bootstrap sampling distribution thetahat_star \eqn{\left( \hat{\theta}^{*} \right)}.}
 #'   }
 #' If `eval = TRUE`,
@@ -197,7 +205,7 @@ pc <- function(thetahat_star,
 #' The estimated bootstrap standard error
 #' is given by
 #' \deqn{
-#'   \hat{\mathrm{se}}_{\mathrm{B}}
+#'   \widehat{\mathrm{se}}_{\mathrm{B}}
 #'   \left(
 #'     \hat{\theta}
 #'   \right)
@@ -350,26 +358,12 @@ pc <- function(thetahat_star,
 #' [Notes: Introduction to Parametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_pb.html)
 #'
 #' @author Ivan Jacob Agaloos Pesigan
-#' @param wald Logical.
-#'   If `TRUE`,
-#'   calculates the square root of the Wald test statistic and p-value.
-#'   If `FALSE`,
-#'   returns `statistic = NA`
-#'   and
-#'   `p = NA`.
-#'   If `FALSE`,
-#'   the arguments
-#'   `theta_null`,
-#'   `distribution`,
-#'   and
-#'   `df`
-#'   are ignored.
 #' @inheritParams pc
 #' @return Returns a vector with the following elements:
 #'   \describe{
 #'     \item{statistic}{Square root of Wald test statistic. `NA` if `wald = FALSE`.}
 #'     \item{p}{p-value. `NA` if `wald = FALSE`.}
-#'     \item{se}{Estimated bootstrap standard error \eqn{\left( \hat{\mathrm{se}}_{\mathrm{B}} \left( \hat{\theta} \right) \right)}.}
+#'     \item{se}{Estimated bootstrap standard error \eqn{\left( \widehat{\mathrm{se}}_{\mathrm{B}} \left( \hat{\theta} \right) \right)}.}
 #'     \item{ci_}{Estimated bias-corrected confidence limits corresponding to alpha from the bootstrap sampling distribution thetahat_star \eqn{\left( \hat{\theta}^{*} \right)}.}
 #'   }
 #' If `eval = TRUE`,
@@ -457,7 +451,7 @@ bc <- function(thetahat_star,
 #' The estimated bootstrap standard error
 #' is given by
 #' \deqn{
-#'   \hat{\mathrm{se}}_{\mathrm{B}}
+#'   \widehat{\mathrm{se}}_{\mathrm{B}}
 #'   \left(
 #'     \hat{\theta}
 #'   \right)
@@ -726,7 +720,7 @@ bc <- function(thetahat_star,
 #'   \describe{
 #'     \item{statistic}{Square root of Wald test statistic. `NA` if `wald = FALSE`.}
 #'     \item{p}{p-value. `NA` if `wald = FALSE`.}
-#'     \item{se}{Estimated bootstrap standard error \eqn{\left( \hat{\mathrm{se}}_{\mathrm{B}} \left( \hat{\theta} \right) \right)}.}
+#'     \item{se}{Estimated bootstrap standard error \eqn{\left( \widehat{\mathrm{se}}_{\mathrm{B}} \left( \hat{\theta} \right) \right)}.}
 #'     \item{ci_}{Estimated bias-corrected and accelerated confidence limits corresponding to alpha from the bootstrap sampling distribution thetahat_star \eqn{\left( \hat{\theta}^{*} \right)}.}
 #'   }
 #' If `eval = TRUE`,

@@ -30,24 +30,33 @@
 #'   `n - 1`.
 #' @examples
 #' n <- 5
+#' #################################
 #' # vector
-#' data_vector <- rnorm(n = n)
-#' jack(
-#'   data = data_vector
+#' #################################
+#' x <- rnorm(n = n)
+#' x_star <- jack(
+#'   data = x
 #' )
+#' str(x_star)
+#' #################################
 #' # matrix
-#' X <- rnorm(n = n)
-#' Y <- rnorm(n = n)
-#' Z <- rnorm(n = n)
-#' data_matrix <- cbind(X, Y, Z)
-#' jack(
-#'   data = data_matrix
+#' #################################
+#' x1 <- rnorm(n = n)
+#' x2 <- rnorm(n = n)
+#' x3 <- rnorm(n = n)
+#' X <- cbind(x1, x2, x3)
+#' X_star <- jack(
+#'   data = X
 #' )
+#' str(X_star)
+#' #################################
 #' # data frame
-#' data_dataframe <- data.frame(X, Y, Z)
-#' jack(
-#'   data = data_dataframe
+#' #################################
+#' X <- as.data.frame(X)
+#' X_star <- jack(
+#'   data = X
 #' )
+#' str(X_star)
 #' @family jackknife functions
 #' @keywords jackknife
 #' @references
@@ -87,7 +96,7 @@ jack <- function(data,
 #'
 #' The jackknife estimate of bias is given by
 #' \deqn{
-#'   \hat{\mathrm{bias}}_{\mathrm{jack}}
+#'   \widehat{\mathrm{bias}}_{\mathrm{jack}}
 #'   \left(
 #'     \theta
 #'   \right)
@@ -128,7 +137,7 @@ jack <- function(data,
 #' is given by
 #'
 #' \deqn{
-#'   \hat{\mathrm{se}}_{\mathrm{jack}}
+#'   \widehat{\mathrm{se}}_{\mathrm{jack}}
 #'   \left(
 #'     \hat{\theta}
 #'   \right)
@@ -186,7 +195,7 @@ jack <- function(data,
 #' The standard error can be estimated using the pseudo-values
 #'
 #' \deqn{
-#'   \hat{\mathrm{se}}_{\mathrm{jack}}
+#'   \widehat{\mathrm{se}}_{\mathrm{jack}}
 #'   \left(
 #'     \tilde{\theta}
 #'   \right)
@@ -228,7 +237,7 @@ jack <- function(data,
 #'   \pm
 #'   t_{\frac{\alpha}{2}}
 #'   \times
-#'   \hat{\mathrm{se}}_{\mathrm{jack}}
+#'   \widehat{\mathrm{se}}_{\mathrm{jack}}
 #'     \left(
 #'       \tilde{\theta}
 #'     \right)
@@ -262,8 +271,8 @@ jack <- function(data,
 #' The first list element `hat` contains the following:
 #'   \describe{
 #'     \item{mean}{Mean of `thetahat_star` \eqn{\left( \hat{\theta}_{\left( \cdot \right) } \right)}.}
-#'     \item{bias}{Jackknife estimate of bias \eqn{\left( \hat{\mathrm{bias}}_{\mathrm{jack}} \left( \theta \right) \right)}.}
-#'     \item{se}{Jackknife estimate of standard error \eqn{\left( \hat{\mathrm{se}}_{\mathrm{jack}} \left( \hat{\theta} \right) \right)}.}
+#'     \item{bias}{Jackknife estimate of bias \eqn{\left( \widehat{\mathrm{bias}}_{\mathrm{jack}} \left( \theta \right) \right)}.}
+#'     \item{se}{Jackknife estimate of standard error \eqn{\left( \widehat{\mathrm{se}}_{\mathrm{jack}} \left( \hat{\theta} \right) \right)}.}
 #'     \item{thetahat_jack}{Bias-corrected jackknife estimate \eqn{\left( \hat{\theta}_{\mathrm{jack}} \right)}.}
 #'   }
 #' @family jackknife functions
@@ -271,16 +280,16 @@ jack <- function(data,
 #' @inherit jack references
 #' @examples
 #' n <- 100
-#' # vector
 #' x <- rnorm(n = n)
 #' thetahat <- mean(x)
-#' jack_samples <- jack(
+#' x_star <- jack(
 #'   data = x
 #' )
 #' thetahat_star <- sapply(
-#'   X = jack_samples,
+#'   X = x_star,
 #'   FUN = mean
 #' )
+#' str(x_star)
 #' hist(
 #'   thetahat_star,
 #'   main = expression(

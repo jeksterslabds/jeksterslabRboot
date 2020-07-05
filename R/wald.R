@@ -13,7 +13,7 @@
 #'       \right)^2
 #'     }
 #'     {
-#'       \hat{\mathrm{Var}}
+#'       \widehat{\mathrm{Var}}
 #'       \left(
 #'         \hat{\theta}
 #'       \right)
@@ -29,7 +29,7 @@
 #'   \eqn{\left( \hat{\theta} \right)}.
 #' @param varhat_thetahat Numeric.
 #'   Estimated variance of `thetahat`
-#'   \eqn{\left( \hat{\mathrm{Var}} \left( \hat{\theta} \right) \right)}.
+#'   \eqn{\left( \widehat{\mathrm{Var}} \left( \hat{\theta} \right) \right)}.
 #' @param theta_null Numeric.
 #'   Hypothesized value of `theta`
 #'   \eqn{\left( \theta_{0} \right)}.
@@ -81,7 +81,7 @@ wald_test <- function(thetahat,
 #'       \hat{\theta} - \theta_0
 #'     }
 #'     {
-#'       \hat{\mathrm{se}}
+#'       \widehat{\mathrm{se}}
 #'       \left(
 #'         \hat{\theta}
 #'       \right)
@@ -94,7 +94,7 @@ wald_test <- function(thetahat,
 #' @author Ivan Jacob Agaloos Pesigan
 #' @param sehat_thetahat Numeric.
 #'   Estimated standard error of `thetahat`
-#'   \eqn{\left( \hat{\mathrm{se}} \left( \hat{\theta} \right) \right)}.
+#'   \eqn{\left( \widehat{\mathrm{se}} \left( \hat{\theta} \right) \right)}.
 #' @param distribution Character string.
 #'   `distribution = "z"` for the standard normal distribution.
 #'   `distribution = "t"` for the t distribution.
@@ -159,14 +159,14 @@ sqrt_wald_test <- function(thetahat,
 #' the distribution of \eqn{\hat{\theta}}
 #' approaches the normal distribution
 #' with mean equal to \eqn{\theta}
-#' and variance equal to \eqn{\hat{\mathrm{Var}} \left( \hat{\theta} \right)}
+#' and variance equal to \eqn{\widehat{\mathrm{Var}} \left( \hat{\theta} \right)}
 #'   \deqn{
 #'     \hat{\theta}
 #'     \mathrel{\dot\sim}
 #'     \mathcal{N}
 #'     \left(
 #'       \theta,
-#'       \hat{\mathrm{Var}}
+#'       \widehat{\mathrm{Var}}
 #'       \left(
 #'         \hat{\theta}
 #'       \right)
@@ -184,7 +184,7 @@ sqrt_wald_test <- function(thetahat,
 #'       \hat{\theta} - \theta
 #'     }
 #'     {
-#'       \hat{\mathrm{se}}
+#'       \widehat{\mathrm{se}}
 #'       \left(
 #'         \hat{\theta}
 #'       \right)
@@ -198,13 +198,13 @@ sqrt_wald_test <- function(thetahat,
 #'   }
 #' where
 #'   \eqn{
-#'     \hat{\mathrm{se}}
+#'     \widehat{\mathrm{se}}
 #'       \left(
 #'         \hat{\theta}
 #'       \right)
 #'     =
 #'     \sqrt{
-#'       \hat{\mathrm{Var}}
+#'       \widehat{\mathrm{Var}}
 #'       \left(
 #'         \hat{\theta}
 #'       \right)
@@ -220,7 +220,7 @@ sqrt_wald_test <- function(thetahat,
 #'     \pm
 #'     z_{\frac{\alpha}{2}}
 #'     \times
-#'     \hat{\mathrm{se}}
+#'     \widehat{\mathrm{se}}
 #'       \left(
 #'         \hat{\theta}
 #'       \right)
@@ -236,7 +236,7 @@ sqrt_wald_test <- function(thetahat,
 #'       \hat{\theta} - \theta
 #'     }
 #'     {
-#'       \hat{\mathrm{se}}
+#'       \widehat{\mathrm{se}}
 #'       \left(
 #'         \hat{\theta}
 #'       \right)
@@ -258,7 +258,7 @@ sqrt_wald_test <- function(thetahat,
 #'     \pm
 #'     t_{\frac{\alpha}{2}}
 #'     \times
-#'     \hat{\mathrm{se}}
+#'     \widehat{\mathrm{se}}
 #'       \left(
 #'         \hat{\theta}
 #'       \right)
@@ -284,7 +284,7 @@ sqrt_wald_test <- function(thetahat,
 #'   \describe{
 #'     \item{statistic}{Square root of Wald test statistic.}
 #'     \item{p}{p-value.}
-#'     \item{se}{Estimated d=standard error of thetahat \eqn{\left( \hat{\mathrm{se}} \left( \hat{\theta} \right) \right)}.}
+#'     \item{se}{Estimated d=standard error of thetahat \eqn{\left( \widehat{\mathrm{se}} \left( \hat{\theta} \right) \right)}.}
 #'     \item{ci_}{Estimated confidence limits corresponding to alpha.}
 #'   }
 #' If `eval = TRUE`,

@@ -5,7 +5,7 @@
 #' \eqn{\left( \boldsymbol{\hat{\theta} }\right)}
 #' and
 #' sampling variances and covariances of `thetahat`
-#' \eqn{\hat{\mathrm{Cov}} \left( \boldsymbol{\hat{\theta}} \right)}.
+#' \eqn{\widehat{\mathrm{Cov}} \left( \boldsymbol{\hat{\theta}} \right)}.
 #' If length of `thetahat` is greater than 1,
 #' a multivariate normal distribution is assumed.
 #' If length of `thetahat` is equal 1,
@@ -18,7 +18,7 @@
 #' @param covhat_thetahat Symmetric matrix.
 #'   Estimated sampling variances and covariances of
 #'   parameter estimates
-#'   \eqn{\hat{\mathrm{Cov}} \left( \boldsymbol{\hat{\theta}} \right)}.
+#'   \eqn{\widehat{\mathrm{Cov}} \left( \boldsymbol{\hat{\theta}} \right)}.
 #' @param R Integer.
 #'   Number of Monte Carlo replications.
 #' @examples
@@ -31,7 +31,7 @@
 #'   covhat_thetahat = covhat_thetahat,
 #'   R = R
 #' )
-#' head(mc_star_length_1)
+#' str(mc_star_length_1)
 #' hist(
 #'   mc_star_length_1,
 #'   main = expression(
@@ -74,7 +74,7 @@
 #'   covhat_thetahat = covhat_thetahat,
 #'   R = R
 #' )
-#' head(mc_star_length_2)
+#' str(mc_star_length_2)
 #' alphahat_betahat_star <- mc_star_length_2[, 1] * mc_star_length_2[, 2]
 #' hist(
 #'   alphahat_betahat_star,
