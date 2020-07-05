@@ -112,3 +112,26 @@ test_that("shape", {
     1
   )
 })
+#'
+#+ testthat_08
+test_that("message", {
+  expect_message(
+    ci_eval(
+      ci = c(0, 1, 2, 3),
+      thetahat = 2,
+      theta = 2,
+      label = "wrong length"
+    )
+  )
+})
+#'
+#+ testthat_09
+test_that("error", {
+  expect_error(
+    ci_eval(
+      ci = 1,
+      thetahat = 2,
+      theta = 2
+    )
+  )
+})
