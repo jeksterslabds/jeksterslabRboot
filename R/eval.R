@@ -70,7 +70,7 @@ shape <- function(thetahat_lo,
 #' @author Ivan Jacob Agaloos Pesigan
 #' @param ci Vector.
 #'   Confidence intervals sorted from smallest to largest.
-#'   Length should be even.
+#'   The length should be even.
 #'   The first and the last element correspond to the widest confidence interval.
 #'   The second and the second to the last element correspond to the second widest confidence interval.
 #'   And so on and so forth.
@@ -90,19 +90,54 @@ shape <- function(thetahat_lo,
 #'     \item{length_}{Length of confidence interval.}
 #'     \item{shape_}{Shape of confidence interval.}
 #'   }
+#' @examples
+#' ci <- c(
+#'   98.04786,
+#'   98.38773,
+#'   98.68060,
+#'   100.5447,
+#'   100.8375,
+#'   101.1774
+#' )
+#' thetahat <- 99.6126336
+#' theta <- 100
+#' label <- c(
+#'   0.001,
+#'   0.01,
+#'   0.05
+#' )
+#' ci_eval(
+#'   ci = ci,
+#'   thetahat = thetahat,
+#'   theta = theta,
+#'   label = label
+#' )
 #' @export
 ci_eval <- function(ci,
                     thetahat,
                     theta = 0,
                     label = NULL) {
-  half_ci <- length(ci) / 2
+  ci <- sort(ci)
+  len_ci <- length(ci)
+  half_ci <- len_ci / 2
+  if ((len_ci %% 2) != 0) {
+    stop(
+      "Length of ci should be even."
+    )
+  }
+  if (length(label) != half_ci) {
+    message(
+      "Length of label is incompatible. Defaulting to label = 1:(length(ci)/2)."
+    )
+    label <- NULL
+  }
   if (is.null(label)) {
     label <- 1:half_ci
   }
   shape_vector <- len_vector <- zero_hit_vector <- theta_hit_vector <- rep(x = NA, times = half_ci)
   for (i in 1:half_ci) {
     thetahat_lo <- ci[i]
-    thetahat_up <- ci[1 + length(ci) - i]
+    thetahat_up <- ci[1 + len_ci - i]
     theta_hit_vector[i] <- theta_hit(
       thetahat_lo = thetahat_lo,
       theta = theta,
