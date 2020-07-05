@@ -42,8 +42,9 @@ sigma2 <- runif(
 sigma <- sqrt(sigma2)
 var_thetahat <- sigma2 / n
 se_thetahat <- sqrt(var_thetahat)
+# Parameters
 Variable <- c(
-  "`theta`",
+  "`mu`",
   "`sigma2`",
   "`sigma2`"
 )
@@ -53,12 +54,12 @@ Description <- c(
   "Population standard deviation."
 )
 Notation <- c(
-  "$\\theta = \\mu$",
+  "$\\mu$",
   "$\\sigma^2$",
   "$\\sigma$"
 )
 Value <- c(
-  theta,
+  mu,
   sigma2,
   sigma
 )
@@ -72,6 +73,7 @@ knitr::kable(
   row.names = FALSE,
   caption = "Population Parameters"
 )
+# Sampling distribution of theta
 Variable <- c(
   "`n`",
   "`theta`",
@@ -115,6 +117,8 @@ x <- rnorm(
   mean = mu,
   sd = sigma
 )
+str(x)
+hist(x)
 #'
 #' ## Estimate Correlation
 #'
@@ -146,8 +150,8 @@ Notation <- c(
   "$\\hat{\\theta} = \\hat{\\mu} = \\frac{1}{n} \\sum_{i = 1}^{n} x_i$",
   "$\\hat{\\sigma}^2 = \\frac{1}{n - 1} \\sum_{i = 1}^{n} \\left( x_i - \\hat{\\mu} \\right)^2$",
   "$\\hat{\\sigma} = \\sqrt{\\frac{1}{n - 1} \\sum_{i = 1}^{n} \\left( x_i - \\hat{\\mu} \\right)^2}$",
-  "$\\hat{\\mathrm{Var}} \\left( \\hat{\\theta} \\right) = \\frac{ \\hat{\\sigma}^2 }{n}$",
-  "$\\hat{\\mathrm{se}} \\left( \\hat{\\theta} \\right) = \\frac{ \\hat{\\sigma} }{\\sqrt{n}}$"
+  "$\\widehat{\\mathrm{Var}} \\left( \\hat{\\theta} \\right) = \\frac{ \\hat{\\sigma}^2 }{n}$",
+  "$\\widehat{\\mathrm{se}} \\left( \\hat{\\theta} \\right) = \\frac{ \\hat{\\sigma} }{\\sqrt{n}}$"
 )
 Value <- c(
   n,
@@ -197,8 +201,8 @@ Description <- c(
 Notation <- c(
   "$B$",
   "$\\hat{\\theta}^{*} \\left( \\cdot \\right) = \\frac{1}{B} \\sum_{b = 1}^{B} \\hat{\\theta}^{*} \\left( b \\right)$",
-  "$\\hat{\\mathrm{Var}}_{\\mathrm{B}} \\left( \\hat{\\theta} \\right) = \\frac{1}{B - 1} \\sum_{b = 1}^{B} \\left[ \\hat{\\theta}^{*} \\left( b \\right) - \\hat{\\theta}^{*} \\left( \\cdot \\right) \\right]^2$",
-  "$\\hat{\\mathrm{se}}_{\\mathrm{B}} \\left( \\hat{\\theta} \\right) = \\sqrt{ \\frac{1}{B - 1} \\sum_{b = 1}^{B} \\left[ \\hat{\\theta}^{*} \\left( b \\right) - \\hat{\\theta}^{*} \\left( \\cdot \\right) \\right]^2 }$"
+  "$\\widehat{\\mathrm{Var}}_{\\mathrm{B}} \\left( \\hat{\\theta} \\right) = \\frac{1}{B - 1} \\sum_{b = 1}^{B} \\left[ \\hat{\\theta}^{*} \\left( b \\right) - \\hat{\\theta}^{*} \\left( \\cdot \\right) \\right]^2$",
+  "$\\widehat{\\mathrm{se}}_{\\mathrm{B}} \\left( \\hat{\\theta} \\right) = \\sqrt{ \\frac{1}{B - 1} \\sum_{b = 1}^{B} \\left[ \\hat{\\theta}^{*} \\left( b \\right) - \\hat{\\theta}^{*} \\left( \\cdot \\right) \\right]^2 }$"
 )
 Value <- c(
   B,

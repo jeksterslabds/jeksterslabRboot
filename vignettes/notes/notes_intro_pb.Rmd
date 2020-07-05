@@ -53,7 +53,7 @@ This data generating function is referred to as $F$.
 
 ```{r, echo = FALSE}
 Variable <- c(
-  "`theta`",
+  "`mu`",
   "`sigma2`",
   "`sigma2`"
 )
@@ -63,12 +63,12 @@ Description <- c(
   "Population standard deviation."
 )
 Notation <- c(
-  "$\\theta = \\mu$",
+  "$\\mu$",
   "$\\sigma^2$",
   "$\\sigma$"
 )
 Value <- c(
-  theta,
+  mu,
   sigma2,
   sigma
 )
@@ -86,6 +86,9 @@ knitr::kable(
 
 For a sample size of
 $n = `r n`$,
+if the parameter of interest
+$\theta$
+is the mean $\mu$,
 using the know parameters,
 the variance of the sampling distribution of the mean is
 
@@ -164,6 +167,25 @@ knitr::kable(
 
 Let $\mathbf{x}$ be a vector of length $n = `r n`$
 of realizations of the random variable $X$.
+
+\begin{equation}
+  \mathbf{x}
+  =
+  \begin{bmatrix}
+  x_1 = X \left( \omega_1 \right) \\
+  x_2 = X \left( \omega_2 \right) \\
+  x_3 = X \left( \omega_3 \right) \\
+  x_i = X \left( \omega_i \right) \\
+  \vdots \\
+  x_n = X \left( \omega_n \right)
+  \end{bmatrix},
+  i
+  =
+  \left\{
+    1, 2, 3, \dots, n
+  \right\}
+\end{equation}
+
 With the
 `rnorm()`
 function
@@ -181,10 +203,11 @@ x <- rnorm(
   mean = mu,
   sd = sigma
 )
+str(x)
 ```
 
 We can calculate sample statistics using the sample data $\mathbf{x}$.
-Note that a hat (`^`) indicates that the quantity is an estimate of the parameter
+Note that a hat (^) indicates that the quantity is an estimate of the parameter
 using sample data.
 
 ```{r, echo = FALSE}
@@ -215,8 +238,8 @@ Notation <- c(
   "$\\hat{\\theta} = \\hat{\\mu} = \\frac{1}{n} \\sum_{i = 1}^{n} x_i$",
   "$\\hat{\\sigma}^2 = \\frac{1}{n - 1} \\sum_{i = 1}^{n} \\left( x_i - \\hat{\\mu} \\right)^2$",
   "$\\hat{\\sigma} = \\sqrt{\\frac{1}{n - 1} \\sum_{i = 1}^{n} \\left( x_i - \\hat{\\mu} \\right)^2}$",
-  "$\\hat{\\mathrm{Var}} \\left( \\hat{\\theta} \\right) = \\frac{ \\hat{\\sigma}^2 }{n}$",
-  "$\\hat{\\mathrm{se}} \\left( \\hat{\\theta} \\right) = \\frac{ \\hat{\\sigma} }{\\sqrt{n}}$"
+  "$\\widehat{\\mathrm{Var}} \\left( \\hat{\\theta} \\right) = \\frac{ \\hat{\\sigma}^2 }{n}$",
+  "$\\widehat{\\mathrm{se}} \\left( \\hat{\\theta} \\right) = \\frac{ \\hat{\\sigma} }{\\sqrt{n}}$"
 )
 Value <- c(
   n,
@@ -261,9 +284,32 @@ $\hat{F}_{\mathcal{N} \left( \hat{\mu}, \hat{\sigma^2} \right)}$
 using parameter estimates
 ($\hat{\mu} = `r muhat`$ and $\hat{\sigma}^2 = `r sigma2hat`$).
 
-### $x^{*} = \left\{ x^{*1}, x^{*2}, x^{*3}, x^{*b}, \dots, x^{*B} \right\}$
+### Bootstrap Samples
 
-$x^{*}$ is a set of $B$ bootstrap samples.
+$\mathbf{x}^{*}$ is a set of $B$ bootstrap samples.
+
+\begin{equation}
+  \mathbf{x}^{*}
+  =
+  \begin{bmatrix}
+    \mathbf{x}^{*1} = \left\{ x^{*1}_{1}, x^{*1}_{2}, x^{*1}_{3}, x^{*1}_{i}, \dots, x^{*1}_{n} \right\} \\
+    \mathbf{x}^{*2} = \left\{ x^{*2}_{1}, x^{*2}_{2}, x^{*2}_{3}, x^{*2}_{i}, \dots, x^{*2}_{n} \right\} \\
+    \mathbf{x}^{*3} = \left\{ x^{*3}_{1}, x^{*3}_{2}, x^{*3}_{3}, x^{*3}_{i}, \dots, x^{*3}_{n} \right\} \\
+    \mathbf{x}^{*b} = \left\{ x^{*b}_{1}, x^{*b}_{2}, x^{*b}_{3}, x^{*b}_{i}, \dots, x^{*b}_{n} \right\} \\
+    \vdots \\
+    \mathbf{x}^{*B} = \left\{ x^{*B}_{1}, x^{*B}_{2}, x^{*B}_{3}, \dots, x^{*B}_{n} \right\}
+  \end{bmatrix},
+  b
+  =
+  \left\{
+    1, 2, 3, \dots, B
+  \right\},
+  i
+  =
+  \left\{
+    1, 2, 3, \dots, n
+  \right\}  
+\end{equation}
 
 The function `pb_univ()`
 from the `jeksterslabRboot` package
@@ -290,28 +336,45 @@ The `pb_univ()` function returns a `list`
 of length `B` bootstrap samples.
 $x^{*}$ is saved as `x_star`.
 
+
 ```{r}
-x_star <- pb_univ(
-  rFUN = rnorm,
-  n = n,
-  B = B,
-  mean = thetahat,
-  sd = sigmahat
+x_star <- nb(
+  data = x,
+  B = B
 )
+str(x_star, list.len = 6)
 ```
 
-For multivariate cases assuming multivariate normal distribution
-use `pb_mvn()`.
-
-### $\hat{\theta}^{*} = \left\{ \hat{\theta}^{*} \left( 1 \right), \hat{\theta}^{*} \left( 2 \right), \hat{\theta}^{*} \left( 3 \right), \hat{\theta}^{*} \left( b \right), \dots, \hat{\theta}^{*} \left( B \right)\right\}$
+### Bootstrap Sampling Distribution
 
 The parameter is estimated for each of the $B$
 bootstrap samples.
 For example,
 if we are interested in making inferences about the mean,
-we estimate the mean $B$ times.
-The estimated parameters form the bootstrap sampling distribution
-$\hat{\theta}^{*}$.
+we calculate the sample statistic ($\mathrm{s}$)
+that is,
+the sample mean
+for each element of $\mathbf{x}^{*}$.
+The $B$ estimated parameters form the bootstrap sampling distribution
+$\boldsymbol{\hat{\theta}^{*}}$.
+
+\begin{equation}
+  \boldsymbol{\hat{\theta}^{*}}
+  =
+  \begin{bmatrix}
+    \hat{\theta}^{*} \left( 1 \right) = \mathrm{s} \left( \mathbf{x}^{*1} \right) \\
+    \hat{\theta}^{*} \left( 2 \right) = \mathrm{s} \left( \mathbf{x}^{*2} \right) \\
+    \hat{\theta}^{*} \left( 3 \right) = \mathrm{s} \left( \mathbf{x}^{*3} \right) \\
+    \hat{\theta}^{*} \left( b \right) = \mathrm{s} \left( \mathbf{x}^{*b} \right) \\
+    \vdots \\
+    \hat{\theta}^{*} \left( B \right) = \mathrm{s} \left( \mathbf{x}^{*B} \right)
+  \end{bmatrix},
+  b
+  =
+  \left\{
+    1, 2, 3, \dots, B
+  \right\}
+\end{equation}
 
 `sapply` is a useful tool in `R`
 to apply a function, in our case `mean`,
@@ -331,6 +394,7 @@ thetahat_star <- sapply(
   X = x_star,
   FUN = mean
 )
+str(thetahat_star)
 ```
 
 ```{r, echo = FALSE}
@@ -354,7 +418,7 @@ qqnorm(thetahat_star)
 qqline(thetahat_star)
 ```
 
-### $\hat{\mathrm{se}}_{\mathrm{B}} \left( \hat{\theta} \right)$
+### Estimated Bootstrap Standard Error
 
 ```{r, echo = FALSE}
 mean_thetahat_star <- mean(thetahat_star)
@@ -366,7 +430,7 @@ The estimated bootstrap standard error
 is given by
 
 \begin{equation}
-  \hat{\mathrm{se}}_{\mathrm{B}}
+  \widehat{\mathrm{se}}_{\mathrm{B}}
   \left(
     \hat{\theta}
   \right)
@@ -401,13 +465,13 @@ is given by
 \end{equation}
 
 Note that
-$\hat{\mathrm{se}}_{\mathrm{B}} \left( \hat{\theta} \right)$
+$\widehat{\mathrm{se}}_{\mathrm{B}} \left( \hat{\theta} \right)$
 is the standard deviation of
-$\hat{\theta}^{*}$
+$\boldsymbol{\hat{\theta}^{*}}$
 and
 $\hat{\theta}^{*} \left( \cdot \right)$
 is the mean of
-$\hat{\theta}^{*}$ .
+$\boldsymbol{\hat{\theta}^{*}}$ .
 
 ```{r, echo = FALSE}
 Variable <- c(
@@ -425,8 +489,8 @@ Description <- c(
 Notation <- c(
   "$B$",
   "$\\hat{\\theta}^{*} \\left( \\cdot \\right) = \\frac{1}{B} \\sum_{b = 1}^{B} \\hat{\\theta}^{*} \\left( b \\right)$",
-  "$\\hat{\\mathrm{Var}}_{\\mathrm{B}} \\left( \\hat{\\theta} \\right) = \\frac{1}{B - 1} \\sum_{b = 1}^{B} \\left[ \\hat{\\theta}^{*} \\left( b \\right) - \\hat{\\theta}^{*} \\left( \\cdot \\right) \\right]^2$",
-  "$\\hat{\\mathrm{se}}_{\\mathrm{B}} \\left( \\hat{\\theta} \\right) = \\sqrt{ \\frac{1}{B - 1} \\sum_{b = 1}^{B} \\left[ \\hat{\\theta}^{*} \\left( b \\right) - \\hat{\\theta}^{*} \\left( \\cdot \\right) \\right]^2 }$"
+  "$\\widehat{\\mathrm{Var}}_{\\mathrm{B}} \\left( \\hat{\\theta} \\right) = \\frac{1}{B - 1} \\sum_{b = 1}^{B} \\left[ \\hat{\\theta}^{*} \\left( b \\right) - \\hat{\\theta}^{*} \\left( \\cdot \\right) \\right]^2$",
+  "$\\widehat{\\mathrm{se}}_{\\mathrm{B}} \\left( \\hat{\\theta} \\right) = \\sqrt{ \\frac{1}{B - 1} \\sum_{b = 1}^{B} \\left[ \\hat{\\theta}^{*} \\left( b \\right) - \\hat{\\theta}^{*} \\left( \\cdot \\right) \\right]^2 }$"
 )
 Value <- c(
   B,
@@ -469,18 +533,30 @@ $0.05$.
 Wald confidence intervals (`wald()`)
 are added for comparison.
 The confidence intervals can also be evaluated.
-See
+Since we know the population parameter theta
+$\left(\theta = \mu = `r theta` \right)$,
+we can check if our confidence intervals contain
+the population parameter.
+
+See documentation for
+`wald()`,
+`pc()`,
+`bc()`,
+and
+`bca()`
+from
+the `jeksterslabRboot` package
+on how confidence intervals are constructed.
+
+See documentation for
 `zero_hit()`,
 `theta_hit()`,
 `len()`,
 and
 `shape()`
 from
-the `jeksterslabRboot` package.
-Since we know the population parameter theta
-$\left(\theta = \mu = `r theta` \right)$,
-we can check if our confidence intervals contain
-the population parameter.
+the `jeksterslabRboot` package
+on how confidence intervals are evaluated.
 
 ```{r}
 wald_out <- wald(
@@ -548,3 +624,9 @@ in this simple example,
 bootstrap standard errors and confidence intervals
 can be used in situations
 when standard errors are not easy to calculate.
+
+## References
+
+- Efron, B., & Tibshirani, R. J. (1993).
+  An introduction to the bootstrap. New York, N.Y: Chapman & Hall.
+- [Wikipedia: Bootstrapping (statistics)](https://en.wikipedia.org/wiki/Bootstrapping_(statistics))
