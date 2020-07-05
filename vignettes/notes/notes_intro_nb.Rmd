@@ -220,15 +220,15 @@ muhat <- mean(x)
 thetahat <- muhat
 sigma2hat <- var(x)
 sigmahat <- sqrt(sigma2hat)
-varhat_thetahat <- sigma2hat / n
-sehat_thetahat <- sqrt(varhat_thetahat)
+varhat <- sigma2hat / n
+sehat <- sqrt(varhat)
 Variable <- c(
   "`n`",
   "`thetahat`",
   "`sigma2hat`",
   "`sigmahat`",
-  "`varhat_thetahat`",
-  "`sehat_thetahat`"
+  "`varhat`",
+  "`sehat`"
 )
 Description <- c(
   "Sample size.",
@@ -251,8 +251,8 @@ Value <- c(
   thetahat,
   sigma2hat,
   sigmahat,
-  varhat_thetahat,
-  sehat_thetahat
+  varhat,
+  sehat
 )
 knitr::kable(
   x = data.frame(
@@ -331,14 +331,14 @@ of multiple cores
 and `ncores` which is the number of cores to use.
 The `nb()` function returns a `list`
 of length `B` bootstrap samples.
-$x^{*}$ is saved as `x_star`.
+$x^{*}$ is saved as `xstar`.
 
 ```{r}
-x_star <- nb(
+xstar <- nb(
   data = x,
   B = B
 )
-str(x_star, list.len = 6)
+str(xstar, list.len = 6)
 ```
 
 ### Bootstrap Sampling Distribution
@@ -377,27 +377,27 @@ to apply a function
 to each element of a list.
 In our case,
 we apply the function `mean()`
-to each element of the list `x_star`.
+to each element of the list `xstar`.
 `sapply` simplifies the output when possible.
 In our case,
 `sapply` returns a vector,
-`thetahat_star`.
+`thetahatstar`.
 The `*apply` functions
 as well as their parallel counterparts
 (e.g., `parSapply`)
 can be used to simplify repetitive tasks.
 
 ```{r}
-thetahat_star <- sapply(
-  X = x_star,
+thetahatstar <- sapply(
+  X = xstar,
   FUN = mean
 )
-str(thetahat_star)
+str(thetahatstar)
 ```
 
 ```{r, echo = FALSE}
 hist(
-  thetahat_star,
+  thetahatstar,
   main = expression(
     paste(
       "Histogram of ",
@@ -412,16 +412,16 @@ hist(
     )
   )
 )
-qqnorm(thetahat_star)
-qqline(thetahat_star)
+qqnorm(thetahatstar)
+qqline(thetahatstar)
 ```
 
 ### Estimated Bootstrap Standard Error
 
 ```{r, echo = FALSE}
-mean_thetahat_star <- mean(thetahat_star)
-var_thetahat_star <- var(thetahat_star)
-sd_thetahat_star <- sqrt(var_thetahat_star)
+mean_thetahatstar <- mean(thetahatstar)
+var_thetahatstar <- var(thetahatstar)
+sd_thetahatstar <- sqrt(var_thetahatstar)
 ```
 
 The estimated bootstrap standard error
@@ -443,7 +443,7 @@ is given by
     \right]^2
   }
   =
-  `r sd_thetahat_star`
+  `r sd_thetahatstar`
 \end{equation}
 
 \noindent where
@@ -458,7 +458,7 @@ is given by
   \sum_{b = 1}^{B}
   \hat{\theta}^{*} \left( b \right) 
   =
-  `r mean_thetahat_star`
+  `r mean_thetahatstar`
   .
 \end{equation}
 
@@ -474,9 +474,9 @@ $\boldsymbol{\hat{\theta}^{*}}$ .
 ```{r, echo = FALSE}
 Variable <- c(
   "`B`",
-  "`mean_thetahat_star`",
-  "`var_thetahat_star`",
-  "`sd_thetahat_star`"
+  "`mean_thetahatstar`",
+  "`var_thetahatstar`",
+  "`sd_thetahatstar`"
 )
 Description <- c(
   "Number of bootstrap samples.",
@@ -492,9 +492,9 @@ Notation <- c(
 )
 Value <- c(
   B,
-  mean_thetahat_star,
-  var_thetahat_star,
-  sd_thetahat_star
+  mean_thetahatstar,
+  var_thetahatstar,
+  sd_thetahatstar
 )
 knitr::kable(
   x = data.frame(
@@ -559,34 +559,34 @@ on how confidence intervals are evaluated.
 ```{r}
 wald_out <- wald(
   thetahat = thetahat,
-  sehat_thetahat = sehat_thetahat,
+  sehat = sehat,
   eval = TRUE,
   theta = theta
 )
 wald_out_t <- wald(
   thetahat = thetahat,
-  sehat_thetahat = sehat_thetahat,
-  distribution = "t",
+  sehat = sehat,
+  dist = "t",
   df = df,
   eval = TRUE,
   theta = theta
 )
 pc_out <- pc(
-  thetahat_star = thetahat_star,
+  thetahatstar = thetahatstar,
   thetahat = thetahat,
   wald = TRUE,
   eval = TRUE,
   theta = theta
 )
 bc_out <- bc(
-  thetahat_star = thetahat_star,
+  thetahatstar = thetahatstar,
   thetahat = thetahat,
   wald = TRUE,
   eval = TRUE,
   theta = theta
 )
 bca_out <- bca(
-  thetahat_star = thetahat_star,
+  thetahatstar = thetahatstar,
   thetahat = thetahat,
   data = x,
   fitFUN = mean,

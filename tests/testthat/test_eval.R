@@ -37,13 +37,13 @@ result <- ci_eval(
 test_that("TRUE", {
   expect_true(
     zero_hit(
-      thetahat_lo = -1,
-      thetahat_up = 1
+      lo = -1,
+      up = 1
     ),
     theta_hit(
-      thetahat_lo = -1,
+      lo = -1,
       theta = 0,
-      thetahat_up = 1
+      up = 1
     )
   )
 })
@@ -54,13 +54,13 @@ test_that("TRUE", {
 test_that("FALSE", {
   expect_false(
     zero_hit(
-      thetahat_lo = 1,
-      thetahat_up = 2
+      lo = 1,
+      up = 2
     ),
     theta_hit(
-      thetahat_lo = 1,
+      lo = 1,
       theta = 0,
-      thetahat_up = 2
+      up = 2
     )
   )
 })
@@ -69,13 +69,13 @@ test_that("FALSE", {
 test_that("1", {
   expect_equal(
     len(
-      thetahat_lo = 1,
-      thetahat_up = 2
+      lo = 1,
+      up = 2
     ),
     shape(
-      thetahat_lo = -1,
+      lo = -1,
       thetahat = 0,
-      thetahat_up = 1
+      up = 1
     ),
     1
   )

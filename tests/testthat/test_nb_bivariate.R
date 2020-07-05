@@ -128,7 +128,7 @@ plot(X[, 1], X[, 2])
 rhohat <- cor(X)[2, 1]
 thetahat <- rhohat
 varhat_thetahat <- ((1 - rhohat^2)^2) / (n - 2)
-sehat_thetahat <- sqrt(varhat_thetahat)
+sehat <- sqrt(varhat_thetahat)
 ci <- cor.test(X[, 1], X[, 2])
 ci_ll <- ci$conf.int[1]
 ci_ul <- ci$conf.int[2]
@@ -136,7 +136,7 @@ Variable <- c(
   "`n`",
   "`thetahat`",
   "`varhat_thetahat`",
-  "`sehat_thetahat`"
+  "`sehat`"
 )
 Description <- c(
   "Sample size.",
@@ -154,7 +154,7 @@ Value <- c(
   n,
   thetahat,
   varhat_thetahat,
-  sehat_thetahat
+  sehat
 )
 knitr::kable(
   x = data.frame(
@@ -174,18 +174,18 @@ X_star <- nb(
   data = X,
   B = B
 )
-thetahat_star <- sapply(
+thetahatstar <- sapply(
   X = X_star,
   FUN = function(X) cor(X)[2, 1]
 )
-mean_thetahat_star <- mean(thetahat_star)
-var_thetahat_star <- var(thetahat_star)
-sd_thetahat_star <- sqrt(var_thetahat_star)
+mean_thetahatstar <- mean(thetahatstar)
+var_thetahatstar <- var(thetahatstar)
+sd_thetahatstar <- sqrt(var_thetahatstar)
 Variable <- c(
   "`B`",
-  "`mean_thetahat_star`",
-  "`var_thetahat_star`",
-  "`sd_thetahat_star`"
+  "`mean_thetahatstar`",
+  "`var_thetahatstar`",
+  "`sd_thetahatstar`"
 )
 Description <- c(
   "Bootstrap samples.",
@@ -201,14 +201,14 @@ Notation <- c(
 )
 Value <- c(
   B,
-  mean_thetahat_star,
-  var_thetahat_star
+  mean_thetahatstar,
+  var_thetahatstar
 )
 Value <- c(
   B,
-  mean_thetahat_star,
-  var_thetahat_star,
-  sd_thetahat_star
+  mean_thetahatstar,
+  var_thetahatstar,
+  sd_thetahatstar
 )
 knitr::kable(
   x = data.frame(
@@ -225,7 +225,7 @@ knitr::kable(
 #'
 #+ plot
 hist(
-  thetahat_star,
+  thetahatstar,
   breaks = 100,
   main = expression(
     paste(
@@ -241,8 +241,8 @@ hist(
     )
   )
 )
-qqnorm(thetahat_star)
-qqline(thetahat_star)
+qqnorm(thetahatstar)
+qqline(thetahatstar)
 #'
 #'
 #' ### Confidence Intervals
@@ -250,13 +250,13 @@ qqline(thetahat_star)
 #+ wald
 wald_out <- wald(
   thetahat = thetahat,
-  sehat_thetahat = sehat_thetahat,
+  sehat = sehat,
   eval = TRUE
 )
 #'
 #+ pc
 pc_out <- pc(
-  thetahat_star = thetahat_star,
+  thetahatstar = thetahatstar,
   thetahat = thetahat,
   wald = TRUE,
   eval = TRUE
@@ -264,7 +264,7 @@ pc_out <- pc(
 #'
 #+ bc
 bc_out <- bc(
-  thetahat_star = thetahat_star,
+  thetahatstar = thetahatstar,
   thetahat = thetahat,
   wald = TRUE,
   eval = TRUE
@@ -272,7 +272,7 @@ bc_out <- bc(
 #'
 #+ bca
 bca_out <- bca(
-  thetahat_star = thetahat_star,
+  thetahatstar = thetahatstar,
   thetahat = thetahat,
   data = X,
   fitFUN = function(X) cor(X)[2, 1],
@@ -299,7 +299,7 @@ knitr::kable(
 test_that("mean", {
   expect_equivalent(
     thetahat,
-    mean_thetahat_star,
+    mean_thetahatstar,
     tolerance = 0.01
   )
 })
@@ -308,7 +308,7 @@ test_that("mean", {
 test_that("se", {
   expect_equivalent(
     se_thetahat,
-    sd_thetahat_star,
+    sd_thetahatstar,
     tolerance = 0.01
   )
 })

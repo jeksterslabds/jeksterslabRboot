@@ -27,10 +27,10 @@
 #' @param thetahat Numeric.
 #'   Parameter estimate
 #'   \eqn{\left( \hat{\theta} \right)}.
-#' @param varhat_thetahat Numeric.
+#' @param varhat Numeric.
 #'   Estimated variance of `thetahat`
 #'   \eqn{\left( \widehat{\mathrm{Var}} \left( \hat{\theta} \right) \right)}.
-#' @param theta_null Numeric.
+#' @param null Numeric.
 #'   Hypothesized value of `theta`
 #'   \eqn{\left( \theta_{0} \right)}.
 #'   Set to zero by default.
@@ -46,17 +46,17 @@
 #' @keywords Wald test
 #' @examples
 #' thetahat <- 0.860
-#' sehat_thetahat <- 0.409
-#' varhat_thetahat <- sehat_thetahat^2
+#' sehat <- 0.409
+#' varhat <- sehat^2
 #' wald_test(
 #'   thetahat = thetahat,
-#'   varhat_thetahat = varhat_thetahat
+#'   varhat = varhat
 #' )
 #' @export
 wald_test <- function(thetahat,
-                      varhat_thetahat,
-                      theta_null = 0) {
-  statistic <- (thetahat - theta_null)^2 / varhat_thetahat
+                      varhat,
+                      null = 0) {
+  statistic <- (thetahat - null)^2 / varhat
   p <- 2 * pchisq(
     q = statistic,
     df = 1,
@@ -92,15 +92,15 @@ wald_test <- function(thetahat,
 #' using [`pnorm()`] or [`pt()`].
 #'
 #' @author Ivan Jacob Agaloos Pesigan
-#' @param sehat_thetahat Numeric.
+#' @param sehat Numeric.
 #'   Estimated standard error of `thetahat`
 #'   \eqn{\left( \widehat{\mathrm{se}} \left( \hat{\theta} \right) \right)}.
-#' @param distribution Character string.
-#'   `distribution = "z"` for the standard normal distribution.
-#'   `distribution = "t"` for the t distribution.
+#' @param dist Character string.
+#'   `dist = "z"` for the standard normal distribution.
+#'   `dist = "t"` for the t distribution.
 #' @param df Numeric.
-#'   Degrees of freedom (df) if `distribution = "t"`.
-#'   Ignored if `distribution = "z"`.
+#'   Degrees of freedom (df) if `dist = "t"`.
+#'   Ignored if `dist = "z"`.
 #' @inheritParams wald_test
 #' @return Returns a vector with the following elements:
 #'   \describe{
@@ -114,31 +114,31 @@ wald_test <- function(thetahat,
 #' @keywords Wald test
 #' @examples
 #' thetahat <- 0.860
-#' sehat_thetahat <- 0.409
+#' sehat <- 0.409
 #' sqrt_wald_test(
 #'   thetahat = thetahat,
-#'   sehat_thetahat = sehat_thetahat
+#'   sehat = sehat
 #' )
 #' sqrt_wald_test(
 #'   thetahat = thetahat,
-#'   sehat_thetahat = sehat_thetahat,
-#'   distribution = "t",
+#'   sehat = sehat,
+#'   dist = "t",
 #'   df = 1000
 #' )
 #' @export
 sqrt_wald_test <- function(thetahat,
-                           sehat_thetahat,
-                           theta_null = 0,
-                           distribution = "z",
+                           sehat,
+                           null = 0,
+                           dist = "z",
                            df) {
-  statistic <- (thetahat - theta_null) / sehat_thetahat
-  if (distribution == "z") {
+  statistic <- (thetahat - null) / sehat
+  if (dist == "z") {
     p <- 2 * pnorm(
       q = statistic,
       lower.tail = FALSE
     )
   }
-  if (distribution == "t") {
+  if (dist == "t") {
     p <- 2 * pt(
       q = statistic,
       df = df,
@@ -311,8 +311,8 @@ sqrt_wald_test <- function(thetahat,
 #' thetahat <- mean(x)
 #' thetahat
 #' # Closed form solution for the standard error of the mean
-#' sehat_thetahat <- sd(x) / sqrt(n)
-#' sehat_thetahat
+#' sehat <- sd(x) / sqrt(n)
+#' sehat
 #'
 #' #############################################################
 #' # Generate Wald confidence intervals
@@ -320,7 +320,7 @@ sqrt_wald_test <- function(thetahat,
 #' #############################################################
 #' wald(
 #'   thetahat = thetahat,
-#'   sehat_thetahat = sehat_thetahat
+#'   sehat = sehat
 #' )
 #' @references
 #' [Wikipedia: Confidence interval](https://en.wikipedia.org/wiki/Confidence_interval)
@@ -328,31 +328,31 @@ sqrt_wald_test <- function(thetahat,
 #' @keywords confidence interval, Wald test
 #' @export
 wald <- function(thetahat,
-                 sehat_thetahat,
-                 theta_null = 0,
+                 sehat,
+                 null = 0,
                  alpha = c(
                    0.001,
                    0.01,
                    0.05
                  ),
-                 distribution = "z",
+                 dist = "z",
                  df,
                  eval = FALSE,
                  theta = 0) {
   sqrt_W <- sqrt_wald_test(
     thetahat = thetahat,
-    sehat_thetahat = sehat_thetahat,
-    theta_null = theta_null,
-    distribution = distribution,
+    sehat = sehat,
+    null = null,
+    dist = dist,
     df = df
   )
   prob <- alpha2prob(alpha = alpha)
-  if (distribution == "z") {
+  if (dist == "z") {
     critical <- qnorm(
       p = prob
     )
   }
-  if (distribution == "t") {
+  if (dist == "t") {
     critical <- qt(
       p = prob,
       df = df
@@ -360,7 +360,7 @@ wald <- function(thetahat,
   }
   ci <- rep(x = NA, times = length(critical))
   for (i in seq_along(critical)) {
-    ci[i] <- thetahat + (critical[i] * sehat_thetahat)
+    ci[i] <- thetahat + (critical[i] * sehat)
   }
   names(ci) <- paste0(
     "ci_",
@@ -368,7 +368,7 @@ wald <- function(thetahat,
   )
   out <- c(
     sqrt_W,
-    se = sehat_thetahat,
+    se = sehat,
     ci
   )
   if (eval) {

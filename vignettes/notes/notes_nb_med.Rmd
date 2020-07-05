@@ -538,7 +538,7 @@ s <- function(X) {
 ```
 
 ```{r}
-X_star <- nb(
+Xstar <- nb(
   data = X,
   B = B
 )
@@ -547,15 +547,15 @@ X_star <- nb(
 ### Bootstrap Sampling Distribution
 
 ```{r}
-thetahat_star <- sapply(
-  X = X_star,
+thetahatstar <- sapply(
+  X = Xstar,
   FUN = s
 )
 ```
 
 ```{r, echo = FALSE}
 hist(
-  thetahat_star,
+  thetahatstar,
   main = expression(
     paste(
       "Histogram of ",
@@ -570,16 +570,16 @@ hist(
     )
   )
 )
-qqnorm(thetahat_star)
-qqline(thetahat_star)
+qqnorm(thetahatstar)
+qqline(thetahatstar)
 ```
 
 ### Estimated Bootstrap Standard Error
 
 ```{r, echo = FALSE}
-mean_thetahat_star <- mean(thetahat_star)
-var_thetahat_star <- var(thetahat_star)
-sd_thetahat_star <- sqrt(var_thetahat_star)
+mean_thetahatstar <- mean(thetahatstar)
+var_thetahatstar <- var(thetahatstar)
+sd_thetahatstar <- sqrt(var_thetahatstar)
 ```
 
 The estimated bootstrap standard error
@@ -601,7 +601,7 @@ is given by
     \right]^2
   }
   =
-  `r sd_thetahat_star`
+  `r sd_thetahatstar`
 \end{equation}
 
 \noindent where
@@ -616,7 +616,7 @@ is given by
   \sum_{b = 1}^{B}
   \hat{\theta}^{*} \left( b \right) 
   =
-  `r mean_thetahat_star`
+  `r mean_thetahatstar`
   .
 \end{equation}
 
@@ -632,9 +632,9 @@ $\boldsymbol{\hat{\theta}^{*}}$ .
 ```{r, echo = FALSE}
 Variable <- c(
   "`B`",
-  "`mean_thetahat_star`",
-  "`var_thetahat_star`",
-  "`sd_thetahat_star`"
+  "`mean_thetahatstar`",
+  "`var_thetahatstar`",
+  "`sd_thetahatstar`"
 )
 Description <- c(
   "Number of bootstrap samples.",
@@ -650,9 +650,9 @@ Notation <- c(
 )
 Value <- c(
   B,
-  mean_thetahat_star,
-  var_thetahat_star,
-  sd_thetahat_star
+  mean_thetahatstar,
+  var_thetahatstar,
+  sd_thetahatstar
 )
 knitr::kable(
   x = data.frame(
@@ -713,19 +713,19 @@ on how confidence intervals are evaluated.
 
 ```{r}
 pc_out <- pc(
-  thetahat_star = thetahat_star,
+  thetahatstar = thetahatstar,
   thetahat = thetahat,
   eval = TRUE,
   theta = theta
 )
 bc_out <- bc(
-  thetahat_star = thetahat_star,
+  thetahatstar = thetahatstar,
   thetahat = thetahat,
   eval = TRUE,
   theta = theta
 )
 bca_out <- bca(
-  thetahat_star = thetahat_star,
+  thetahatstar = thetahatstar,
   thetahat = thetahat,
   data = X,
   fitFUN = s,

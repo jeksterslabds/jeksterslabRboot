@@ -29,14 +29,14 @@ context("Test mc.")
 #+ parameters_01
 R <- 20000L
 thetahat <- 100
-covhat_thetahat <- 1.5
+vcovhat <- 1.5
 #'
 #' ## Results
 #'
 #+ length_01
 mc_star_length_1 <- mc(
   thetahat = thetahat,
-  covhat_thetahat = covhat_thetahat,
+  vcovhat = vcovhat,
   R = R
 )
 str(mc_star_length_1)
@@ -75,7 +75,7 @@ thetahat <- c(
   alphahat,
   betahat
 )
-covhat_thetahat <- matrix(
+vcovhat <- matrix(
   data = c(
     varhat_alphahat,
     0.00,
@@ -90,7 +90,7 @@ covhat_thetahat <- matrix(
 #+ mediation
 mc_star_length_2 <- mc(
   thetahat = thetahat,
-  covhat_thetahat = covhat_thetahat,
+  vcovhat = vcovhat,
   R = R
 )
 str(mc_star_length_2)
@@ -117,7 +117,7 @@ qqnorm(alphahat_betahat_star)
 qqline(alphahat_betahat_star)
 wald_out <- wald(
   thetahat = alphahat_betahat,
-  sehat_thetahat = sd(alphahat_betahat_star)
+  sehat = sd(alphahat_betahat_star)
 )
 wald_out
 #'

@@ -26,7 +26,7 @@ context("Test wald.")
 #'
 #+ parameters
 thetahat <- 0.860
-sehat_thetahat <- 0.409
+sehat <- 0.409
 sqrt_wald <- 2.10
 p <- 0.036
 #'
@@ -35,22 +35,22 @@ p <- 0.036
 #+ results
 result_01 <- sqrt_wald_test(
   thetahat = thetahat,
-  sehat_thetahat = sehat_thetahat,
-  theta_null = 0,
-  distribution = "z"
+  sehat = sehat,
+  null = 0,
+  dist = "z"
 )
 result_01
 result_02 <- sqrt_wald_test(
   thetahat = thetahat,
-  sehat_thetahat = sehat_thetahat,
-  theta_null = 0,
-  distribution = "t",
+  sehat = sehat,
+  null = 0,
+  dist = "t",
   df = 1000
 )
 result_02
 result_03 <- wald_test(
   thetahat = thetahat,
-  varhat_thetahat = sehat_thetahat^2
+  varhat = sehat^2
 )
 result_03
 #'

@@ -75,7 +75,7 @@
 #' [Notes: Introduction to Parametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_pb.html)
 #'
 #' @author Ivan Jacob Agaloos Pesigan
-#' @param thetahat_star Numeric vector.
+#' @param thetahatstar Numeric vector.
 #'   The bootstrap sampling distribution
 #'   \eqn{\left( \boldsymbol{\hat{\theta}^{*}} \right)},
 #'   that is,
@@ -98,8 +98,8 @@
 #'   calculates the square root of the Wald test statistic and p-value.
 #'   The estimated bootstrap standard error is used.
 #'   The arguments
-#'   `theta_null`,
-#'   `distribution`,
+#'   `null`,
+#'   `dist`,
 #'   and
 #'   `df`
 #'   are used to calculate
@@ -111,8 +111,8 @@
 #'   `p = NA`
 #'   If `FALSE`,
 #'   the arguments
-#'   `theta_null`,
-#'   `distribution`,
+#'   `null`,
+#'   `dist`,
 #'   and
 #'   `df`
 #'   are ignored.
@@ -122,7 +122,7 @@
 #'     \item{statistic}{Square root of Wald test statistic. `NA` if `wald = FALSE`.}
 #'     \item{p}{p-value. `NA` if `wald = FALSE`.}
 #'     \item{se}{Estimated bootstrap standard error \eqn{\left( \widehat{\mathrm{se}}_{\mathrm{B}} \left( \hat{\theta} \right) \right)}.}
-#'     \item{ci_}{Estimated percentile confidence limits corresponding to alpha from the bootstrap sampling distribution thetahat_star \eqn{\left( \boldsymbol{\hat{\theta}^{*}} \right)}.}
+#'     \item{ci_}{Estimated percentile confidence limits corresponding to alpha from the bootstrap sampling distribution thetahatstar \eqn{\left( \boldsymbol{\hat{\theta}^{*}} \right)}.}
 #'   }
 #' If `eval = TRUE`,
 #' appends the following to the results vector
@@ -141,7 +141,7 @@
 #' @family bootstrap confidence interval functions
 #' @keywords confidence interval
 #' @export
-pc <- function(thetahat_star,
+pc <- function(thetahatstar,
                thetahat,
                alpha = c(
                  0.001,
@@ -149,17 +149,17 @@ pc <- function(thetahat_star,
                  0.05
                ),
                wald = FALSE,
-               theta_null = 0,
-               distribution = "z",
+               null = 0,
+               dist = "z",
                df,
                eval = FALSE,
                theta = 0) {
   # standard error
-  sehat_B_thetahat <- sd(thetahat_star)
+  sehatB <- sd(thetahatstar)
   # confidence interval
   probs <- alpha2prob(alpha = alpha)
   ci <- quantile(
-    x = thetahat_star,
+    x = thetahatstar,
     probs = probs,
     names = FALSE
   )
@@ -171,9 +171,9 @@ pc <- function(thetahat_star,
   if (wald) {
     sqrt_W <- sqrt_wald_test(
       thetahat = thetahat,
-      sehat_thetahat = sehat_B_thetahat,
-      theta_null = theta_null,
-      distribution = distribution,
+      sehat = sehatB,
+      null = null,
+      dist = dist,
       df = df
     )
   } else {
@@ -185,7 +185,7 @@ pc <- function(thetahat_star,
   # initial output
   out <- c(
     sqrt_W,
-    se = sehat_B_thetahat,
+    se = sehatB,
     ci
   )
   # optional - ci evaluation
@@ -370,7 +370,7 @@ pc <- function(thetahat_star,
 #'     \item{statistic}{Square root of Wald test statistic. `NA` if `wald = FALSE`.}
 #'     \item{p}{p-value. `NA` if `wald = FALSE`.}
 #'     \item{se}{Estimated bootstrap standard error \eqn{\left( \widehat{\mathrm{se}}_{\mathrm{B}} \left( \hat{\theta} \right) \right)}.}
-#'     \item{ci_}{Estimated bias-corrected confidence limits corresponding to alpha from the bootstrap sampling distribution thetahat_star \eqn{\left( \boldsymbol{\hat{\theta}^{*}} \right)}.}
+#'     \item{ci_}{Estimated bias-corrected confidence limits corresponding to alpha from the bootstrap sampling distribution thetahatstar \eqn{\left( \boldsymbol{\hat{\theta}^{*}} \right)}.}
 #'   }
 #' If `eval = TRUE`,
 #' appends the following to the results vector
@@ -384,7 +384,7 @@ pc <- function(thetahat_star,
 #' @family bootstrap confidence interval functions
 #' @keywords confidence interval
 #' @export
-bc <- function(thetahat_star,
+bc <- function(thetahatstar,
                thetahat,
                alpha = c(
                  0.001,
@@ -392,16 +392,16 @@ bc <- function(thetahat_star,
                  0.05
                ),
                wald = FALSE,
-               theta_null = 0,
-               distribution = "z",
+               null = 0,
+               dist = "z",
                df,
                eval = FALSE,
                theta = 0) {
   # standard error
-  sehat_B_thetahat <- sd(thetahat_star)
+  sehatB <- sd(thetahatstar)
   # bias-correction
   z0hat <- qnorm(
-    sum(thetahat_star < thetahat) / length(thetahat_star)
+    sum(thetahatstar < thetahat) / length(thetahatstar)
   )
   # confidence interval
   probs <- alpha2prob(alpha = alpha)
@@ -411,7 +411,7 @@ bc <- function(thetahat_star,
     )
   )
   ci <- quantile(
-    x = thetahat_star,
+    x = thetahatstar,
     probs = bc_probs,
     names = FALSE
   )
@@ -423,9 +423,9 @@ bc <- function(thetahat_star,
   if (wald) {
     sqrt_W <- sqrt_wald_test(
       thetahat = thetahat,
-      sehat_thetahat = sehat_B_thetahat,
-      theta_null = theta_null,
-      distribution = distribution,
+      sehat = sehatB,
+      null = null,
+      dist = dist,
       df = df
     )
   } else {
@@ -437,7 +437,7 @@ bc <- function(thetahat_star,
   # initial output
   out <- c(
     sqrt_W,
-    se = sehat_B_thetahat,
+    se = sehatB,
     ci
   )
   # optional - ci evaluation
@@ -457,7 +457,7 @@ bc <- function(thetahat_star,
 }
 
 #' Confidence Interval - Bias-Corrected and Accelerated
-#' (from \eqn{\hat{\theta}^{*}} and \eqn{\hat{\theta}^{*}_{\mathrm{jack}}})
+#' (from \eqn{\boldsymbol{\hat{\theta}^{*}}} and \eqn{\boldsymbol{\hat{\theta}^{*}}_{\mathrm{jack}}})
 #'
 #' Calculates bias-corrected and accelerated confidence intervals.
 #'
@@ -718,7 +718,7 @@ bc <- function(thetahat_star,
 #' [Notes: Introduction to Parametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_pb.html)
 #'
 #' @author Ivan Jacob Agaloos Pesigan
-#' @param thetahat_star_jack Numeric vector.
+#' @param thetahatstarjack Numeric vector.
 #'   Jackknife sampling distribution,
 #'   that is,
 #'   the sampling distribution of `thetahat`
@@ -732,18 +732,18 @@ bc <- function(thetahat_star,
 #'   } .
 #'   If not provided,
 #'   the jackknife sampling distribution is generated
-#'   using `x_star_jack` and `fitFUN`
-#'   if `x_star_jack` is provided.
-#' @param x_star_jack Vector, matrix, or data frame.
+#'   using `xstarjack` and `fitFUN`
+#'   if `xstarjack` is provided.
+#' @param xstarjack Vector, matrix, or data frame.
 #'   Jackknife sample.
 #'   If not provided,
 #'   the jackknife sample is generated
 #'   using `data`, and the [`jack()`] function.
-#'   Ignored if `thetahat_star_jack`
+#'   Ignored if `thetahatstarjack`
 #'   is provided.
 #' @param data Vector, matrix, or data frame.
 #'   Sample data.
-#'   Ignored if `thetahat_star_jack`
+#'   Ignored if `thetahatstarjack`
 #'   is provided.
 #' @param fitFUN Function.
 #'   Fit function to use on `data`.
@@ -751,7 +751,7 @@ bc <- function(thetahat_star,
 #'   Other arguments can be passed to `fitFUN`
 #'   using `...`.
 #'   `fitFUN` should return a single value.
-#'   Ignored if `thetahat_star_jack`
+#'   Ignored if `thetahatstarjack`
 #'   is provided.
 #' @param ... Arguments to pass to `fitFUN`.
 #' @inheritParams bc
@@ -762,7 +762,7 @@ bc <- function(thetahat_star,
 #'     \item{statistic}{Square root of Wald test statistic. `NA` if `wald = FALSE`.}
 #'     \item{p}{p-value. `NA` if `wald = FALSE`.}
 #'     \item{se}{Estimated bootstrap standard error \eqn{\left( \widehat{\mathrm{se}}_{\mathrm{B}} \left( \hat{\theta} \right) \right)}.}
-#'     \item{ci_}{Estimated bias-corrected and accelerated confidence limits corresponding to alpha from the bootstrap sampling distribution thetahat_star \eqn{\left( \boldsymbol{\hat{\theta}^{*}} \right)}.}
+#'     \item{ci_}{Estimated bias-corrected and accelerated confidence limits corresponding to alpha from the bootstrap sampling distribution thetahatstar \eqn{\left( \boldsymbol{\hat{\theta}^{*}} \right)}.}
 #'   }
 #' If `eval = TRUE`,
 #' appends the following to the results vector
@@ -776,9 +776,9 @@ bc <- function(thetahat_star,
 #' @export
 #' @family bootstrap confidence interval functions
 #' @keywords confidence interval
-.bca <- function(thetahat_star,
-                 thetahat_star_jack = NULL,
-                 x_star_jack = NULL,
+.bca <- function(thetahatstar,
+                 thetahatstarjack = NULL,
+                 xstarjack = NULL,
                  thetahat,
                  data,
                  fitFUN,
@@ -788,8 +788,8 @@ bc <- function(thetahat_star,
                    0.05
                  ),
                  wald = FALSE,
-                 theta_null = 0,
-                 distribution = "z",
+                 null = 0,
+                 dist = "z",
                  df,
                  eval = FALSE,
                  theta = 0,
@@ -797,39 +797,39 @@ bc <- function(thetahat_star,
                  ncores = NULL,
                  ...) {
   # standard error
-  sehat_B_thetahat <- sd(thetahat_star)
+  sehatB <- sd(thetahatstar)
   # bias-correction
   z0hat <- qnorm(
-    sum(thetahat_star < thetahat) / length(thetahat_star)
+    sum(thetahatstar < thetahat) / length(thetahatstar)
   )
   # acceleration
-  ## generate thetahat_star_jack if not provided
-  if (is.null(thetahat_star_jack)) {
-    # generate x_star_jack if not provided
-    if (is.null(x_star_jack)) {
-      x_star_jack <- jack(
+  ## generate thetahatstarjack if not provided
+  if (is.null(thetahatstarjack)) {
+    # generate xstarjack if not provided
+    if (is.null(xstarjack)) {
+      xstarjack <- jack(
         data = data,
         par = par,
         ncores = ncores
       )
     }
-    ## generate thetahat_star_jack from generated x_star_jack or argument
-    thetahat_star_jack <- util_lapply(
+    ## generate thetahatstarjack from generated xstarjack or argument
+    thetahatstarjack <- util_lapply(
       FUN = fitFUN,
       args = list(
-        data = x_star_jack
+        data = xstarjack
       ),
       par = par,
       ncores = ncores
     )
-    thetahat_star_jack <- as.vector(
+    thetahatstarjack <- as.vector(
       do.call(
         what = "rbind",
-        args = thetahat_star_jack
+        args = thetahatstarjack
       )
     )
   }
-  parenthesis <- mean(thetahat_star_jack) - thetahat_star_jack
+  parenthesis <- mean(thetahatstarjack) - thetahatstarjack
   numerator <- sum(parenthesis^3)
   denominator <- 6 * ((sum(parenthesis^2))^(3 / 2))
   ahat <- numerator / denominator
@@ -842,7 +842,7 @@ bc <- function(thetahat_star,
     z0hat + (z0hat + z1) / (1 - ahat * (z0hat + z1))
   )
   ci <- quantile(
-    x = thetahat_star,
+    x = thetahatstar,
     probs = bca_probs,
     names = FALSE
   )
@@ -854,9 +854,9 @@ bc <- function(thetahat_star,
   if (wald) {
     sqrt_W <- sqrt_wald_test(
       thetahat = thetahat,
-      sehat_thetahat = sehat_B_thetahat,
-      theta_null = theta_null,
-      distribution = distribution,
+      sehat = sehatB,
+      null = null,
+      dist = dist,
       df = df
     )
   } else {
@@ -868,7 +868,7 @@ bc <- function(thetahat_star,
   # initial output
   out <- c(
     sqrt_W,
-    se = sehat_B_thetahat,
+    se = sehatB,
     ci
   )
   # optional - ci evaluation
@@ -895,7 +895,7 @@ bc <- function(thetahat_star,
 #' @export
 #' @family bootstrap confidence interval functions
 #' @keywords confidence interval
-bca <- function(thetahat_star,
+bca <- function(thetahatstar,
                 thetahat,
                 data,
                 fitFUN,
@@ -905,8 +905,8 @@ bca <- function(thetahat_star,
                   0.05
                 ),
                 wald = FALSE,
-                theta_null = 0,
-                distribution = "z",
+                null = 0,
+                dist = "z",
                 df,
                 eval = FALSE,
                 theta = 0,
@@ -914,16 +914,16 @@ bca <- function(thetahat_star,
                 ncores = NULL,
                 ...) {
   .bca(
-    thetahat_star = thetahat_star,
-    thetahat_star_jack = NULL,
-    x_star_jack = NULL,
+    thetahatstar = thetahatstar,
+    thetahatstarjack = NULL,
+    xstarjack = NULL,
     thetahat = thetahat,
     data = data,
     fitFUN = fitFUN,
     alpha = alpha,
     wald = wald,
-    theta_null = theta_null,
-    distribution = distribution,
+    null = null,
+    dist = dist,
     df = df,
     eval = eval,
     theta = theta,

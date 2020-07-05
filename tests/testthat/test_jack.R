@@ -32,7 +32,7 @@ data <- c(
 )
 thetahat <- mean(data)
 jack_samples <- jack(data = data)
-thetahat_star_jack <- sapply(
+thetahatstarjack <- sapply(
   X = jack_samples,
   FUN = mean
 )
@@ -41,7 +41,7 @@ thetahat_star_jack <- sapply(
 #'
 #+ results
 results <- jack_hat(
-  thetahat_star_jack = thetahat_star_jack,
+  thetahatstarjack = thetahatstarjack,
   thetahat = thetahat
 )
 #'
@@ -72,9 +72,9 @@ test_that("se", {
 })
 #'
 #+ testthat_04
-test_that("thetahat_jack", {
+test_that("thetahatjack", {
   expect_equivalent(
-    results[["hat"]][["thetahat_jack"]],
+    results[["hat"]][["thetahatjack"]],
     22
   )
 })
@@ -121,7 +121,7 @@ mean_ps <- 2.00389
 ci_ll <- 1.45
 ci_ul <- 2.56
 example <- jack_hat(
-  thetahat_star_jack = sapply(X = jack(data), FUN = function(x) log(var(x))),
+  thetahatstarjack = sapply(X = jack(data), FUN = function(x) log(var(x))),
   thetahat = log(var(data))
 )
 #'

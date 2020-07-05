@@ -24,11 +24,11 @@
 #' # vector
 #' #################################
 #' x <- rnorm(n = n)
-#' x_star <- nb(
+#' xstar <- nb(
 #'   data = x,
 #'   B = B
 #' )
-#' str(x_star)
+#' str(xstar)
 #' #################################
 #' # matrix
 #' #################################
@@ -36,20 +36,20 @@
 #' x2 <- rnorm(n = n)
 #' x3 <- rnorm(n = n)
 #' X <- cbind(x1, x2, x3)
-#' X_star <- nb(
+#' Xstar <- nb(
 #'   data = X,
 #'   B = B
 #' )
-#' str(X_star)
+#' str(Xstar)
 #' #################################
 #' # data frame
 #' #################################
 #' X <- as.data.frame(X)
-#' X_star <- nb(
+#' Xstar <- nb(
 #'   data = X,
 #'   B = B
 #' )
-#' str(X_star)
+#' str(Xstar)
 #' @references
 #' Efron, B., & Tibshirani, R. J. (1993).
 #' *An introduction to the bootstrap*.
@@ -160,13 +160,13 @@ nb <- function(data,
 #'   105.3324,
 #'   103.4009
 #' )
-#' X_star <- .pb_mvn(
+#' Xstar <- .pb_mvn(
 #'   n = 5,
 #'   Sigmahat = Sigmahat,
 #'   muhat = muhat,
 #'   B = B
 #' )
-#' str(X_star)
+#' str(Xstar)
 #' @inherit nb references
 #' @family bootstrap functions
 #' @keywords bootstrap
@@ -227,11 +227,11 @@ nb <- function(data,
 #'   ),
 #'   nrow = 5
 #' )
-#' X_star <- pb_mvn(
+#' Xstar <- pb_mvn(
 #'   data = X,
 #'   B = 5L
 #' )
-#' str(X_star)
+#' str(Xstar)
 #' @inherit .pb_mvn references description details return
 #' @importFrom stats cov
 #' @family bootstrap functions
@@ -300,14 +300,14 @@ pb_mvn <- function(data,
 #' )
 #' muhat <- mean(x)
 #' sigmahat <- sd(x)
-#' x_star <- pb_univ(
+#' xstar <- pb_univ(
 #'   rFUN = rnorm,
 #'   n = n,
 #'   B = B,
 #'   mean = muhat,
 #'   sd = sigmahat
 #' )
-#' str(x_star)
+#' str(xstar)
 #' #################################
 #' # binomial distribution
 #' #################################
@@ -319,14 +319,14 @@ pb_mvn <- function(data,
 #'   prob = p
 #' )
 #' phat <- mean(x) / n_trials
-#' x_star <- pb_univ(
+#' xstar <- pb_univ(
 #'   rFUN = rbinom,
 #'   n = n,
 #'   B = B,
 #'   size = n_trials,
 #'   prob = phat
 #' )
-#' str(x_star)
+#' str(xstar)
 #' @inherit .pb_mvn references return
 #' @family bootstrap functions
 #' @keywords bootstrap

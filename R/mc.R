@@ -15,7 +15,7 @@
 #' @param thetahat Numeric vector.
 #'   Parameter estimates
 #'   \eqn{\boldsymbol{\hat{\theta}}}.
-#' @param covhat_thetahat Symmetric matrix.
+#' @param vcovhat Symmetric matrix.
 #'   Estimated sampling variances and covariances of
 #'   parameter estimates
 #'   \eqn{\widehat{\mathrm{Cov}} \left( \boldsymbol{\hat{\theta}} \right)}.
@@ -25,10 +25,10 @@
 #' R <- 20000L
 #' # length 1
 #' thetahat <- 100
-#' covhat_thetahat <- 1.5
+#' vcovhat <- 1.5
 #' mc_star_length_1 <- mc(
 #'   thetahat = thetahat,
-#'   covhat_thetahat = covhat_thetahat,
+#'   vcovhat = vcovhat,
 #'   R = R
 #' )
 #' str(mc_star_length_1)
@@ -60,7 +60,7 @@
 #'   alphahat,
 #'   betahat
 #' )
-#' covhat_thetahat <- matrix(
+#' vcovhat <- matrix(
 #'   data = c(
 #'     varhat_alphahat,
 #'     0.00,
@@ -71,7 +71,7 @@
 #' )
 #' mc_star_length_2 <- mc(
 #'   thetahat = thetahat,
-#'   covhat_thetahat = covhat_thetahat,
+#'   vcovhat = vcovhat,
 #'   R = R
 #' )
 #' str(mc_star_length_2)
@@ -98,49 +98,49 @@
 #' qqline(alphahat_betahat_star)
 #' wald(
 #'   thetahat = alphahat_betahat,
-#'   sehat_thetahat = sd(alphahat_betahat_star)
+#'   sehat = sd(alphahat_betahat_star)
 #' )
 #' @export
 mc <- function(thetahat,
-               covhat_thetahat,
+               vcovhat,
                R = 20000L) {
   if (length(thetahat) == 1) {
-    # if (length(covhat_thetahat) != 1) {
+    # if (length(vcovhat) != 1) {
     #  stop(
-    #    "Dimensions of thetahat and covhat_thetahat are incompatible."
+    #    "Dimensions of thetahat and vcovhat are incompatible."
     #  )
     # }
     return(
       rnorm(
         n = R,
         mean = thetahat,
-        sd = sqrt(covhat_thetahat)
+        sd = sqrt(vcovhat)
       )
     )
   } else {
     # dimensions <- c(
     #  length(thetahat),
-    #  nrow(covhat_thetahat),
-    #  ncol(covhat_thetahat)
+    #  nrow(vcovhat),
+    #  ncol(vcovhat)
     # )
     # if (mean(dimensions) != length(thetahat)) {
     #  stop(
-    #    "Dimensions of thetahat and covhat_thetahat are incompatible."
+    #    "Dimensions of thetahat and vcovhat are incompatible."
     #  )
     # }
     # symmetric <- is.symmetric(
-    #  X = covhat_thetahat,
+    #  X = vcovhat,
     #  stop = FALSE
     # )
     # if (!symmetric) {
     #  stop(
-    #    "covhat_thetahat is not a symmetric matrix."
+    #    "vcovhat is not a symmetric matrix."
     #  )
     # }
     return(
       mvrnorm(
         n = R,
-        Sigma = covhat_thetahat,
+        Sigma = vcovhat,
         mu = thetahat
       )
     )

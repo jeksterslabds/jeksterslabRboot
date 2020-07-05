@@ -16,9 +16,9 @@
 #' @family confidence interval evaluation functions
 #' @keywords confidence interval
 #' @export
-len <- function(thetahat_lo,
-                thetahat_up) {
-  thetahat_up - thetahat_lo
+len <- function(lo,
+                up) {
+  up - lo
 }
 
 #' Confidence Interval - Shape
@@ -52,10 +52,10 @@ len <- function(thetahat_lo,
 #' @family confidence interval evaluation functions
 #' @keywords confidence interval
 #' @export
-shape <- function(thetahat_lo,
+shape <- function(lo,
                   thetahat,
-                  thetahat_up) {
-  (thetahat_up - thetahat) / (thetahat - thetahat_lo)
+                  up) {
+  (up - thetahat) / (thetahat - lo)
 }
 
 #' Confidence Interval Evaluation
@@ -136,25 +136,25 @@ ci_eval <- function(ci,
   }
   shape_vector <- len_vector <- zero_hit_vector <- theta_hit_vector <- rep(x = NA, times = half_ci)
   for (i in 1:half_ci) {
-    thetahat_lo <- ci[i]
-    thetahat_up <- ci[1 + len_ci - i]
+    lo <- ci[i]
+    up <- ci[1 + len_ci - i]
     theta_hit_vector[i] <- theta_hit(
-      thetahat_lo = thetahat_lo,
+      lo = lo,
       theta = theta,
-      thetahat_up = thetahat_up
+      up = up
     )
     zero_hit_vector[i] <- zero_hit(
-      thetahat_lo = thetahat_lo,
-      thetahat_up = thetahat_up
+      lo = lo,
+      up = up
     )
     len_vector[i] <- len(
-      thetahat_lo = thetahat_lo,
-      thetahat_up = thetahat_up
+      lo = lo,
+      up = up
     )
     shape_vector[i] <- shape(
-      thetahat_lo = thetahat_lo,
+      lo = lo,
       thetahat = thetahat,
-      thetahat_up = thetahat_up
+      up = up
     )
   }
   names(theta_hit_vector) <- paste0(
