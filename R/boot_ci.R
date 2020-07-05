@@ -68,10 +68,11 @@
 #'     \right] .
 #'   }
 #'
-#' The corresponding percentile value
-#' from the bootstrap sampling distribution `thetahat_star`
-#' \eqn{\left( \hat{\theta}^{*} \right)} is calculated using
-#' [`quantile()`].
+#' For more details and examples see the following vignettes:
+#'
+#' [Notes: Introduction to Nonparametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_nb.html)
+#'
+#' [Notes: Introduction to Parametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_pb.html)
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #' @param thetahat_star Numeric vector.
@@ -125,88 +126,6 @@
 #'   }
 #' @importFrom stats quantile
 #' @importFrom stats sd
-#' @examples
-#' #############################################################
-#' # Generate sample data from a normal distribution
-#' # with mu = 100 and sigma^2 = 225.
-#' #############################################################
-#' set.seed(42)
-#' n <- 1000
-#' mu <- 100
-#' theta <- mu
-#' sigma2 <- 225
-#' sigma <- sqrt(sigma2)
-#' x <- rnorm(
-#'   n = n,
-#'   mean = mu,
-#'   sd = sigma
-#' )
-#'
-#' #############################################################
-#' # Estimate the population mean mu using the sample mean xbar.
-#' #############################################################
-#' # Parameter estimate xbar
-#' thetahat <- mean(x)
-#' thetahat
-#' # Closed form solution for the standard error of the mean
-#' sehat_thetahat <- sd(x) / sqrt(n)
-#' sehat_thetahat
-#'
-#' #############################################################
-#' # Generate B = 2000 nonparametric bootstrap samples.
-#' #############################################################
-#' x_star <- nb(
-#'   data = x,
-#'   B = 1000,
-#'   par = FALSE,
-#'   ncores = NULL
-#' )
-#'
-#' #############################################################
-#' # Estimate xbar for each of the nonparametric bootstrap samples.
-#' # The B = 2000 xbars form
-#' # the empirical sampling distribution thetahat_star.
-#' #############################################################
-#' thetahat_star <- lapply(
-#'   X = x_star,
-#'   FUN = mean
-#' )
-#' thetahat_star <- as.vector(
-#'   do.call(
-#'     what = "rbind",
-#'     args = thetahat_star
-#'   )
-#' )
-#' hist(thetahat_star)
-#' summary(thetahat_star)
-#'
-#' #############################################################
-#' # Generate percentile confidence intervals
-#' # for alpha = c(0.001, 0.01, 0.05).
-#' #############################################################
-#' # With square root of Wald test statistic and p-value
-#' # using sd(thetahat_star) as sehat_thetahat
-#' pc(
-#'   thetahat_star = thetahat_star,
-#'   thetahat = thetahat,
-#'   wald = TRUE
-#' )
-#'
-#' # Without square root of Wald test statistic and p-value
-#' pc(
-#'   thetahat_star = thetahat_star,
-#'   thetahat = thetahat
-#' )
-#'
-#' #############################################################
-#' # Confidence interval evaluation
-#' #############################################################
-#' pc(
-#'   thetahat_star = thetahat_star,
-#'   thetahat = thetahat,
-#'   eval = TRUE,
-#'   theta = theta
-#' )
 #' @references
 #' Efron, B., & Tibshirani, R. J. (1993).
 #' An introduction to the bootstrap. New York, N.Y: Chapman & Hall.
@@ -424,6 +343,12 @@ pc <- function(thetahat_star,
 #'   \right] .
 #' }
 #'
+#' For more details and examples see the following vignettes:
+#'
+#' [Notes: Introduction to Nonparametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_nb.html)
+#'
+#' [Notes: Introduction to Parametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_pb.html)
+#'
 #' @author Ivan Jacob Agaloos Pesigan
 #' @param wald Logical.
 #'   If `TRUE`,
@@ -455,103 +380,6 @@ pc <- function(thetahat_star,
 #'     \item{length_}{Length of confidence interval.}
 #'     \item{shape_}{Shape of confidence interval.}
 #'   }
-#' @examples
-#' #############################################################
-#' # Generate sample data from a normal distribution
-#' # with mu = 100 and sigma^2 = 225.
-#' #############################################################
-#' set.seed(42)
-#' n <- 1000
-#' mu <- 100
-#' theta <- mu
-#' sigma2 <- 225
-#' sigma <- sqrt(sigma2)
-#' x <- rnorm(
-#'   n = n,
-#'   mean = mu,
-#'   sd = sigma
-#' )
-#'
-#' #############################################################
-#' # Estimate the population mean mu using the sample mean xbar.
-#' #############################################################
-#' # Parameter estimate xbar
-#' thetahat <- mean(x)
-#' thetahat
-#' # Closed form solution for the standard error of the mean
-#' sehat_thetahat <- sd(x) / sqrt(n)
-#' sehat_thetahat
-#'
-#' #############################################################
-#' # Generate B = 2000 nonparametric bootstrap samples.
-#' #############################################################
-#' x_star <- nb(
-#'   data = x,
-#'   B = 1000,
-#'   par = FALSE,
-#'   ncores = NULL
-#' )
-#'
-#' #############################################################
-#' # Estimate xbar for each of the nonparametric bootstrap samples.
-#' # The B = 2000 xbars form
-#' # the empirical sampling distribution thetahat_star.
-#' #############################################################
-#' thetahat_star <- lapply(
-#'   X = x_star,
-#'   FUN = mean
-#' )
-#' thetahat_star <- as.vector(
-#'   do.call(
-#'     what = "rbind",
-#'     args = thetahat_star
-#'   )
-#' )
-#' hist(
-#'   thetahat_star,
-#'   main = expression(
-#'     paste(
-#'       "Histogram of ",
-#'       hat(theta),
-#'       "*"
-#'     )
-#'   ),
-#'   xlab = expression(
-#'     paste(
-#'       hat(theta),
-#'       "*"
-#'     )
-#'   )
-#' )
-#' summary(thetahat_star)
-#'
-#' #############################################################
-#' # Generate percentile confidence intervals
-#' # for alpha = c(0.001, 0.01, 0.05).
-#' #############################################################
-#' # With square root of Wald test statistic and p-value
-#' # using sd(thetahat_star) as sehat_thetahat
-#' bc(
-#'   thetahat_star = thetahat_star,
-#'   thetahat = thetahat,
-#'   wald = TRUE
-#' )
-#'
-#' # Without square root of Wald test statistic and p-value
-#' bc(
-#'   thetahat_star = thetahat_star,
-#'   thetahat = thetahat
-#' )
-#'
-#' #############################################################
-#' # Confidence interval evaluation
-#' #############################################################
-#' bc(
-#'   thetahat_star = thetahat_star,
-#'   thetahat = thetahat,
-#'   eval = TRUE,
-#'   theta = theta
-#' )
 #' @inherit pc references
 #' @family bootstrap confidence interval functions
 #' @keywords confidence interval
@@ -876,6 +704,12 @@ bc <- function(thetahat_star,
 #'   \right] .
 #' }
 #'
+#' For more details and examples see the following vignettes:
+#'
+#' [Notes: Introduction to Nonparametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_nb.html)
+#'
+#' [Notes: Introduction to Parametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_pb.html)
+#'
 #' @author Ivan Jacob Agaloos Pesigan
 #' @param data Vector, matrix, or data frame.
 #'   Sample data.
@@ -903,109 +737,6 @@ bc <- function(thetahat_star,
 #'     \item{length_}{Length of confidence interval.}
 #'     \item{shape_}{Shape of confidence interval.}
 #'   }
-#' @examples
-#' #############################################################
-#' # Generate sample data from a normal distribution
-#' # with mu = 100 and sigma^2 = 225.
-#' #############################################################
-#' set.seed(42)
-#' n <- 1000
-#' mu <- 100
-#' theta <- mu
-#' sigma2 <- 225
-#' sigma <- sqrt(sigma2)
-#' x <- rnorm(
-#'   n = n,
-#'   mean = mu,
-#'   sd = sigma
-#' )
-#'
-#' #############################################################
-#' # Estimate the population mean mu using the sample mean xbar.
-#' #############################################################
-#' # Parameter estimate xbar
-#' thetahat <- mean(x)
-#' thetahat
-#' # Closed form solution for the standard error of the mean
-#' sehat_thetahat <- sd(x) / sqrt(n)
-#' sehat_thetahat
-#'
-#' #############################################################
-#' # Generate B = 2000 nonparametric bootstrap samples.
-#' #############################################################
-#' x_star <- nb(
-#'   data = x,
-#'   B = 1000,
-#'   par = FALSE,
-#'   ncores = NULL
-#' )
-#'
-#' #############################################################
-#' # Estimate xbar for each of the nonparametric bootstrap samples.
-#' # The B = 2000 xbars form
-#' # the empirical sampling distribution thetahat_star.
-#' #############################################################
-#' thetahat_star <- lapply(
-#'   X = x_star,
-#'   FUN = mean
-#' )
-#' thetahat_star <- as.vector(
-#'   do.call(
-#'     what = "rbind",
-#'     args = thetahat_star
-#'   )
-#' )
-#' hist(
-#'   thetahat_star,
-#'   main = expression(
-#'     paste(
-#'       "Histogram of ",
-#'       hat(theta),
-#'       "*"
-#'     )
-#'   ),
-#'   xlab = expression(
-#'     paste(
-#'       hat(theta),
-#'       "*"
-#'     )
-#'   )
-#' )
-#' summary(thetahat_star)
-#'
-#' #############################################################
-#' # Generate percentile confidence intervals
-#' # for alpha = c(0.001, 0.01, 0.05).
-#' #############################################################
-#' # With square root of Wald test statistic and p-value
-#' # using sd(thetahat_star) as sehat_thetahat
-#' bca(
-#'   thetahat_star = thetahat_star,
-#'   wald = TRUE,
-#'   thetahat = thetahat,
-#'   data = x,
-#'   fitFUN = mean
-#' )
-#'
-#' # Without square root of Wald test statistic and p-value
-#' bca(
-#'   thetahat_star = thetahat_star,
-#'   thetahat = thetahat,
-#'   data = x,
-#'   fitFUN = mean
-#' )
-#'
-#' #############################################################
-#' # Confidence interval evaluation
-#' #############################################################
-#' bca(
-#'   thetahat_star = thetahat_star,
-#'   thetahat = thetahat,
-#'   data = x,
-#'   fitFUN = mean,
-#'   eval = TRUE,
-#'   theta = theta
-#' )
 #' @inherit pc references
 #' @export
 #' @family bootstrap confidence interval functions
@@ -1052,8 +783,8 @@ bca <- function(thetahat_star,
   }
   jack_samples <- jack(
     data = data,
-    par = FALSE, # should always be FALSE to avoid double parallel
-    ncores = NULL
+    par = par,
+    ncores = ncores
   )
   jack_thetahat_star <- util_lapply(
     FUN = fitFUN,
