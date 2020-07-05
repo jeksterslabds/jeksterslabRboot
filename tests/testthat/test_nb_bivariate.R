@@ -31,7 +31,7 @@ B <- 1000
 rho <- runif(
   n = 1,
   min = .5,
-  max = 1
+  max = .8
 )
 theta <- rho
 Sigma <- matrix(
