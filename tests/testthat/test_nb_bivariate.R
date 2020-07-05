@@ -322,7 +322,7 @@ test_that("2.5 is equal to cor.test", {
       x = wald_out["ci_2.5"],
       digits = 2
     ),
-        tolerance = 0.01
+    tolerance = 0.02
   )
 })
 #'
@@ -337,7 +337,7 @@ test_that("97.5 is equal to cor.test", {
       x = wald_out["ci_97.5"],
       digits = 2
     ),
-        tolerance = 0.01
+    tolerance = 0.02
   )
 })
 #'
@@ -360,7 +360,7 @@ test_that("2.5", {
       x = bca_out["ci_2.5"],
       digits = 2
     ),
-        tolerance = 0.01
+    tolerance = 0.02
   )
 })
 #'
@@ -383,6 +383,6 @@ test_that("97.5", {
       x = bca_out["ci_97.5"],
       digits = 2
     ),
-        tolerance = 0.01
+    tolerance = 0.02
   )
 })
