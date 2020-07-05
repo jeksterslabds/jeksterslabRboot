@@ -321,7 +321,8 @@ test_that("2.5 is equal to cor.test", {
     round(
       x = wald_out["ci_2.5"],
       digits = 2
-    )
+    ),
+        tolerance = 0.01
   )
 })
 #'
@@ -335,7 +336,8 @@ test_that("97.5 is equal to cor.test", {
     round(
       x = wald_out["ci_97.5"],
       digits = 2
-    )
+    ),
+        tolerance = 0.01
   )
 })
 #'
@@ -357,7 +359,8 @@ test_that("2.5", {
     round(
       x = bca_out["ci_2.5"],
       digits = 2
-    )
+    ),
+        tolerance = 0.01
   )
 })
 #'
@@ -379,6 +382,7 @@ test_that("97.5", {
     round(
       x = bca_out["ci_97.5"],
       digits = 2
-    )
+    ),
+        tolerance = 0.01
   )
 })
