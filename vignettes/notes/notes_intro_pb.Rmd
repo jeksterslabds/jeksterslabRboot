@@ -51,10 +51,44 @@ and $\sigma^2 = `r sigma2`$.
 
 This data generating function is referred to as $F$.
 
+```{r, echo = FALSE}
+Variable <- c(
+  "`theta`",
+  "`sigma2`",
+  "`sigma2`"
+)
+Description <- c(
+  "Population mean.",
+  "Population variance.",
+  "Population standard deviation."
+)
+Notation <- c(
+  "$\\theta = \\mu$",
+  "$\\sigma^2$",
+  "$\\sigma$"
+)
+Value <- c(
+  theta,
+  sigma2,
+  sigma
+)
+knitr::kable(
+  x = data.frame(
+    Variable,
+    Description,
+    Notation,
+    Value
+  ),
+  row.names = FALSE,
+  caption = "Population Parameters"
+)
+```
+
 For a sample size of
 $n = `r n`$,
 using the know parameters,
 the variance of the sampling distribution of the mean is
+
 \begin{equation}
   \mathrm{Var}
   \left(
@@ -89,37 +123,28 @@ the variance of the sampling distribution of the mean is
   `r se_thetahat`
 \end{equation}
 
-
 ```{r, echo = FALSE}
 Variable <- c(
   "`n`",
   "`theta`",
-  "`sigma2`",
-  "`sigma2`",
   "`var_thetahat`",
   "`se_thetahat`"
 )
 Description <- c(
   "Sample size.",
   "Population mean.",
-  "Population variance.",
-  "Population standard deviation.",
   "Variance of the sampling distribution of the mean.",
   "Standard error of the mean."
 )
 Notation <- c(
   "$n$",
   "$\\theta = \\mu$",
-  "$\\sigma^2$",
-  "$\\sigma$",
   "$\\mathrm{Var} \\left( \\hat{\\theta} \\right) = \\frac{ \\sigma^2 }{n}$",
   "$\\mathrm{se} \\left( \\hat{\\theta} \\right) = \\frac{ \\sigma }{\\sqrt{n}}$"
 )
 Value <- c(
   n,
   theta,
-  sigma2,
-  sigma,
   var_thetahat,
   se_thetahat
 )
@@ -131,14 +156,24 @@ knitr::kable(
     Value
   ),
   row.names = FALSE,
-  caption = "Population Parameters"
+  caption = "Sampling Distribution of $\\hat{\\theta}$ with Known Parameters"
 )
 ```
 
 ## Realizations of the Random Variable
 
 Let $\mathbf{x}$ be a vector of length $n = `r n`$
-of realizations of the random variable $X$. 
+of realizations of the random variable $X$.
+With the
+`rnorm()`
+function
+we generate a vector
+`x`
+with
+`n =` `r n`,
+`mean =` `r mu`,
+and
+`sd =` `r sigma`.
 
 ```{r}
 x <- rnorm(
@@ -147,6 +182,10 @@ x <- rnorm(
   sd = sigma
 )
 ```
+
+We can calculate sample statistics using the sample data $\mathbf{x}$.
+Note that a hat (`^`) indicates that the quantity is an estimate of the parameter
+using sample data.
 
 ```{r, echo = FALSE}
 muhat <- mean(x)
@@ -195,7 +234,7 @@ knitr::kable(
     Value
   ),
   row.names = FALSE,
-  caption = "Sample Statistics"
+  caption = "Sample Statistics (Parameter Estimates)"
 )
 ```
 
@@ -231,8 +270,25 @@ from the `jeksterslabRboot` package
 can be used to generate `B`
 parametric bootstrap samples from a univariate probability distribution
 such as the current example.
-For multivariate cases assuming multivariate normal distribution
-use `pb_mvn()`.
+The argument `rFUN` takes in a function to use
+in the random data generation process.
+In the current example,
+assuming a univariate normal distribution,
+we use `rnorm`.
+The argument `n` is the sample size
+of the original sample data `x`.
+`B` is the number of bootstrap samples
+`B =` `r B` in our case.
+The `...` arguments is a way to pass arguments to `rFUN`.
+In the current example,
+we pass
+`mean =` `r thetahat`
+and 
+`sd =` `r sigmahat`
+to `rnorm`.
+The `pb_univ()` function returns a `list`
+of length `B` bootstrap samples.
+$x^{*}$ is saved as `x_star`.
 
 ```{r}
 x_star <- pb_univ(
@@ -244,6 +300,9 @@ x_star <- pb_univ(
 )
 ```
 
+For multivariate cases assuming multivariate normal distribution
+use `pb_mvn()`.
+
 ### $\hat{\theta}^{*} = \left\{ \hat{\theta}^{*} \left( 1 \right), \hat{\theta}^{*} \left( 2 \right), \hat{\theta}^{*} \left( 3 \right), \hat{\theta}^{*} \left( b \right), \dots, \hat{\theta}^{*} \left( B \right)\right\}$
 
 The parameter is estimated for each of the $B$
@@ -253,6 +312,19 @@ if we are interested in making inferences about the mean,
 we estimate the mean $B$ times.
 The estimated parameters form the bootstrap sampling distribution
 $\hat{\theta}^{*}$.
+
+`sapply` is a useful tool in `R`
+to apply a function, in our case `mean`,
+to each element of a list,
+in our case `x_star`.
+`sapply` simplifies the output when possible.
+In our case,
+`sapply` returns a vector,
+`thetahat_star`.
+The `apply` family of functions
+as well as their parallel counterparts
+(e.g., `parSapply`)
+can be used to simplify repetitive tasks.
 
 ```{r}
 thetahat_star <- sapply(

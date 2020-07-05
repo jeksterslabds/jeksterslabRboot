@@ -51,10 +51,44 @@ and $\sigma^2 = `r sigma2`$.
 
 This data generating function is referred to as $F$.
 
+```{r, echo = FALSE}
+Variable <- c(
+  "`theta`",
+  "`sigma2`",
+  "`sigma2`"
+)
+Description <- c(
+  "Population mean.",
+  "Population variance.",
+  "Population standard deviation."
+)
+Notation <- c(
+  "$\\theta = \\mu$",
+  "$\\sigma^2$",
+  "$\\sigma$"
+)
+Value <- c(
+  theta,
+  sigma2,
+  sigma
+)
+knitr::kable(
+  x = data.frame(
+    Variable,
+    Description,
+    Notation,
+    Value
+  ),
+  row.names = FALSE,
+  caption = "Population Parameters"
+)
+```
+
 For a sample size of
 $n = `r n`$,
 using the know parameters,
 the variance of the sampling distribution of the mean is
+
 \begin{equation}
   \mathrm{Var}
   \left(
@@ -89,37 +123,28 @@ the variance of the sampling distribution of the mean is
   `r se_thetahat`
 \end{equation}
 
-
 ```{r, echo = FALSE}
 Variable <- c(
   "`n`",
   "`theta`",
-  "`sigma2`",
-  "`sigma2`",
   "`var_thetahat`",
   "`se_thetahat`"
 )
 Description <- c(
   "Sample size.",
   "Population mean.",
-  "Population variance.",
-  "Population standard deviation.",
   "Variance of the sampling distribution of the mean.",
   "Standard error of the mean."
 )
 Notation <- c(
   "$n$",
   "$\\theta = \\mu$",
-  "$\\sigma^2$",
-  "$\\sigma$",
   "$\\mathrm{Var} \\left( \\hat{\\theta} \\right) = \\frac{ \\sigma^2 }{n}$",
   "$\\mathrm{se} \\left( \\hat{\\theta} \\right) = \\frac{ \\sigma }{\\sqrt{n}}$"
 )
 Value <- c(
   n,
   theta,
-  sigma2,
-  sigma,
   var_thetahat,
   se_thetahat
 )
@@ -131,14 +156,24 @@ knitr::kable(
     Value
   ),
   row.names = FALSE,
-  caption = "Population Parameters"
+  caption = "Sampling Distribution of $\\hat{\\theta}$ with Known Parameters"
 )
 ```
 
 ## Realizations of the Random Variable
 
 Let $\mathbf{x}$ be a vector of length $n = `r n`$
-of realizations of the random variable $X$. 
+of realizations of the random variable $X$.
+With the
+`rnorm()`
+function
+we generate a vector
+`x`
+with
+`n =` `r n`,
+`mean =` `r mu`,
+and
+`sd =` `r sigma`.
 
 ```{r}
 x <- rnorm(
@@ -147,6 +182,10 @@ x <- rnorm(
   sd = sigma
 )
 ```
+
+We can calculate sample statistics using the sample data $\mathbf{x}$.
+Note that a hat (`^`) indicates that the quantity is an estimate of the parameter
+using sample data.
 
 ```{r, echo = FALSE}
 muhat <- mean(x)
@@ -195,7 +234,7 @@ knitr::kable(
     Value
   ),
   row.names = FALSE,
-  caption = "Sample Statistics"
+  caption = "Sample Statistics (Parameter Estimates)"
 )
 ```
 
@@ -226,6 +265,22 @@ The function `nb()`
 from the `jeksterslabRboot` package
 can be used to generate `B`
 nonparametric bootstrap samples.
+The argument `data` takes in a vector, matrix, or data frame.
+`data` is the empirical distribution
+$\hat{F}$.
+In the example below,
+we use `x`, which is the sample data above,
+as the argument `data`.
+The argument `B` takes an integer.
+`B` is the number of bootstrap samples
+`B =` `r B` in our case.
+Optional arguments include
+`par` which is a logical argument to enable the use
+of multiple cores
+and `ncores` which is the number of cores to use.
+The `nb()` function returns a `list`
+of length `B` bootstrap samples.
+$x^{*}$ is saved as `x_star`.
 
 ```{r}
 x_star <- nb(
@@ -243,6 +298,19 @@ if we are interested in making inferences about the mean,
 we estimate the mean $B$ times.
 The estimated parameters form the bootstrap sampling distribution
 $\hat{\theta}^{*}$.
+
+`sapply` is a useful tool in `R`
+to apply a function, in our case `mean`,
+to each element of a list,
+in our case `x_star`.
+`sapply` simplifies the output when possible.
+In our case,
+`sapply` returns a vector,
+`thetahat_star`.
+The `apply` family of functions
+as well as their parallel counterparts
+(e.g., `parSapply`)
+can be used to simplify repetitive tasks.
 
 ```{r}
 thetahat_star <- sapply(
