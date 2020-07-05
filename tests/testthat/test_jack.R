@@ -32,7 +32,7 @@ data <- c(
 )
 thetahat <- mean(data)
 jack_samples <- jack(data = data)
-thetahat_star <- sapply(
+thetahat_star_jack <- sapply(
   X = jack_samples,
   FUN = mean
 )
@@ -41,7 +41,7 @@ thetahat_star <- sapply(
 #'
 #+ results
 results <- jack_hat(
-  thetahat_star = thetahat_star,
+  thetahat_star_jack = thetahat_star_jack,
   thetahat = thetahat
 )
 #'
@@ -121,7 +121,7 @@ mean_ps <- 2.00389
 ci_ll <- 1.45
 ci_ul <- 2.56
 example <- jack_hat(
-  thetahat_star = sapply(X = jack(data), FUN = function(x) log(var(x))),
+  thetahat_star_jack = sapply(X = jack(data), FUN = function(x) log(var(x))),
   thetahat = log(var(data))
 )
 #'
