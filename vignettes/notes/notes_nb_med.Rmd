@@ -1,0 +1,766 @@
+---
+title: "Notes: Nonparametric Bootstrapping - Mediation"
+author: "Ivan Jacob Agaloos Pesigan"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Notes: Nonparametric Bootstrapping - Mediation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+THIS IS AN INITIAL DRAFT.
+
+
+```{r}
+library(jeksterslabRboot)
+library(MASS)
+```
+
+## Random Variables
+
+### Population Model
+
+```{r, echo = FALSE}
+n <- 1000
+B <- 5000
+varnames <- c("X", "M", "Y")
+tauprime <- 0.10
+beta <- 0.10
+alpha <- 0.70
+alphabeta <- alpha * beta
+theta <- alphabeta
+sigma2X <- 225
+sigma2M <- 225
+sigma2Y <- 225
+sigma2epsilonM <- sigma2M - (alpha^2 * sigma2X)
+sigma2epsilonY <- sigma2Y - ((beta^2 * alpha^2 * sigma2X) + (beta^2 * sigma2epsilonM) + (2 * alpha * beta * tauprime * sigma2X) + (tauprime^2 * sigma2X))
+muX <- 100
+muM <- 100
+muY <- 100
+deltaM <- muM - (alpha * muX)
+deltaY <- muY - ((tauprime * muX) + (beta * deltaM) + (alpha * beta * muX))
+A <- matrix(
+  data = c(
+    0,
+    alpha,
+    tauprime,
+    0,
+    0,
+    beta,
+    0,
+    0,
+    0
+  ),
+  ncol = 3
+)
+colnames(A) <- varnames
+rownames(A) <- varnames
+S <- matrix(
+  data = c(
+    sigma2X,
+    0,
+    0,
+    0,
+    sigma2epsilonM,
+    0,
+    0,
+    0,
+    sigma2epsilonY
+  ),
+  ncol = 3
+)
+colnames(S) <- varnames
+rownames(S) <- varnames
+F <- diag(3)
+colnames(F) <- varnames
+rownames(F) <- varnames
+I <- diag(3)
+colnames(I) <- varnames
+rownames(I) <- varnames
+Sigmatheta <- F %*% solve(I - A) %*% S %*% t(solve(I - A)) %*% t(F)
+colnames(Sigmatheta) <- varnames
+rownames(Sigmatheta) <- varnames
+mutheta <- c(
+  muX,
+  muM,
+  muY
+)
+names(mutheta) <- varnames
+```
+
+\begin{equation}
+  Y
+  =
+  \delta_Y
+  +
+  \tau^{\prime}
+  X
+  +
+  \beta
+  M
+  +
+  \varepsilon_{Y}
+\end{equation}
+
+\begin{equation}
+  M
+  =
+  \delta_M
+  +
+  \alpha
+  X
+  +
+  \varepsilon_{M}
+\end{equation}
+
+```{tikz, simple_mediation, echo = FALSE, fig.cap = "The Simple Mediation Model", fig.ext = "png", cache = TRUE}
+\usetikzlibrary{er, arrows, positioning}
+\begin{tikzpicture}[
+  auto,
+  node distance = 20mm,
+  manifest/.style = {
+    rectangle,
+    draw,
+    thick,
+    inner sep = 0pt,
+    minimum width = 15mm,
+    minimum height = 10mm
+  },
+  inv/.style = {
+    rectangle,
+    draw=none,
+    fill=none,
+    inner sep = 0pt,
+    minimum width = 15mm,
+    minimum height = 10mm
+  },
+  error/.style = {
+    ellipse,
+    draw,
+    thick,
+    inner sep = 0pt,
+    minimum size = 7mm,
+    align = center
+  },
+  mean/.style={
+    regular polygon,
+    regular polygon sides = 3,
+    draw,
+    thick,
+    inner sep = 0pt,
+    minimum width = 7mm,
+    minimum height = 7mm
+  },
+  path/.style = {
+    ->,
+    thick,
+    >=stealth'
+  },
+  cov/.style = {
+    <->,
+    thick,
+    >=stealth'
+  },
+]
+  \node[manifest] (X) {$X$};
+  \node[mean] (1) [above right = of X] {$1$};
+  \node[manifest] (M) [above = of 1] {$M$};
+  \node[manifest] (Y) [below right = of 1] {$Y$};
+  \node[error] (epsilon_M) [right = of M] {$\epsilon_M$};
+  \node[error] (epsilon_Y) [right = of Y] {$\epsilon_Y$};
+  \draw [path] (X) to node {$\tau^{\prime}$} (Y);
+  \draw [path] (X) to node {$\alpha$} (M);
+  \draw [path] (M) to node {$\beta$} (Y);
+  \draw [path] (epsilon_M) to node {$1$} (M);
+  \draw [path] (epsilon_Y) to node {$1$} (Y);
+  \draw [path] (1) to node {$\mu_X$} (X);
+  \draw [path] (1) to node {$\delta_M$} (M);
+  \draw [path] (1) to node {$\delta_Y$} (Y);
+  \draw [cov] (X) to[out=170,in=190,looseness=5] node[left] {$\sigma^{2}_{X}$} (X);
+  \draw [cov] (epsilon_M) to[out=70,in=110,looseness=5] node[above] {$\sigma^{2}_{\epsilon_{M}}$} (epsilon_M);
+  \draw [cov] (epsilon_Y) to[out=70,in=110,looseness=5] node[above] {$\sigma^{2}_{\epsilon_{Y}}$} (epsilon_Y);
+  \draw [cov] (1) to[out=-60,in=-120,looseness=7] node[below] {1} (1);
+\end{tikzpicture}
+```
+
+### Data Generating Function
+
+\begin{equation}
+  X,
+  M,
+  Y
+  \sim
+  \mathrm{MVN}
+    \left[
+      \boldsymbol{\mu}
+      \left(
+        \boldsymbol{\theta}
+      \right),
+      \boldsymbol{\Sigma}
+      \left(
+        \boldsymbol{\theta}
+      \right)
+    \right]
+\end{equation}
+
+\begin{equation}
+  \boldsymbol{\mu}
+  \left(
+    \boldsymbol{\theta}
+  \right)
+  = 
+  \begin{bmatrix}
+    \mu_X \\
+    \delta_M + \alpha \mu_X \\
+    \delta_Y + \tau^{\prime} \mu_X + \beta \delta_M + \alpha \beta \mu_X
+  \end{bmatrix}
+\end{equation}
+
+\begin{equation}
+  \boldsymbol{\Sigma}
+  \left(
+    \boldsymbol{\theta}
+  \right)
+  =
+  \begin{bmatrix}
+    \sigma^{2}_{X} & \alpha \sigma_{X}^{2} &  \alpha \beta \sigma_{X}^{2} + \tau^{\prime} \sigma_{X}^{2} \\
+    \alpha \sigma_{X}^{2}  & \alpha^{2} \sigma_{X}^{2} + \sigma_{\varepsilon_{M}}^{2} & \alpha^{2} \beta \sigma_{X}^{2} + \alpha \tau^{\prime} \sigma_{X}^{2} + \beta \sigma_{\varepsilon_{M}}^{2} \\
+    \alpha \beta \sigma_{X}^{2} + \tau^{\prime} \sigma_{X}^{2} & \alpha^{2} \beta \sigma_{X}^{2} + \alpha \tau^{\prime} \sigma_{X}^{2} + \beta \sigma_{\varepsilon_{M}}^{2} & \beta^{2} \alpha^{2} \sigma_{X}^{2} + \beta^{2} \sigma_{\varepsilon_{M}}^{2} + 2 \alpha \beta \tau^{\prime} \sigma_{X}^{2} + \tau^{\prime} \sigma_{X}^{2} + \sigma_{\varepsilon_{Y}}^{2}
+  \end{bmatrix}
+\end{equation}
+
+```{r, echo = FALSE}
+Variable <- c(
+  "`muX`",
+  "`deltaM`",
+  "`deltaY`"
+)
+Description <- c(
+  "Mean of $X$.",
+  "Intercept of $M$.",
+  "Intercept of $Y$."
+)
+Notation <- c(
+  "$\\mu_X$",
+  "$\\delta_M$",
+  "$\\delta_Y$"
+)
+Value <- c(
+  muX,
+  deltaM,
+  deltaY
+)
+knitr::kable(
+  x = data.frame(
+    Variable,
+    Description,
+    Notation,
+    Value
+  ),
+  row.names = FALSE,
+  caption = "Mean of $X$ and Regression Intercepts"
+)
+```
+
+```{r, echo = FALSE}
+Variable <- c(
+  "`alpha`",
+  "`tauprime`",
+  "`beta`",
+  "`alphabeta`"
+)
+Description <- c(
+  "Regression slope of path from $X$ to $M$.",
+  "Regression slope of path from $X$ to $Y$.",
+  "Regression slope of path from $M$ to $Y$.",
+  "Indirect effect."
+)
+Notation <- c(
+  "$\\alpha$",
+  "$\\tau^{\\prime}$",
+  "$\\beta$",
+  "$\\alpha \\beta$"
+)
+Value <- c(
+  alpha,
+  tauprime,
+  beta,
+  alphabeta
+)
+knitr::kable(
+  x = data.frame(
+    Variable,
+    Description,
+    Notation,
+    Value
+  ),
+  row.names = FALSE,
+  caption = "Regression Slopes"
+)
+```
+
+```{r, echo = FALSE}
+Variable <- c(
+  "`sigma2X`",
+  "`sigma2epsilonM`",
+  "`sigma2epsilonY`"
+)
+Description <- c(
+  "Variance of $X$.",
+  "Error variance of $\\varepsilon_M$.",
+  "Error variance of $\\varepsilon_Y$."
+)
+Notation <- c(
+  "$\\sigma^2_X$",
+  "$\\sigma^2_{\\varepsilon_{M}}$",
+  "$\\sigma^2_{\\varepsilon_{Y}}$"
+)
+Value <- c(
+  sigma2X,
+  sigma2epsilonM,
+  sigma2epsilonY
+)
+knitr::kable(
+  x = data.frame(
+    Variable,
+    Description,
+    Notation,
+    Value
+  ),
+  row.names = FALSE,
+  caption = "Variance of $X$ and Error Variances"
+)
+```
+
+```{r, echo = FALSE}
+knitr::kable(
+  x = mutheta,
+  caption = "$\\boldsymbol{\\mu} \\left( \\boldsymbol{\\theta} \\right)$ (`mutheta`)"
+)
+knitr::kable(
+  x = Sigmatheta,
+  caption = "$\\boldsymbol{\\Sigma} \\left( \\boldsymbol{\\theta} \\right)$ (`Sigmatheta`)"
+)
+```
+
+## Sample Data
+
+```{r}
+X <- as.data.frame(
+  mvrnorm(
+    n = n,
+    Sigma = Sigmatheta,
+    mu = mutheta
+  )
+)
+str(X)
+```
+
+```{r, echo = FALSE}
+psych::pairs.panels(
+  X,
+  method = "pearson", # correlation method
+  hist.col = "#00AFBB",
+  density = TRUE, # show density plots
+  ellipses = TRUE # show correlation ellipses
+)
+```
+
+### Sample Statistics
+
+```{r, echo = FALSE}
+muhat <- colMeans(X)
+Sigmahat <- cov(X)
+knitr::kable(
+  x = muhat,
+  caption = "Estimated Mean Vector $\\boldsymbol{\\hat{\\mu}}$ (`muhat`)"
+)
+knitr::kable(
+  x = Sigmahat,
+  caption = "Estimated Variance-Covariance Matrix $\\boldsymbol{\\hat{\\Sigma}}$ (`Sigmahat`)"
+)
+```
+
+```{r}
+model_01 <- lm(
+  M ~ X,
+  data = X
+)
+summary(model_01)
+model_02 <- lm(
+  Y ~ X + M,
+  data = X
+)
+summary(model_02)
+```
+
+```{r, echo = FALSE}
+muXhat <- mean(X$X)
+sigma2Xhat <- var(X$X)
+deltaMhat <- coef(model_01)[1]
+alphahat <- coef(model_01)[2]
+sigma2epsilonMhat <- (summary(model_01)$sigma)^2
+deltaYhat <- coef(model_02)[1]
+tauprimehat <- coef(model_02)[2]
+betahat <- coef(model_02)[3]
+sigma2epsilonYhat <- (summary(model_02)$sigma)^2
+alphahatbetahat <- alphahat * betahat
+thetahat <- alphahatbetahat
+```
+
+```{r, echo = FALSE}
+Variable <- c(
+  "`muXhat`",
+  "`deltaMhat`",
+  "`deltaYhat`"
+)
+Description <- c(
+  "Estimated mean of $X$.",
+  "Estimated intercept of $M$.",
+  "Estimated intercept of $Y$."
+)
+Notation <- c(
+  "$\\hat{\\mu_X}$",
+  "$\\hat{\\delta_M}$",
+  "$\\hat{\\delta_Y}$"
+)
+Value <- c(
+  muXhat,
+  deltaMhat,
+  deltaYhat
+)
+knitr::kable(
+  x = data.frame(
+    Variable,
+    Description,
+    Notation,
+    Value
+  ),
+  row.names = FALSE,
+  caption = "Sample Mean of $X$ and Regression Intercepts (Parameter Estimates)"
+)
+```
+
+```{r, echo = FALSE}
+Variable <- c(
+  "`alphahat`",
+  "`tauprimehat`",
+  "`betahat`",
+  "`alphahatbetahat`"
+)
+Description <- c(
+  "Estimated regression slope of path from $X$ to $M$.",
+  "Estimated regression slope of path from $X$ to $Y$.",
+  "Estimated regression slope of path from $M$ to $Y$.",
+  "Estimated indirect effect."
+)
+Notation <- c(
+  "$\\hat{\\alpha}$",
+  "$\\hat{\\tau}^{\\prime}$",
+  "$\\hat{\\beta}$",
+  "$\\hat{\\alpha}\\hat{\\beta}$"
+)
+Value <- c(
+  alphahat,
+  tauprimehat,
+  betahat,
+  alphahatbetahat
+)
+knitr::kable(
+  x = data.frame(
+    Variable,
+    Description,
+    Notation,
+    Value
+  ),
+  row.names = FALSE,
+  caption = "Sample Regression Slopes (Parameter Estimates)"
+)
+```
+
+```{r, echo = FALSE}
+Variable <- c(
+  "`sigma2Xhat`",
+  "`sigma2epsilonMhat`",
+  "`sigma2epsilonYhat`"
+)
+Description <- c(
+  "Estimated variance of $X$.",
+  "Estimated error variance of $\\varepsilon_M$.",
+  "Estimated error variance of $\\varepsilon_Y$."
+)
+Notation <- c(
+  "$\\hat{\\sigma}^2_X$",
+  "$\\hat{\\sigma}^2_{\\varepsilon_{M}}$",
+  "$\\hat{\\sigma}^2_{\\varepsilon_{Y}}$"
+)
+Value <- c(
+  sigma2Xhat,
+  sigma2epsilonMhat,
+  sigma2epsilonYhat
+)
+knitr::kable(
+  x = data.frame(
+    Variable,
+    Description,
+    Notation,
+    Value
+  ),
+  row.names = FALSE,
+  caption = "Variance of $X$ and Error Variances"
+)
+```
+
+## Nonparametric Bootstrapping
+
+### Bootstrap Samples
+
+```{r}
+s <- function(X) {
+  model_01 <- lm(
+    M ~ X,
+    data = X
+  )
+  model_02 <- lm(
+    Y ~ X + M,
+    data = X
+  )
+  coef(model_01)[2] * coef(model_02)[3]
+}
+```
+
+```{r}
+X_star <- nb(
+  data = X,
+  B = B
+)
+```
+
+### Bootstrap Sampling Distribution
+
+```{r}
+thetahat_star <- sapply(
+  X = X_star,
+  FUN = s
+)
+```
+
+```{r, echo = FALSE}
+hist(
+  thetahat_star,
+  main = expression(
+    paste(
+      "Histogram of ",
+      hat(theta),
+      "*"
+    )
+  ),
+  xlab = expression(
+    paste(
+      hat(theta),
+      "*"
+    )
+  )
+)
+qqnorm(thetahat_star)
+qqline(thetahat_star)
+```
+
+### Estimated Bootstrap Standard Error
+
+```{r, echo = FALSE}
+mean_thetahat_star <- mean(thetahat_star)
+var_thetahat_star <- var(thetahat_star)
+sd_thetahat_star <- sqrt(var_thetahat_star)
+```
+
+The estimated bootstrap standard error
+is given by
+
+\begin{equation}
+  \widehat{\mathrm{se}}_{\mathrm{B}}
+  \left(
+    \hat{\theta}
+  \right)
+  =
+  \sqrt{
+    \frac{1}{B - 1}
+    \sum_{b = 1}^{B}
+    \left[
+      \hat{\theta}^{*} \left( b \right)
+      -
+      \hat{\theta}^{*} \left( \cdot \right)
+    \right]^2
+  }
+  =
+  `r sd_thetahat_star`
+\end{equation}
+
+\noindent where
+
+\begin{equation}
+  \hat{\theta}^{*}
+  \left(
+    \cdot
+  \right)
+  =
+  \frac{1}{B}
+  \sum_{b = 1}^{B}
+  \hat{\theta}^{*} \left( b \right) 
+  =
+  `r mean_thetahat_star`
+  .
+\end{equation}
+
+Note that
+$\widehat{\mathrm{se}}_{\mathrm{B}} \left( \hat{\theta} \right)$
+is the standard deviation of
+$\boldsymbol{\hat{\theta}^{*}}$
+and
+$\hat{\theta}^{*} \left( \cdot \right)$
+is the mean of
+$\boldsymbol{\hat{\theta}^{*}}$ .
+
+```{r, echo = FALSE}
+Variable <- c(
+  "`B`",
+  "`mean_thetahat_star`",
+  "`var_thetahat_star`",
+  "`sd_thetahat_star`"
+)
+Description <- c(
+  "Number of bootstrap samples.",
+  "Mean of $B$ sample means.",
+  "Variance of $B$ sample means.",
+  "Standard deviation of $B$ sample means."
+)
+Notation <- c(
+  "$B$",
+  "$\\hat{\\theta}^{*} \\left( \\cdot \\right) = \\frac{1}{B} \\sum_{b = 1}^{B} \\hat{\\theta}^{*} \\left( b \\right)$",
+  "$\\widehat{\\mathrm{Var}}_{\\mathrm{B}} \\left( \\hat{\\theta} \\right) = \\frac{1}{B - 1} \\sum_{b = 1}^{B} \\left[ \\hat{\\theta}^{*} \\left( b \\right) - \\hat{\\theta}^{*} \\left( \\cdot \\right) \\right]^2$",
+  "$\\widehat{\\mathrm{se}}_{\\mathrm{B}} \\left( \\hat{\\theta} \\right) = \\sqrt{ \\frac{1}{B - 1} \\sum_{b = 1}^{B} \\left[ \\hat{\\theta}^{*} \\left( b \\right) - \\hat{\\theta}^{*} \\left( \\cdot \\right) \\right]^2 }$"
+)
+Value <- c(
+  B,
+  mean_thetahat_star,
+  var_thetahat_star,
+  sd_thetahat_star
+)
+knitr::kable(
+  x = data.frame(
+    Variable,
+    Description,
+    Notation,
+    Value
+  ),
+  row.names = FALSE,
+  caption = "Nonparametric Bootstrapping Results"
+)
+```
+
+### Confidence Intervals
+
+Confidence intervals can be constructed
+around
+$\hat{\theta}$ .
+The functions
+`pc()`,
+`bc()`,
+and
+`bca()`
+from
+the `jeksterslabRboot` package
+can be used to construct
+confidence intervals
+using the default alphas
+of
+0.001,
+0.01,
+and
+0.05.
+The confidence intervals can also be evaluated.
+Since we know the population parameter theta
+$\left(\theta = \mu = `r theta` \right)$,
+we can check if our confidence intervals contain
+the population parameter.
+
+See documentation for
+`pc()`,
+`bc()`,
+and
+`bca()`
+from
+the `jeksterslabRboot` package
+on how confidence intervals are constructed.
+
+See documentation for
+`zero_hit()`,
+`theta_hit()`,
+`len()`,
+and
+`shape()`
+from
+the `jeksterslabRboot` package
+on how confidence intervals are evaluated.
+
+```{r}
+pc_out <- pc(
+  thetahat_star = thetahat_star,
+  thetahat = thetahat,
+  eval = TRUE,
+  theta = theta
+)
+bc_out <- bc(
+  thetahat_star = thetahat_star,
+  thetahat = thetahat,
+  eval = TRUE,
+  theta = theta
+)
+bca_out <- bca(
+  thetahat_star = thetahat_star,
+  thetahat = thetahat,
+  data = X,
+  fitFUN = s,
+  eval = TRUE,
+  theta = theta
+)
+```
+
+```{r, echo = FALSE}
+knitr::kable(
+  x = as.data.frame(
+    rbind(
+      pc = pc_out,
+      bc = bc_out,
+      bca = bca_out
+    )
+  ),
+  caption = "Confidence Intervals"
+)
+```
+
+## Notes
+
+## References
+
+- Bollen, K. A., & Stine, R., (1990).
+  Direct and indirect effects: Classical and bootstrap estimates of variability.
+  *Sociological Methodology*, *20*, 115-40.
+  https://doi.org/10.2307/271084
+- Efron, B., & Tibshirani, R. J. (1993).
+  *An introduction to the bootstrap*.
+  New York, N.Y: Chapman & Hall.
+- Shrout, P. E., & Bolger, N.  (2002).
+  Mediation in experimental and nonexperimental studies: New procedures and recommendations.
+  *Psychological Methods*, *7*, 422-445.
+  https://doi.org/10.1037/1082-989X.7.4.422
+- [Wikipedia: Bootstrapping (statistics)](https://en.wikipedia.org/wiki/Bootstrapping_(statistics))
+
