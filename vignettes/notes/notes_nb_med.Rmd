@@ -638,9 +638,9 @@ Variable <- c(
 )
 Description <- c(
   "Number of bootstrap samples.",
-  "Mean of $B$ sample means.",
-  "Variance of $B$ sample means.",
-  "Standard deviation of $B$ sample means."
+  "Mean of $B$ sample indirect effects.",
+  "Variance of $B$ sample indirect effects.",
+  "Standard deviation of $B$ sample indirect effects."
 )
 Notation <- c(
   "$B$",
