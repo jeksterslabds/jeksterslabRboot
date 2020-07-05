@@ -180,8 +180,8 @@ jack <- function(data,
 #'   \left(
 #'     n - 1
 #'   \right)
-#'   \hat{\theta}_{\left( i \right)}
-#' }.
+#'   \hat{\theta}_{\left( i \right)} .
+#' }
 #'
 #' The standard error can be estimated using the pseudo-values
 #'
@@ -216,7 +216,7 @@ jack <- function(data,
 #' \deqn{
 #'   \tilde{\theta}
 #'   =
-#'   \frac{1}{2}
+#'   \frac{1}{n}
 #'   \sum_{i = 1}^{n}
 #'   \tilde{\theta}_{i} .
 #' }
