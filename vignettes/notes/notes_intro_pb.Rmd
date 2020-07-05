@@ -55,7 +55,7 @@ This data generating function is referred to as $F$.
 Variable <- c(
   "`mu`",
   "`sigma2`",
-  "`sigma2`"
+  "`sigma`"
 )
 Description <- c(
   "Population mean.",
@@ -163,22 +163,25 @@ knitr::kable(
 )
 ```
 
-## Realizations of the Random Variable
+## Sample Data
 
 Let $\mathbf{x}$ be a vector of length $n = `r n`$
 of realizations of the random variable $X$.
+Each observation $i$
+is independently sampled from the normal distribution
+with $\mu = `r mu`$ and $\sigma^2 = `r sigma2`$.
 
 \begin{equation}
   \mathbf{x}
   =
   \begin{bmatrix}
-  x_1 = X \left( \omega_1 \right) \\
-  x_2 = X \left( \omega_2 \right) \\
-  x_3 = X \left( \omega_3 \right) \\
-  x_i = X \left( \omega_i \right) \\
-  \vdots \\
-  x_n = X \left( \omega_n \right)
-  \end{bmatrix},
+    x_1 = X \left( \omega_1 \right) \\
+    x_2 = X \left( \omega_2 \right) \\
+    x_3 = X \left( \omega_3 \right) \\
+    x_i = X \left( \omega_i \right) \\
+    \vdots \\
+    x_n = X \left( \omega_n \right)
+  \end{bmatrix}, \\
   i
   =
   \left\{
@@ -186,16 +189,18 @@ of realizations of the random variable $X$.
   \right\}
 \end{equation}
 
-With the
+
+This is accommplished in `R`
+using the 
 `rnorm()`
 function
-we generate a vector
-`x`
-with
+with the following arguments
 `n =` `r n`,
 `mean =` `r mu`,
 and
 `sd =` `r sigma`.
+`rnorm()`
+returns a vector of length `n`.
 
 ```{r}
 x <- rnorm(
@@ -275,9 +280,10 @@ This sample data is referred to as the empirical distribution
 $\hat{F}$.
 
 In parametric bootstrapping we make a parametric assumption
-about the distribution of $\hat{F}$.
+about the distribution of $\hat{F}$,
+that is, $\hat{F} = F_{\hat{\theta}}$ .
 In the current example,
-we assume a normal distribution $\hat{F}_{\mathcal{N} \left( \mu, \sigma^2 \right)}$.
+we assume a normal distribution $\mathcal{N} \left( \mu, \sigma^2 \right)$.
 Data is generated $B$ number of times (`r B` in the current example)
 from the empirical distribution 
 $\hat{F}_{\mathcal{N} \left( \hat{\mu}, \hat{\sigma^2} \right)}$
@@ -298,12 +304,12 @@ $\mathbf{x}^{*}$ is a set of $B$ bootstrap samples.
     \mathbf{x}^{*b} = \left\{ x^{*b}_{1}, x^{*b}_{2}, x^{*b}_{3}, x^{*b}_{i}, \dots, x^{*b}_{n} \right\} \\
     \vdots \\
     \mathbf{x}^{*B} = \left\{ x^{*B}_{1}, x^{*B}_{2}, x^{*B}_{3}, \dots, x^{*B}_{n} \right\}
-  \end{bmatrix},
+  \end{bmatrix}, \\
   b
   =
   \left\{
     1, 2, 3, \dots, B
-  \right\},
+  \right\}, \\
   i
   =
   \left\{
@@ -351,9 +357,9 @@ The parameter is estimated for each of the $B$
 bootstrap samples.
 For example,
 if we are interested in making inferences about the mean,
-we calculate the sample statistic ($\mathrm{s}$)
+we calculate the sample statistic ($\mathrm{s}$),
 that is,
-the sample mean
+the sample mean,
 for each element of $\mathbf{x}^{*}$.
 The $B$ estimated parameters form the bootstrap sampling distribution
 $\boldsymbol{\hat{\theta}^{*}}$.
@@ -368,7 +374,7 @@ $\boldsymbol{\hat{\theta}^{*}}$.
     \hat{\theta}^{*} \left( b \right) = \mathrm{s} \left( \mathbf{x}^{*b} \right) \\
     \vdots \\
     \hat{\theta}^{*} \left( B \right) = \mathrm{s} \left( \mathbf{x}^{*B} \right)
-  \end{bmatrix},
+  \end{bmatrix}, \\
   b
   =
   \left\{
@@ -377,14 +383,16 @@ $\boldsymbol{\hat{\theta}^{*}}$.
 \end{equation}
 
 `sapply` is a useful tool in `R`
-to apply a function, in our case `mean`,
-to each element of a list,
-in our case `x_star`.
+to apply a function
+to each element of a list.
+In our case,
+we apply the function `mean()`
+to each element of the list `x_star`.
 `sapply` simplifies the output when possible.
 In our case,
 `sapply` returns a vector,
 `thetahat_star`.
-The `apply` family of functions
+The `*apply` functions
 as well as their parallel counterparts
 (e.g., `parSapply`)
 can be used to simplify repetitive tasks.
@@ -526,10 +534,10 @@ can be used to construct
 confidence intervals
 using the default alphas
 of
-$0.001$,
-$0.01$,
+0.001,
+0.01,
 and
-$0.05$.
+0.05.
 Wald confidence intervals (`wald()`)
 are added for comparison.
 The confidence intervals can also be evaluated.
@@ -598,7 +606,7 @@ bca_out <- bca(
 )
 ```
 
-```{r}
+```{r, echo = FALSE}
 knitr::kable(
   x = as.data.frame(
     rbind(
