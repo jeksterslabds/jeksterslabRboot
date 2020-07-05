@@ -241,6 +241,8 @@ hist(
     )
   )
 )
+qqnorm(thetahat_star)
+qqline(thetahat_star)
 #'
 #'
 #' ### Confidence Intervals

@@ -119,6 +119,8 @@ x <- rnorm(
 )
 str(x)
 hist(x)
+qqnorm(x)
+qqline(x)
 #'
 #' ## Estimate Correlation
 #'
@@ -241,6 +243,8 @@ hist(
     )
   )
 )
+qqnorm(thetahat_star)
+qqline(thetahat_star)
 #'
 #'
 #' ### Confidence Intervals
