@@ -30,7 +30,7 @@ n <- 1000
 B <- 1000
 rho <- runif(
   n = 1,
-  min = -1,
+  min = .5,
   max = 1
 )
 theta <- rho
@@ -46,20 +46,18 @@ Sigma <- matrix(
 mu <- c(0, 0)
 var_thetahat <- ((1 - rho^2)^2) / n
 se_thetahat <- sqrt(var_thetahat)
+# Parameters
 Variable <- c(
-  "`theta`"
+  "`rho`"
 )
 Description <- c(
   "Population correlation."
 )
 Notation <- c(
-  "$\\theta = \\rho$"
+  "$\\rho$"
 )
 Value <- c(
-  n,
-  theta,
-  var_thetahat,
-  se_thetahat
+  theta
 )
 knitr::kable(
   x = data.frame(
@@ -71,6 +69,7 @@ knitr::kable(
   row.names = FALSE,
   caption = "Population Parameter"
 )
+# Sampling distribution of theta
 Variable <- c(
   "`n`",
   "`theta`",
@@ -114,6 +113,14 @@ X <- mvrnorm(
   Sigma = Sigma,
   mu = mu
 )
+head(X)
+hist(X[, 1])
+qqnorm(X[, 1])
+qqline(X[, 1])
+hist(X[, 2])
+qqnorm(X[, 2])
+qqline(X[, 2])
+plot(X[, 1], X[, 2])
 #'
 #' ## Estimate Correlation
 #'
@@ -140,8 +147,8 @@ Description <- c(
 Notation <- c(
   "$n$",
   "$\\hat{\\theta} = \\hat{\\rho}_{x, y} = \\frac{\\sum_{i = 1}^{n} \\left(x_i - \\hat{\\mu}_{x} \\right) \\left(y_i - \\hat{\\mu}_{y} \\right)}{\\sqrt{\\sum_{i = 1}^{n} \\left( x_i -  \\hat{\\mu}_{x} \\right)^2} \\sqrt{\\sum_{i = 1}^{n} \\left( y_i -  \\hat{\\mu}_{y} \\right)^2}}$",
-  "$\\hat{\\mathrm{Var}} \\left( \\hat{\\theta} \\right) = \\frac{ \\left( 1 - \\hat{\\rho}^2 \\right)^2}{n - 2}$",
-  "$\\hat{\\mathrm{se}} \\left( \\hat{\\theta} \\right) = \\frac{ 1 - \\hat{\\rho}^2 }{\\sqrt{n - 2}}$"
+  "$\\widehat{\\mathrm{Var}} \\left( \\hat{\\theta} \\right) = \\frac{ \\left( 1 - \\hat{\\rho}^2 \\right)^2}{n - 2}$",
+  "$\\widehat{\\mathrm{se}} \\left( \\hat{\\theta} \\right) = \\frac{ 1 - \\hat{\\rho}^2 }{\\sqrt{n - 2}}$"
 )
 Value <- c(
   n,
@@ -189,8 +196,8 @@ Description <- c(
 Notation <- c(
   "$B$",
   "$\\hat{\\theta}^{*} \\left( \\cdot \\right) = \\frac{1}{B} \\sum_{b = 1}^{B} \\hat{\\theta}^{*} \\left( b \\right)$",
-  "$\\hat{\\mathrm{Var}}_{\\mathrm{B}} \\left( \\hat{\\theta} \\right) = \\frac{1}{B - 1} \\sum_{b = 1}^{B} \\left[ \\hat{\\theta}^{*} \\left( b \\right) - \\hat{\\theta}^{*} \\left( \\cdot \\right) \\right]^2$",
-  "$\\hat{\\mathrm{se}}_{\\mathrm{B}} \\left( \\hat{\\theta} \\right) = \\sqrt{ \\frac{1}{B - 1} \\sum_{b = 1}^{B} \\left[ \\hat{\\theta}^{*} \\left( b \\right) - \\hat{\\theta}^{*} \\left( \\cdot \\right) \\right]^2 }$"
+  "$\\widehat{\\mathrm{Var}}_{\\mathrm{B}} \\left( \\hat{\\theta} \\right) = \\frac{1}{B - 1} \\sum_{b = 1}^{B} \\left[ \\hat{\\theta}^{*} \\left( b \\right) - \\hat{\\theta}^{*} \\left( \\cdot \\right) \\right]^2$",
+  "$\\widehat{\\mathrm{se}}_{\\mathrm{B}} \\left( \\hat{\\theta} \\right) = \\sqrt{ \\frac{1}{B - 1} \\sum_{b = 1}^{B} \\left[ \\hat{\\theta}^{*} \\left( b \\right) - \\hat{\\theta}^{*} \\left( \\cdot \\right) \\right]^2 }$"
 )
 Value <- c(
   B,
@@ -314,8 +321,7 @@ test_that("2.5 is equal to cor.test", {
     round(
       x = wald_out["ci_2.5"],
       digits = 2
-    ),
-    tolerance = 0.02
+    )
   )
 })
 #'
@@ -329,8 +335,7 @@ test_that("97.5 is equal to cor.test", {
     round(
       x = wald_out["ci_97.5"],
       digits = 2
-    ),
-    tolerance = 0.02
+    )
   )
 })
 #'
@@ -352,8 +357,7 @@ test_that("2.5", {
     round(
       x = bca_out["ci_2.5"],
       digits = 2
-    ),
-    tolerance = 0.05
+    )
   )
 })
 #'
@@ -375,7 +379,6 @@ test_that("97.5", {
     round(
       x = bca_out["ci_97.5"],
       digits = 2
-    ),
-    tolerance = 0.05
+    )
   )
 })
