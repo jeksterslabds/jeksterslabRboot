@@ -47,6 +47,31 @@ mu <- c(0, 0)
 var_thetahat <- ((1 - rho^2)^2) / n
 se_thetahat <- sqrt(var_thetahat)
 Variable <- c(
+  "`theta`"
+)
+Description <- c(
+  "Population correlation."
+)
+Notation <- c(
+  "$\\theta = \\rho$"
+)
+Value <- c(
+  n,
+  theta,
+  var_thetahat,
+  se_thetahat
+)
+knitr::kable(
+  x = data.frame(
+    Variable,
+    Description,
+    Notation,
+    Value
+  ),
+  row.names = FALSE,
+  caption = "Population Parameter"
+)
+Variable <- c(
   "`n`",
   "`theta`",
   "`var_thetahat`",
@@ -78,7 +103,7 @@ knitr::kable(
     Value
   ),
   row.names = FALSE,
-  caption = "Population Parameters"
+  caption = "Sampling Distribution of $\\hat{\\theta}$ with Known Parameter"
 )
 #'
 #' ## Generate Data
@@ -132,7 +157,7 @@ knitr::kable(
     Value
   ),
   row.names = FALSE,
-  caption = "Sample Statistics"
+  caption = "Sample Statistics (Parameter Estimates)"
 )
 #'
 #' ## Bootstrap
@@ -142,15 +167,9 @@ X_star <- pb_mvn(
   data = X,
   B = B
 )
-thetahat_star <- lapply(
+thetahat_star <- sapply(
   X = X_star,
   FUN = function(X) cor(X)[2, 1]
-)
-thetahat_star <- as.vector(
-  do.call(
-    what = "rbind",
-    args = thetahat_star
-  )
 )
 mean_thetahat_star <- mean(thetahat_star)
 var_thetahat_star <- var(thetahat_star)

@@ -43,34 +43,56 @@ sigma <- sqrt(sigma2)
 var_thetahat <- sigma2 / n
 se_thetahat <- sqrt(var_thetahat)
 Variable <- c(
-  "`n`",
   "`theta`",
   "`sigma2`",
-  "`sigma2`",
+  "`sigma2`"
+)
+Description <- c(
+  "Population mean.",
+  "Population variance.",
+  "Population standard deviation."
+)
+Notation <- c(
+  "$\\theta = \\mu$",
+  "$\\sigma^2$",
+  "$\\sigma$"
+)
+Value <- c(
+  theta,
+  sigma2,
+  sigma
+)
+knitr::kable(
+  x = data.frame(
+    Variable,
+    Description,
+    Notation,
+    Value
+  ),
+  row.names = FALSE,
+  caption = "Population Parameters"
+)
+Variable <- c(
+  "`n`",
+  "`theta`",
   "`var_thetahat`",
   "`se_thetahat`"
 )
 Description <- c(
   "Sample size.",
   "Population mean.",
-  "Population variance.",
-  "Population standard deviation.",
   "Variance of the sampling distribution of the mean.",
   "Standard error of the mean."
 )
 Notation <- c(
   "$n$",
   "$\\theta = \\mu$",
-  "$\\sigma^2$",
-  "$\\sigma$",
   "$\\mathrm{Var} \\left( \\hat{\\theta} \\right) = \\frac{ \\sigma^2 }{n}$",
   "$\\mathrm{se} \\left( \\hat{\\theta} \\right) = \\frac{ \\sigma }{\\sqrt{n}}$"
 )
 Value <- c(
   n,
   theta,
-  sigma2,
-  sigma,
   var_thetahat,
   se_thetahat
 )
@@ -82,7 +104,7 @@ knitr::kable(
     Value
   ),
   row.names = FALSE,
-  caption = "Population Parameters"
+  caption = "Sampling Distribution of $\\hat{\\theta}$ with Known Parameters"
 )
 #'
 #' ## Generate Data
@@ -143,7 +165,7 @@ knitr::kable(
     Value
   ),
   row.names = FALSE,
-  caption = "Sample Statistics"
+  caption = "Sample Statistics (Parameter Estimates)"
 )
 #'
 #' ## Bootstrap
