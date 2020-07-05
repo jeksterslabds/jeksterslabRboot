@@ -44,6 +44,14 @@
 #' [Wikipedia: Wald test](https://en.wikipedia.org/wiki/Wald_test)
 #' @family Wald test functions
 #' @keywords Wald test
+#' @examples
+#' thetahat <- 0.860
+#' sehat_thetahat <- 0.409
+#' varhat_thetahat <- sehat_thetahat^2
+#' wald_test(
+#'   thetahat = thetahat,
+#'   varhat_thetahat = varhat_thetahat
+#' )
 #' @export
 wald_test <- function(thetahat,
                       varhat_thetahat,
@@ -104,6 +112,19 @@ wald_test <- function(thetahat,
 #' @inherit wald_test references
 #' @family Wald test functions
 #' @keywords Wald test
+#' @examples
+#' thetahat <- 0.860
+#' sehat_thetahat <- 0.409
+#' sqrt_wald_test(
+#'   thetahat = thetahat,
+#'   sehat_thetahat = sehat_thetahat
+#' )
+#' sqrt_wald_test(
+#'   thetahat = thetahat,
+#'   sehat_thetahat = sehat_thetahat,
+#'   distribution = "t",
+#'   df = 1000
+#' )
 #' @export
 sqrt_wald_test <- function(thetahat,
                            sehat_thetahat,
