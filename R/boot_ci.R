@@ -41,7 +41,7 @@
 #' }
 #' is the standard deviation of
 #' \eqn{
-#'   \hat{\theta}^{*}
+#'   \boldsymbol{\hat{\theta}^{*}}
 #' }
 #' and
 #' \eqn{
@@ -52,7 +52,7 @@
 #' }
 #' is the mean of
 #' \eqn{
-#'   \hat{\theta}^{*}
+#'   \boldsymbol{\hat{\theta}^{*}}
 #' } .
 #'
 #' The percentile confidence interval is given by
@@ -122,7 +122,7 @@
 #'     \item{statistic}{Square root of Wald test statistic. `NA` if `wald = FALSE`.}
 #'     \item{p}{p-value. `NA` if `wald = FALSE`.}
 #'     \item{se}{Estimated bootstrap standard error \eqn{\left( \widehat{\mathrm{se}}_{\mathrm{B}} \left( \hat{\theta} \right) \right)}.}
-#'     \item{ci_}{Estimated percentile confidence limits corresponding to alpha from the bootstrap sampling distribution thetahat_star \eqn{\left( \hat{\theta}^{*} \right)}.}
+#'     \item{ci_}{Estimated percentile confidence limits corresponding to alpha from the bootstrap sampling distribution thetahat_star \eqn{\left( \boldsymbol{\hat{\theta}^{*}} \right)}.}
 #'   }
 #' If `eval = TRUE`,
 #' appends the following to the results vector
@@ -364,7 +364,7 @@ pc <- function(thetahat_star,
 #'     \item{statistic}{Square root of Wald test statistic. `NA` if `wald = FALSE`.}
 #'     \item{p}{p-value. `NA` if `wald = FALSE`.}
 #'     \item{se}{Estimated bootstrap standard error \eqn{\left( \widehat{\mathrm{se}}_{\mathrm{B}} \left( \hat{\theta} \right) \right)}.}
-#'     \item{ci_}{Estimated bias-corrected confidence limits corresponding to alpha from the bootstrap sampling distribution thetahat_star \eqn{\left( \hat{\theta}^{*} \right)}.}
+#'     \item{ci_}{Estimated bias-corrected confidence limits corresponding to alpha from the bootstrap sampling distribution thetahat_star \eqn{\left( \boldsymbol{\hat{\theta}^{*}} \right)}.}
 #'   }
 #' If `eval = TRUE`,
 #' appends the following to the results vector
@@ -721,7 +721,7 @@ bc <- function(thetahat_star,
 #'     \item{statistic}{Square root of Wald test statistic. `NA` if `wald = FALSE`.}
 #'     \item{p}{p-value. `NA` if `wald = FALSE`.}
 #'     \item{se}{Estimated bootstrap standard error \eqn{\left( \widehat{\mathrm{se}}_{\mathrm{B}} \left( \hat{\theta} \right) \right)}.}
-#'     \item{ci_}{Estimated bias-corrected and accelerated confidence limits corresponding to alpha from the bootstrap sampling distribution thetahat_star \eqn{\left( \hat{\theta}^{*} \right)}.}
+#'     \item{ci_}{Estimated bias-corrected and accelerated confidence limits corresponding to alpha from the bootstrap sampling distribution thetahat_star \eqn{\left( \boldsymbol{\hat{\theta}^{*}} \right)}.}
 #'   }
 #' If `eval = TRUE`,
 #' appends the following to the results vector
