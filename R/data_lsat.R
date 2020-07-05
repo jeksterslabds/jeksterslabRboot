@@ -8,6 +8,7 @@
 #' }
 #' @source
 #' Efron, B., & Tibshirani, R. J. (1993).
-#' An introduction to the bootstrap. New York, N.Y: Chapman & Hall.
+#' *An introduction to the bootstrap*.
+#' New York, N.Y: Chapman & Hall.
 #' Table 3.1
 "lsat"

@@ -52,7 +52,8 @@
 #' str(X_star)
 #' @references
 #' Efron, B., & Tibshirani, R. J. (1993).
-#' An introduction to the bootstrap. New York, N.Y: Chapman & Hall.
+#' *An introduction to the bootstrap*.
+#' New York, N.Y: Chapman & Hall.
 #'
 #' [Wikipedia: Bootstrapping (statistics)](https://en.wikipedia.org/wiki/Bootstrapping_(statistics))
 #' @family bootstrap functions

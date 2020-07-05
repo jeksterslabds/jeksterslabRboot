@@ -136,7 +136,8 @@
 #' @importFrom stats sd
 #' @references
 #' Efron, B., & Tibshirani, R. J. (1993).
-#' An introduction to the bootstrap. New York, N.Y: Chapman & Hall.
+#' *An introduction to the bootstrap*.
+#' New York, N.Y: Chapman & Hall.
 #' @family bootstrap confidence interval functions
 #' @keywords confidence interval
 #' @export
