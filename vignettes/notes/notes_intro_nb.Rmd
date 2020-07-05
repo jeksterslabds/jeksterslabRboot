@@ -530,6 +530,7 @@ we can check if our confidence intervals contain
 the population parameter.
 
 See documentation for
+`wald()`,
 `pc()`,
 `bc()`,
 and
