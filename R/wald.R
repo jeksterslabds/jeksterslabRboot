@@ -249,21 +249,32 @@ sqrt_wald_test <- function(thetahat,
 #' is the Student's
 #' \eqn{t} distribution
 #' and
-#' \eqn{\nu} is the degrees of freedom
-#' \eqn{n - 1}.
+#' \eqn{\nu}, the degrees of freedom
+#' \eqn{n - 1},
+#' is the Student's
+#' \eqn{t} distribution parameter.
 #' As such,
 #' the symmetric Wald confidence interval is given by
 #'   \deqn{
 #'     \hat{\theta}
 #'     \pm
-#'     t_{\frac{\alpha}{2}}
+#'     t_{
+#'       \left(
+#'         \frac{
+#'           \alpha
+#'         }
+#'         {
+#'           2
+#'         } ,
+#'         \nu
+#'       \right)
+#'     }
 #'     \times
 #'     \widehat{\mathrm{se}}
 #'       \left(
 #'         \hat{\theta}
-#'       \right)
+#'       \right) .
 #'   }
-#' from a \eqn{t} distribution with degrees of freedom \eqn{\nu = n - 1}.
 #' Note that in large sample sizes,
 #' \eqn{t} converges to \eqn{z}.
 #'
@@ -347,17 +358,22 @@ wald <- function(thetahat,
     df = df
   )
   prob <- alpha2prob(alpha = alpha)
-  if (dist == "z") {
-    critical <- qnorm(
-      p = prob
-    )
-  }
-  if (dist == "t") {
-    critical <- qt(
-      p = prob,
-      df = df
-    )
-  }
+  critical <- alpha2crit(
+    alpha = alpha,
+    dist = dist,
+    df = df
+  )
+  # if (dist == "z") {
+  #  critical <- qnorm(
+  #    p = prob
+  #  )
+  # }
+  # if (dist == "t") {
+  #  critical <- qt(
+  #    p = prob,
+  #    df = df
+  #  )
+  # }
   ci <- rep(x = NA, times = length(critical))
   for (i in seq_along(critical)) {
     ci[i] <- thetahat + (critical[i] * sehat)
