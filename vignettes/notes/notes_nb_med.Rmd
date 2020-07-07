@@ -29,22 +29,34 @@ library(MASS)
 ### Population Model
 
 ```{r, echo = FALSE}
-n <- 1000
+n <- nrow(jeksterslabRdatarepo::thirst)
 B <- 5000
 varnames <- c("X", "M", "Y")
-tauprime <- 0.10
-beta <- 0.10
-alpha <- 0.70
+model_01 <- lm(
+  thirst ~ temp,
+  data = jeksterslabRdatarepo::thirst
+)
+model_02 <- lm(
+  water ~ temp + thirst,
+  data = jeksterslabRdatarepo::thirst
+)
+muX <- mean(jeksterslabRdatarepo::thirst$temp)
+muM <- mean(jeksterslabRdatarepo::thirst$thirst)
+muY <- mean(jeksterslabRdatarepo::thirst$water)
+sigma2X <- var(jeksterslabRdatarepo::thirst$temp)
+sigma2M <- var(jeksterslabRdatarepo::thirst$thirst)
+sigma2Y <- var(jeksterslabRdatarepo::thirst$water)
+# deltaM <- coef(model_01)[1]
+alpha <- coef(model_01)[2]
+# sigma2epsilonM <- (summary(model_01)$sigma)^2
+# deltaY <- coef(model_02)[1]
+tauprime <- coef(model_02)[2]
+beta <- coef(model_02)[3]
+# sigma2epsilonY <- (summary(model_02)$sigma)^2
 alphabeta <- alpha * beta
 theta <- alphabeta
-sigma2X <- 225
-sigma2M <- 225
-sigma2Y <- 225
 sigma2epsilonM <- sigma2M - (alpha^2 * sigma2X)
 sigma2epsilonY <- sigma2Y - ((beta^2 * alpha^2 * sigma2X) + (beta^2 * sigma2epsilonM) + (2 * alpha * beta * tauprime * sigma2X) + (tauprime^2 * sigma2X))
-muX <- 100
-muM <- 100
-muY <- 100
 deltaM <- muM - (alpha * muX)
 deltaY <- muY - ((tauprime * muX) + (beta * deltaM) + (alpha * beta * muX))
 A <- matrix(
@@ -758,9 +770,11 @@ knitr::kable(
 - Efron, B., & Tibshirani, R. J. (1993).
   *An introduction to the bootstrap*.
   New York, N.Y: Chapman & Hall.
+- MacKinnon, D. P. (2008).
+  *Introduction to statistical mediation analysis*.
+  New York: Lawrence Erlbaum Associates.
 - Shrout, P. E., & Bolger, N.  (2002).
   Mediation in experimental and nonexperimental studies: New procedures and recommendations.
   *Psychological Methods*, *7*, 422-445.
   https://doi.org/10.1037/1082-989X.7.4.422
 - [Wikipedia: Bootstrapping (statistics)](https://en.wikipedia.org/wiki/Bootstrapping_(statistics))
-
