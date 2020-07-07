@@ -1,10 +1,10 @@
 #' ---
-#' title: "Test: alphaplot"
+#' title: "Test: nhstplot"
 #' author: "Ivan Jacob Agaloos Pesigan"
 #' date: "`r Sys.Date()`"
 #' output: rmarkdown::html_vignette
 #' vignette: >
-#'   %\VignetteIndexEntry{Test: alphaplot}
+#'   %\VignetteIndexEntry{Test: nhstplot}
 #'   %\VignetteEngine{knitr::rmarkdown}
 #'   %\VignetteEncoding{UTF-8}
 #' ---
@@ -20,18 +20,18 @@ knitr::opts_chunk$set(
 #+ setup
 library(testthat)
 library(jeksterslabRboot)
-context("Test alphaplot.")
+context("Test nhstplot.")
 #'
 #' ## Alpha Level
 #'
 #' ### Two-Tailed
 #'
-alpha2plot(
+nhstplot(
   alpha = 0.05,
   dist = "z",
   statistic = 3
 )
-alpha2plot(
+nhstplot(
   alpha = 0.05,
   dist = "t",
   df = 5
@@ -39,37 +39,37 @@ alpha2plot(
 #'
 #' ### One-Tailed
 #'
-alpha2plot(
+nhstplot(
   alpha = 0.05,
   two.tailed = FALSE,
   right.tail = TRUE
 )
-alpha2plot(
+nhstplot(
   alpha = 0.05,
   two.tailed = FALSE,
   right.tail = FALSE
 )
-alpha2plot(
+nhstplot(
   alpha = 0.05,
   dist = "t",
   two.tailed = FALSE,
   right.tail = TRUE,
   df = 5
 )
-alpha2plot(
+nhstplot(
   alpha = 0.05,
   dist = "t",
   two.tailed = FALSE,
   right.tail = FALSE,
   df = 5
 )
-alpha2plot(
+nhstplot(
   alpha = 0.05,
   dist = "F",
   df1 = 10,
   df2 = 3
 )
-alpha2plot(
+nhstplot(
   alpha = 0.05,
   dist = "chisq",
   df = 3
@@ -79,13 +79,13 @@ alpha2plot(
 #'
 #' ### Two-Tailed
 #'
-alpha2plot(
+nhstplot(
   alpha = 0.05,
   ci = TRUE,
   dist = "z",
   statistic = 3
 )
-alpha2plot(
+nhstplot(
   alpha = 0.05,
   ci = TRUE,
   dist = "t",
@@ -94,19 +94,19 @@ alpha2plot(
 #'
 #' ### One-Tailed
 #'
-alpha2plot(
+nhstplot(
   alpha = 0.05,
   ci = TRUE,
   two.tailed = FALSE,
   right.tail = TRUE
 )
-alpha2plot(
+nhstplot(
   alpha = 0.05,
   ci = TRUE,
   two.tailed = FALSE,
   right.tail = FALSE
 )
-alpha2plot(
+nhstplot(
   alpha = 0.05,
   ci = TRUE,
   dist = "t",
@@ -114,7 +114,7 @@ alpha2plot(
   right.tail = TRUE,
   df = 5
 )
-alpha2plot(
+nhstplot(
   alpha = 0.05,
   ci = TRUE,
   dist = "t",
@@ -122,14 +122,14 @@ alpha2plot(
   right.tail = FALSE,
   df = 5
 )
-alpha2plot(
+nhstplot(
   alpha = 0.05,
   ci = TRUE,
   dist = "F",
   df1 = 10,
   df2 = 3
 )
-alpha2plot(
+nhstplot(
   alpha = 0.05,
   ci = TRUE,
   dist = "chisq",
