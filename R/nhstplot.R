@@ -243,7 +243,7 @@ nhstplot <- function(alpha = 0.05,
             x[x <= up]
           )
           subtitle <- bquote(
-            P(z <= .(up)) == .(alpha)
+            P(z < .(up)) == .(alpha)
           )
         } else {
           subtitle <- bquote(
@@ -262,7 +262,7 @@ nhstplot <- function(alpha = 0.05,
             ...
           )
           subtitle <- bquote(
-            P(z <= .(up)) == .(1 - alpha)
+            P(z < .(up)) == .(1 - alpha)
           )
         } else {
           subtitle <- bquote(
@@ -281,7 +281,7 @@ nhstplot <- function(alpha = 0.05,
             ...
           )
           subtitle <- bquote(
-            P(F <= .(up)) == .(1 - alpha)
+            P(F < .(up)) == .(1 - alpha)
           )
         } else {
           subtitle <- bquote(
@@ -300,7 +300,7 @@ nhstplot <- function(alpha = 0.05,
             ...
           )
           subtitle <- bquote(
-            P(chi^2 <= .(up)) == .(1 - alpha)
+            P(chi^2 < .(up)) == .(1 - alpha)
           )
         } else {
           subtitle <- bquote(
@@ -329,7 +329,7 @@ nhstplot <- function(alpha = 0.05,
             x[x >= lo]
           )
           subtitle <- bquote(
-            P(z >= .(lo)) == .(1 - alpha)
+            P(z > .(lo)) == .(1 - alpha)
           )
         } else {
           subtitle <- bquote(
@@ -348,7 +348,7 @@ nhstplot <- function(alpha = 0.05,
             ...
           )
           subtitle <- bquote(
-            P(t >= .(lo)) == .(1 - alpha)
+            P(t > .(lo)) == .(1 - alpha)
           )
         } else {
           subtitle <- bquote(
