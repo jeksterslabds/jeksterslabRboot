@@ -100,6 +100,7 @@
 #'   thetahat = alphahat_betahat,
 #'   sehat = sd(alphahat_betahat_star)
 #' )
+#' @importFrom stats rnorm
 #' @export
 mc <- function(thetahat,
                vcovhat,
@@ -110,9 +111,20 @@ mc <- function(thetahat,
     #    "Dimensions of thetahat and vcovhat are incompatible."
     #  )
     # }
+    # return(
+    #  rnorm(
+    #    n = R,
+    #    mean = thetahat,
+    #    sd = sqrt(vcovhat)
+    #  )
+    # )
     return(
-      rnorm(
+      univ(
         n = R,
+        rFUN = rnorm,
+        R = NULL,
+        par = FALSE,
+        ncores = NULL,
         mean = thetahat,
         sd = sqrt(vcovhat)
       )
@@ -137,12 +149,20 @@ mc <- function(thetahat,
     #    "vcovhat is not a symmetric matrix."
     #  )
     # }
-    return(
-      mvrnorm(
-        n = R,
-        Sigma = vcovhat,
-        mu = thetahat
-      )
+    # return(
+    #  mvrnorm(
+    #    n = R,
+    #    Sigma = vcovhat,
+    #    mu = thetahat
+    #  )
+    # )
+    mvn(
+      n = R,
+      mu = thetahat,
+      Sigma = vcovhat,
+      R = NULL,
+      par = FALSE,
+      ncores = NULL
     )
   }
 }

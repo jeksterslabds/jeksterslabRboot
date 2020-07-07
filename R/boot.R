@@ -73,7 +73,7 @@ nb <- function(data,
   foo <- function(iter,
                   data) {
     i <- sample(
-      iter = len,
+      x = len,
       replace = TRUE
     )
     if (is.data.frame(data) | is.matrix(data)) {
@@ -99,9 +99,9 @@ nb <- function(data,
 #' Parametric Bootstrap
 #' (Multivariate Normal)
 #' from
-#' \eqn{\boldsymbol{\hat{\Sigma}}}
-#' and
 #' \eqn{\boldsymbol{\hat{\mu}}}
+#' and
+#' \eqn{\boldsymbol{\hat{\Sigma}}}
 #'
 #' Generates `B` number of parametric bootstrap
 #' samples from the original sample `data`.
@@ -133,14 +133,15 @@ nb <- function(data,
 #' @family bootstrap functions
 #' @keywords bootstrap
 #' @inheritParams nb
+#' @inheritParams jeksterslabRdata::mvn
 #' @inherit nb references
 #' @param n Integer.
 #'   Sample size.
+#' @param muhat Vector.
+#'   Estimated mean vector from the original sample data.
 #' @param Sigmahat Matrix.
 #'   Estimated variance-covariance matrix
 #'   from the original sample data.
-#' @param muhat Vector.
-#'   Estimated mean vector from the original sample data.
 #' @return Returns a list of length `B` of parametric bootstrap samples.
 #' @examples
 #' B <- 5L
@@ -163,41 +164,51 @@ nb <- function(data,
 #'   105.3324,
 #'   103.4009
 #' )
-#' Xstar <- .pb_mvn(
+#' Xstar <- .pbmvn(
 #'   n = 5,
 #'   Sigmahat = Sigmahat,
 #'   muhat = muhat,
 #'   B = B
 #' )
 #' str(Xstar)
-#' @importFrom MASS mvrnorm
+#' @importFrom jeksterslabRdata mvn
 #' @export
-.pb_mvn <- function(n,
-                    Sigmahat,
-                    muhat,
-                    B = 2000L,
-                    par = FALSE,
-                    ncores = NULL) {
-  foo <- function(iter,
-                  n,
-                  Sigmahat,
-                  muhat) {
-    mvrnorm(
-      n = n,
-      Sigma = Sigmahat,
-      mu = muhat
-    )
-  }
-  util_lapply(
-    FUN = foo,
-    args = list(
-      iter = 1:B,
-      n = n,
-      Sigmahat = Sigmahat,
-      muhat = muhat
-    ),
+.pbmvn <- function(n,
+                   Sigmahat,
+                   muhat,
+                   B = 2000L,
+                   par = FALSE,
+                   ncores = NULL,
+                   ...) {
+  #  foo <- function(iter,
+  #                  n,
+  #                  Sigmahat,
+  #                  muhat) {
+  #    mvrnorm(
+  #      n = n,
+  #      Sigma = Sigmahat,
+  #      mu = muhat
+  #    )
+  #  }
+  #  util_lapply(
+  #    FUN = foo,
+  #    args = list(
+  #      iter = 1:B,
+  #      n = n,
+  #      Sigmahat = Sigmahat,
+  #      muhat = muhat
+  #    ),
+  #    par = par,
+  #    ncores = ncores
+  #  )
+  mvn(
+    n = n,
+    mu = muhat,
+    Sigma = Sigmahat,
+    R = B,
     par = par,
-    ncores = ncores
+    ncores = ncores,
+    ...
   )
 }
 
@@ -209,7 +220,8 @@ nb <- function(data,
 #' @family bootstrap functions
 #' @keywords bootstrap
 #' @inheritParams nb
-#' @inherit .pb_mvn references description details return
+#' @inheritParams .pbmvn
+#' @inherit .pbmvn references description details return
 #' @examples
 #' X <- matrix(
 #'   data = c(
@@ -231,27 +243,29 @@ nb <- function(data,
 #'   ),
 #'   nrow = 5
 #' )
-#' Xstar <- pb_mvn(
+#' Xstar <- pbmvn(
 #'   data = X,
 #'   B = 5L
 #' )
 #' str(Xstar)
 #' @importFrom stats cov
 #' @export
-pb_mvn <- function(data,
-                   B = 2000L,
-                   par = FALSE,
-                   ncores = NULL) {
+pbmvn <- function(data,
+                  B = 2000L,
+                  par = FALSE,
+                  ncores = NULL,
+                  ...) {
   n <- nrow(data)
   Sigmahat <- cov(data)
   muhat <- colMeans(data)
-  .pb_mvn(
+  .pbmvn(
     n = n,
     Sigmahat = Sigmahat,
     muhat = muhat,
     B = B,
     par = par,
-    ncores = ncores
+    ncores = ncores,
+    ...
   )
 }
 
@@ -282,12 +296,12 @@ pb_mvn <- function(data,
 #' @family bootstrap functions
 #' @keywords bootstrap
 #' @inheritParams nb
-#' @inherit .pb_mvn references return
-#' @param rFUN Function.
-#'   Data generating function to generate univariate data.
+#' @inherit .pbmvn references return
 #' @param n Integer.
 #'   Sample size.
-#' @param ... Arguments to pass to rFUN.
+#' @param rFUN Function.
+#'   Data generating function to generate univariate data.
+#' @param ... Arguments to pass to `rFUN`.
 #' @examples
 #' n <- 5
 #' B <- 5
@@ -304,9 +318,9 @@ pb_mvn <- function(data,
 #' )
 #' muhat <- mean(x)
 #' sigmahat <- sd(x)
-#' xstar <- pb_univ(
-#'   rFUN = rnorm,
+#' xstar <- pbuniv(
 #'   n = n,
+#'   rFUN = rnorm,
 #'   B = B,
 #'   mean = muhat,
 #'   sd = sigmahat
@@ -323,41 +337,49 @@ pb_mvn <- function(data,
 #'   prob = p
 #' )
 #' phat <- mean(x) / n_trials
-#' xstar <- pb_univ(
-#'   rFUN = rbinom,
+#' xstar <- pbuniv(
 #'   n = n,
+#'   rFUN = rbinom,
 #'   B = B,
 #'   size = n_trials,
 #'   prob = phat
 #' )
 #' str(xstar)
-#' @importFrom stats rnorm
+#' @importFrom jeksterslabRdata univ
 #' @export
-pb_univ <- function(rFUN = rnorm,
-                    n,
-                    B = 2000L,
-                    par = FALSE,
-                    ncores = NULL,
-                    ...) {
-  args <- list(
-    iter = 1:B,
-    rFUN = rFUN,
+pbuniv <- function(n,
+                   rFUN = rnorm,
+                   B = 2000L,
+                   par = FALSE,
+                   ncores = NULL,
+                   ...) {
+  #  args <- list(
+  #    iter = 1:B,
+  #    rFUN = rFUN,
+  #    n = n,
+  #    ...
+  #  )
+  #  foo <- function(iter,
+  #                  rFUN,
+  #                  n,
+  #                  ...) {
+  #    rFUN(
+  #      n = n,
+  #      ...
+  #    )
+  #  }
+  #  util_lapply(
+  #    FUN = foo,
+  #    args = args,
+  #    par = par,
+  #    ncores = ncores
+  #  )
+  univ(
     n = n,
-    ...
-  )
-  foo <- function(iter,
-                  rFUN,
-                  n,
-                  ...) {
-    rFUN(
-      n = n,
-      ...
-    )
-  }
-  util_lapply(
-    FUN = foo,
-    args = args,
+    rFUN = rFUN,
+    R = B,
     par = par,
-    ncores = ncores
+    ncores = ncores,
+    ...
   )
 }
