@@ -158,12 +158,13 @@ alpha2crit <- function(alpha = c(
   tail <- 1 - ci
   if (dist == "F" | dist == "chisq") {
     two.tailed <- FALSE
-    right.tail <- TRUE
-  }
-  if (right.tail) {
-    lower.tail <- FALSE
   } else {
-    lower.tail <- TRUE
+    # one-tailed z and t
+    if (right.tail) {
+      lower.tail <- FALSE
+    } else {
+      lower.tail <- TRUE
+    }
   }
   if (two.tailed) {
     if (dist == "z") {
@@ -207,19 +208,23 @@ alpha2crit <- function(alpha = c(
     }
     if (dist == "F") {
       return(
-        qf(
-          p = tail,
-          lower.tail = lower.tail,
-          ...
+        sort(
+          qf(
+            p = tail,
+            lower.tail = FALSE,
+            ...
+          )
         )
       )
     }
     if (dist == "chisq") {
       return(
-        qchisq(
-          p = tail,
-          lower.tail = lower.tail,
-          ...
+        sort(
+          qchisq(
+            p = tail,
+            lower.tail = FALSE,
+            ...
+          )
         )
       )
     }
