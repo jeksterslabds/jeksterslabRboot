@@ -12,9 +12,9 @@
 #' }
 #'
 #' @author Ivan Jacob Agaloos Pesigan
-#' @inheritParams theta_hit
 #' @family confidence interval evaluation functions
 #' @keywords confidence interval
+#' @inheritParams theta_hit
 #' @export
 len <- function(lo,
                 up) {
@@ -45,12 +45,12 @@ len <- function(lo,
 #' \eqn{\hat{\theta}} and \eqn{\hat{\theta}_{\mathrm{lo}}}.
 #'
 #' @author Ivan Jacob Agaloos Pesigan
+#' @family confidence interval evaluation functions
+#' @keywords confidence interval
+#' @inheritParams theta_hit
 #' @param thetahat Numeric.
 #'   Parameter estimate
 #'   \eqn{\left( \hat{\theta} \right)}.
-#' @inheritParams theta_hit
-#' @family confidence interval evaluation functions
-#' @keywords confidence interval
 #' @export
 shape <- function(lo,
                   thetahat,
@@ -68,6 +68,8 @@ shape <- function(lo,
 #' [`shape()`].
 #'
 #' @author Ivan Jacob Agaloos Pesigan
+#' @family confidence interval evaluation functions
+#' @keywords confidence interval
 #' @param ci Vector.
 #'   Confidence intervals sorted from smallest to largest.
 #'   The length should be even.

@@ -75,6 +75,9 @@
 #' [Notes: Introduction to Parametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_pb.html)
 #'
 #' @author Ivan Jacob Agaloos Pesigan
+#' @family bootstrap confidence interval functions
+#' @keywords confidence interval
+#' @inheritParams wald
 #' @param thetahatstar Numeric vector.
 #'   The bootstrap sampling distribution
 #'   \eqn{\left( \boldsymbol{\hat{\theta}^{*}} \right)},
@@ -116,7 +119,6 @@
 #'   and
 #'   `df`
 #'   are ignored.
-#' @inheritParams wald
 #' @return Returns a vector with the following elements:
 #'   \describe{
 #'     \item{statistic}{Square root of Wald test statistic. `NA` if `wald = FALSE`.}
@@ -132,14 +134,12 @@
 #'     \item{length_}{Length of confidence interval.}
 #'     \item{shape_}{Shape of confidence interval.}
 #'   }
-#' @importFrom stats quantile
-#' @importFrom stats sd
 #' @references
 #' Efron, B., & Tibshirani, R. J. (1993).
 #' *An introduction to the bootstrap*.
 #' New York, N.Y: Chapman & Hall.
-#' @family bootstrap confidence interval functions
-#' @keywords confidence interval
+#' @importFrom stats quantile
+#' @importFrom stats sd
 #' @export
 pc <- function(thetahatstar,
                thetahat,
@@ -364,7 +364,10 @@ pc <- function(thetahatstar,
 #' [Notes: Introduction to Parametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_pb.html)
 #'
 #' @author Ivan Jacob Agaloos Pesigan
+#' @family bootstrap confidence interval functions
+#' @keywords confidence interval
 #' @inheritParams pc
+#' @inherit pc references
 #' @return Returns a vector with the following elements:
 #'   \describe{
 #'     \item{statistic}{Square root of Wald test statistic. `NA` if `wald = FALSE`.}
@@ -380,9 +383,6 @@ pc <- function(thetahatstar,
 #'     \item{length_}{Length of confidence interval.}
 #'     \item{shape_}{Shape of confidence interval.}
 #'   }
-#' @inherit pc references
-#' @family bootstrap confidence interval functions
-#' @keywords confidence interval
 #' @export
 bc <- function(thetahatstar,
                thetahat,
@@ -718,6 +718,12 @@ bc <- function(thetahatstar,
 #' [Notes: Introduction to Parametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_pb.html)
 #'
 #' @author Ivan Jacob Agaloos Pesigan
+#' @family bootstrap confidence interval functions
+#' @keywords confidence interval
+#' @inheritParams bc
+#' @inheritParams jack
+#' @inheritParams jack_hat
+#' @inherit pc references
 #' @param thetahatstarjack Numeric vector.
 #'   Jackknife sampling distribution,
 #'   that is,
@@ -754,9 +760,6 @@ bc <- function(thetahatstar,
 #'   Ignored if `thetahatstarjack`
 #'   is provided.
 #' @param ... Arguments to pass to `fitFUN`.
-#' @inheritParams bc
-#' @inheritParams jack
-#' @inheritParams jack_hat
 #' @return Returns a vector with the following elements:
 #'   \describe{
 #'     \item{statistic}{Square root of Wald test statistic. `NA` if `wald = FALSE`.}
@@ -772,10 +775,7 @@ bc <- function(thetahatstar,
 #'     \item{length_}{Length of confidence interval.}
 #'     \item{shape_}{Shape of confidence interval.}
 #'   }
-#' @inherit pc references
 #' @export
-#' @family bootstrap confidence interval functions
-#' @keywords confidence interval
 .bca <- function(thetahatstar,
                  thetahatstarjack = NULL,
                  xstarjack = NULL,
@@ -890,11 +890,11 @@ bc <- function(thetahatstar,
 #' Confidence Interval - Bias-Corrected and Accelerated
 #'
 #' @author Ivan Jacob Agaloos Pesigan
+#' @family bootstrap confidence interval functions
+#' @keywords confidence interval
 #' @inheritParams .bca
 #' @inherit .bca description details return references
 #' @export
-#' @family bootstrap confidence interval functions
-#' @keywords confidence interval
 bca <- function(thetahatstar,
                 thetahat,
                 data,

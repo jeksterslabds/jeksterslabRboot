@@ -11,11 +11,13 @@
 #' [Notes: Introduction to Parametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_pb.html)
 #'
 #' @author Ivan Jacob Agaloos Pesigan
+#' @family bootstrap functions
+#' @keywords bootstrap
+#' @inheritParams jeksterslabRutils::util_lapply
 #' @param data Vector, matrix or data frame.
 #'   Sample data to bootstrap.
 #'   The empirical distribution \eqn{\hat{F}}.
 #' @param B Integer. Number of bootstrap samples.
-#' @inheritParams jeksterslabRutils::util_lapply
 #' @return Returns a list of length `B` of nonparametric bootstrap samples.
 #' @examples
 #' B <- 5L
@@ -56,8 +58,6 @@
 #' New York, N.Y: Chapman & Hall.
 #'
 #' [Wikipedia: Bootstrapping (statistics)](https://en.wikipedia.org/wiki/Bootstrapping_(statistics))
-#' @family bootstrap functions
-#' @keywords bootstrap
 #' @importFrom jeksterslabRutils util_lapply
 #' @export
 nb <- function(data,
@@ -129,6 +129,10 @@ nb <- function(data,
 #' [Notes: Introduction to Parametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_pb.html)
 #'
 #' @author Ivan Jacob Agaloos Pesigan
+#' @family bootstrap functions
+#' @keywords bootstrap
+#' @inheritParams nb
+#' @inherit nb references
 #' @param n Integer.
 #'   Sample size.
 #' @param Sigmahat Matrix.
@@ -136,9 +140,7 @@ nb <- function(data,
 #'   from the original sample data.
 #' @param muhat Vector.
 #'   Estimated mean vector from the original sample data.
-#' @inheritParams nb
 #' @return Returns a list of length `B` of parametric bootstrap samples.
-#' @importFrom MASS mvrnorm
 #' @examples
 #' B <- 5L
 #' Sigmahat <- matrix(
@@ -167,9 +169,7 @@ nb <- function(data,
 #'   B = B
 #' )
 #' str(Xstar)
-#' @inherit nb references
-#' @family bootstrap functions
-#' @keywords bootstrap
+#' @importFrom MASS mvrnorm
 #' @export
 .pb_mvn <- function(n,
                     Sigmahat,
@@ -205,7 +205,10 @@ nb <- function(data,
 #' from Data
 #'
 #' @author Ivan Jacob Agaloos Pesigan
+#' @family bootstrap functions
+#' @keywords bootstrap
 #' @inheritParams nb
+#' @inherit .pb_mvn references description details return
 #' @examples
 #' X <- matrix(
 #'   data = c(
@@ -232,10 +235,7 @@ nb <- function(data,
 #'   B = 5L
 #' )
 #' str(Xstar)
-#' @inherit .pb_mvn references description details return
 #' @importFrom stats cov
-#' @family bootstrap functions
-#' @keywords bootstrap
 #' @export
 pb_mvn <- function(data,
                    B = 2000L,
@@ -278,12 +278,15 @@ pb_mvn <- function(data,
 #' [Notes: Introduction to Parametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_pb.html)
 #'
 #' @author Ivan Jacob Agaloos Pesigan
+#' @family bootstrap functions
+#' @keywords bootstrap
+#' @inheritParams nb
+#' @inherit .pb_mvn references return
 #' @param rFUN Function.
 #'   Data generating function to generate univariate data.
 #' @param n Integer.
 #'   Sample size.
 #' @param ... Arguments to pass to rFUN.
-#' @inheritParams nb
 #' @examples
 #' n <- 5
 #' B <- 5
@@ -327,9 +330,6 @@ pb_mvn <- function(data,
 #'   prob = phat
 #' )
 #' str(xstar)
-#' @inherit .pb_mvn references return
-#' @family bootstrap functions
-#' @keywords bootstrap
 #' @importFrom stats rnorm
 #' @export
 pb_univ <- function(rFUN = rnorm,

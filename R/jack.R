@@ -19,9 +19,11 @@
 #' with the \eqn{i}th observation removed.
 #'
 #' @author Ivan Jacob Agaloos Pesigan
+#' @family jackknife functions
+#' @keywords jackknife
+#' @inheritParams nb
 #' @param data Vector, matrix, or data frame.
 #'   Sample data.
-#' @inheritParams nb
 #' @return Returns a list of jackknife samples
 #'   of length `n`,
 #'   where `n` is the sample size of `data`.
@@ -57,10 +59,8 @@
 #'   data = X
 #' )
 #' str(Xstar)
-#' @family jackknife functions
-#' @keywords jackknife
 #' @references
-#'   [Wikipedia: Jackknife resampling](https://en.wikipedia.org/wiki/Jackknife_resampling)
+#' [Wikipedia: Jackknife resampling](https://en.wikipedia.org/wiki/Jackknife_resampling)
 #' @export
 jack <- function(data,
                  par = FALSE,
@@ -245,6 +245,10 @@ jack <- function(data,
 #' with degrees of freedom \eqn{\nu = n - 1}.
 #'
 #' @author Ivan Jacob Agaloos Pesigan
+#' @family jackknife functions
+#' @keywords jackknife
+#' @inheritParams wald
+#' @inherit jack references
 #' @param thetahatstarjack Numeric vector.
 #'   Jackknife sampling distribution,
 #'   that is,
@@ -261,7 +265,6 @@ jack <- function(data,
 #'   Parameter estimate
 #'   \eqn{\left( \hat{\theta} \right)}
 #'   from the original sample data.
-#' @inheritParams wald
 #' @return Returns a list with the following elements:
 #'   \describe{
 #'     \item{hat}{Jackknife estimates.}
@@ -275,9 +278,6 @@ jack <- function(data,
 #'     \item{se}{Jackknife estimate of standard error \eqn{\left( \widehat{\mathrm{se}}_{\mathrm{jack}} \left( \hat{\theta} \right) \right)}.}
 #'     \item{thetahatjack}{Bias-corrected jackknife estimate \eqn{\left( \hat{\theta}_{\mathrm{jack}} \right)}.}
 #'   }
-#' @family jackknife functions
-#' @keywords jackknife
-#' @inherit jack references
 #' @examples
 #' n <- 100
 #' x <- rnorm(n = n)

@@ -24,6 +24,8 @@
 #' using [`pchisq()`] with `df = 1`.
 #'
 #' @author Ivan Jacob Agaloos Pesigan
+#' @family Wald test functions
+#' @keywords Wald test
 #' @param thetahat Numeric.
 #'   Parameter estimate
 #'   \eqn{\left( \hat{\theta} \right)}.
@@ -39,11 +41,6 @@
 #'     \item{statistic}{Wald test statistic.}
 #'     \item{p}{p-value.}
 #'   }
-#' @importFrom stats pchisq
-#' @references
-#' [Wikipedia: Wald test](https://en.wikipedia.org/wiki/Wald_test)
-#' @family Wald test functions
-#' @keywords Wald test
 #' @examples
 #' thetahat <- 0.860
 #' sehat <- 0.409
@@ -52,6 +49,9 @@
 #'   thetahat = thetahat,
 #'   varhat = varhat
 #' )
+#' @references
+#' [Wikipedia: Wald test](https://en.wikipedia.org/wiki/Wald_test)
+#' @importFrom stats pchisq
 #' @export
 wald_test <- function(thetahat,
                       varhat,
@@ -92,6 +92,10 @@ wald_test <- function(thetahat,
 #' using [`pnorm()`] or [`pt()`].
 #'
 #' @author Ivan Jacob Agaloos Pesigan
+#' @family Wald test functions
+#' @keywords Wald test
+#' @inheritParams wald_test
+#' @inherit wald_test references
 #' @param sehat Numeric.
 #'   Estimated standard error of `thetahat`
 #'   \eqn{\left( \widehat{\mathrm{se}} \left( \hat{\theta} \right) \right)}.
@@ -101,17 +105,11 @@ wald_test <- function(thetahat,
 #' @param df Numeric.
 #'   Degrees of freedom (df) if `dist = "t"`.
 #'   Ignored if `dist = "z"`.
-#' @inheritParams wald_test
 #' @return Returns a vector with the following elements:
 #'   \describe{
 #'     \item{statistic}{Square root of Wald test statistic.}
 #'     \item{p}{p-value.}
 #'   }
-#' @importFrom stats pnorm
-#' @importFrom stats pt
-#' @inherit wald_test references
-#' @family Wald test functions
-#' @keywords Wald test
 #' @examples
 #' thetahat <- 0.860
 #' sehat <- 0.409
@@ -125,6 +123,8 @@ wald_test <- function(thetahat,
 #'   dist = "t",
 #'   df = 1000
 #' )
+#' @importFrom stats pnorm
+#' @importFrom stats pt
 #' @export
 sqrt_wald_test <- function(thetahat,
                            sehat,
@@ -279,6 +279,11 @@ sqrt_wald_test <- function(thetahat,
 #' \eqn{t} converges to \eqn{z}.
 #'
 #' @author Ivan Jacob Agaloos Pesigan
+#' @family Wald confidence interval functions
+#' @keywords confidence interval, Wald test
+#' @inheritParams sqrt_wald_test
+#' @inheritParams alpha2prob
+#' @inheritParams ci_eval
 #' @param eval Logical.
 #'   Evaluate confidence intervals using
 #'   [`zero_hit()`],
@@ -286,11 +291,6 @@ sqrt_wald_test <- function(thetahat,
 #'   [`len()`],
 #'   and
 #'   [`shape()`].
-#' @inheritParams sqrt_wald_test
-#' @inheritParams alpha2prob
-#' @inheritParams ci_eval
-#' @importFrom stats qnorm
-#' @importFrom stats qt
 #' @return Returns a vector with the following elements:
 #'   \describe{
 #'     \item{statistic}{Square root of Wald test statistic.}
@@ -335,8 +335,8 @@ sqrt_wald_test <- function(thetahat,
 #' )
 #' @references
 #' [Wikipedia: Confidence interval](https://en.wikipedia.org/wiki/Confidence_interval)
-#' @family Wald confidence interval functions
-#' @keywords confidence interval, Wald test
+#' @importFrom stats qnorm
+#' @importFrom stats qt
 #' @export
 wald <- function(thetahat,
                  sehat,
@@ -363,17 +363,6 @@ wald <- function(thetahat,
     dist = dist,
     df = df
   )
-  # if (dist == "z") {
-  #  critical <- qnorm(
-  #    p = prob
-  #  )
-  # }
-  # if (dist == "t") {
-  #  critical <- qt(
-  #    p = prob,
-  #    df = df
-  #  )
-  # }
   ci <- rep(x = NA, times = length(critical))
   for (i in seq_along(critical)) {
     ci[i] <- thetahat + (critical[i] * sehat)

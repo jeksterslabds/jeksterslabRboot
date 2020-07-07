@@ -1,6 +1,8 @@
 #' Confidence Interval - Theta Hit
 #'
 #' @author Ivan Jacob Agaloos Pesigan
+#' @family confidence interval hit functions
+#' @keywords confidence interval
 #' @param lo Numeric.
 #'   Lower limit of the estimated confidence interval
 #'   \eqn{\left( \hat{\theta}_{\mathrm{lo}} \right)}.
@@ -29,8 +31,6 @@
 #' theta_hit(lo = 1, theta = 0, up = 2)
 #' # TRUE
 #' theta_hit(lo = -1, theta = 0, up = 1)
-#' @family confidence interval hit functions
-#' @keywords confidence interval
 #' @export
 theta_hit <- function(lo,
                       theta,
@@ -41,6 +41,8 @@ theta_hit <- function(lo,
 #' Confidence Interval - Zero Hit
 #'
 #' @author Ivan Jacob Agaloos Pesigan
+#' @family confidence interval hit functions
+#' @keywords confidence interval
 #' @inheritParams theta_hit
 #' @return Returns
 #'   `TRUE` if zero is between the interval
@@ -61,8 +63,6 @@ theta_hit <- function(lo,
 #' zero_hit(lo = 1, up = 2)
 #' # TRUE
 #' zero_hit(lo = -1, up = 1)
-#' @family confidence interval hit functions
-#' @keywords confidence interval
 #' @export
 zero_hit <- function(lo,
                      up) {
