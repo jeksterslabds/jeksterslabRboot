@@ -70,9 +70,10 @@ nb <- function(data,
   if (is.data.frame(data) | is.matrix(data)) {
     len <- 1:nrow(data)
   }
-  foo <- function(x, data) {
+  foo <- function(iter,
+                  data) {
     i <- sample(
-      x = len,
+      iter = len,
       replace = TRUE
     )
     if (is.data.frame(data) | is.matrix(data)) {
@@ -87,7 +88,7 @@ nb <- function(data,
   util_lapply(
     FUN = foo,
     args = list(
-      x = 1:B,
+      iter = 1:B,
       data = data
     ),
     par = par,
@@ -177,7 +178,7 @@ nb <- function(data,
                     B = 2000L,
                     par = FALSE,
                     ncores = NULL) {
-  foo <- function(x,
+  foo <- function(iter,
                   n,
                   Sigmahat,
                   muhat) {
@@ -190,7 +191,7 @@ nb <- function(data,
   util_lapply(
     FUN = foo,
     args = list(
-      x = 1:B,
+      iter = 1:B,
       n = n,
       Sigmahat = Sigmahat,
       muhat = muhat
@@ -339,12 +340,12 @@ pb_univ <- function(rFUN = rnorm,
                     ncores = NULL,
                     ...) {
   args <- list(
-    x = 1:B,
+    iter = 1:B,
     rFUN = rFUN,
     n = n,
     ...
   )
-  foo <- function(x,
+  foo <- function(iter,
                   rFUN,
                   n,
                   ...) {
