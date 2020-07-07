@@ -177,9 +177,9 @@ knitr::kable(
 #' ## Bootstrap
 #'
 #+ bootstrap
-x_star <- pb_univ(
-  rFUN = rnorm,
+x_star <- pbuniv(
   n = n,
+  rFUN = rnorm,
   B = B,
   mean = thetahat,
   sd = sigmahat

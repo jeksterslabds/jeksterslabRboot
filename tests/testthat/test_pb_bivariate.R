@@ -170,7 +170,7 @@ knitr::kable(
 #' ## Bootstrap
 #'
 #+ bootstrap
-X_star <- pb_mvn(
+X_star <- pbmvn(
   data = X,
   B = B
 )

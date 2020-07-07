@@ -317,7 +317,7 @@ $\mathbf{x}^{*}$ is a set of $B$ bootstrap samples.
   \right\}  
 \end{equation}
 
-The function `pb_univ()`
+The function `pbuniv()`
 from the `jeksterslabRboot` package
 can be used to generate `B`
 parametric bootstrap samples from a univariate probability distribution
@@ -338,15 +338,18 @@ we pass
 and 
 `sd =` `r sigmahat`
 to `rnorm`.
-The `pb_univ()` function returns a `list`
+The `pbuniv()` function returns a `list`
 of length `B` bootstrap samples.
 $x^{*}$ is saved as `xstar`.
 
 
 ```{r}
-xstar <- nb(
-  data = x,
-  B = B
+xstar <- pbuniv(
+  n = n,
+  rFUN = rnorm,
+  B = B,
+  mean = thetahat,
+  sd = sigmahat
 )
 str(xstar, list.len = 6)
 ```
