@@ -4,11 +4,25 @@
 #'
 #' The confidence interval length is given by
 #' \deqn{
-#'   \mathrm{confidence \ interval \ length}
+#'   \mathrm{
+#'     confidence \ interval \ length
+#'   }
 #'   =
-#'   \hat{\theta}_{\mathrm{up}}
+#'   \hat{
+#'     \theta
+#'   }_{
+#'     \mathrm{
+#'       up
+#'     }
+#'   }
 #'   -
-#'   \hat{\theta}_{\mathrm{lo}}
+#'   \hat{
+#'     \theta
+#'   }_{
+#'     \mathrm{
+#'       lo
+#'     }
+#'   }
 #' }
 #'
 #' @author Ivan Jacob Agaloos Pesigan
@@ -27,30 +41,96 @@ len <- function(lo,
 #'
 #' The confidence interval shape is given by
 #' \deqn{
-#'   \mathrm{confidence \ interval \ shape}
+#'   \mathrm{
+#'     confidence \ interval \ shape
+#'   }
 #'   =
 #'   \frac{
-#'     \hat{\theta}_{\mathrm{up}} - \hat{\theta}
+#'     \hat{
+#'       \theta
+#'     }_{
+#'       \mathrm{
+#'         up
+#'       }
+#'     }
+#'     -
+#'     \hat{
+#'       \theta
+#'     }
 #'   }
 #'   {
-#'     \hat{\theta} - \hat{\theta}_{\mathrm{lo}}
+#'     \hat{
+#'       \theta
+#'     }
+#'     -
+#'     \hat{
+#'       \theta
+#'     }_{
+#'       \mathrm{
+#'         lo
+#'       }
+#'     }
 #'   }
 #' }
 #'
 #' The shape measures the asymmetry of the confidence interval
-#' around the point estimate \eqn{\hat{\theta}}.
-#' Shape \eqn{> 1.00} is indicative of greater distance between
-#' \eqn{\hat{\theta}_{\mathrm{up}}} and \eqn{\hat{\theta}}
+#' around the point estimate
+#' \eqn{
+#'   \hat{
+#'     \theta
+#'   }
+#' }.
+#' Shape
+#' \eqn{
+#'   >
+#'   1.00
+#' }
+#' is indicative of greater distance between
+#' \eqn{
+#'   \hat{
+#'     \theta
+#'   }_{
+#'     \mathrm{
+#'       up
+#'     }
+#'   }
+#' }
+#' and
+#' \eqn{
+#'   \hat{
+#'     \theta
+#'   }
+#' }
 #' than
-#' \eqn{\hat{\theta}} and \eqn{\hat{\theta}_{\mathrm{lo}}}.
+#' \eqn{
+#'   \hat{
+#'     \theta
+#'   }
+#' }
+#' and
+#' \eqn{
+#'   \hat{
+#'     \theta
+#'   }_{
+#'     \mathrm{
+#'       lo
+#'     }
+#'   }
+#' } .
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #' @family confidence interval evaluation functions
 #' @keywords confidence interval
 #' @inheritParams theta_hit
 #' @param thetahat Numeric.
-#'   Parameter estimate
-#'   \eqn{\left( \hat{\theta} \right)}.
+#' Parameter estimate
+#' \eqn{
+#'   \left(
+#'     \hat{
+#'       \theta
+#'     }
+#'   \right)
+#' } .
 #' @export
 shape <- function(lo,
                   thetahat,
@@ -71,27 +151,37 @@ shape <- function(lo,
 #' @family confidence interval evaluation functions
 #' @keywords confidence interval
 #' @param ci Vector.
-#'   Confidence intervals sorted from smallest to largest.
-#'   The length should be even.
-#'   The first and the last element correspond to the widest confidence interval.
-#'   The second and the second to the last element correspond to the second widest confidence interval.
-#'   And so on and so forth.
+#' Confidence intervals sorted from smallest to largest.
+#' The length should be even.
+#' The first and the last element correspond to the widest confidence interval.
+#' The second and the second to the last element correspond to the second widest confidence interval.
+#' And so on and so forth.
 #' @param thetahat Numeric.
-#'   Parameter estimate
-#'   \eqn{\left( \hat{\theta} \right)}.
+#' Parameter estimate
+#' \eqn{
+#'   \left(
+#'     \hat{
+#'       \theta
+#'     }
+#'   \right)
+#' }.
 #' @param theta Numeric.
-#'   Population parameter
-#'   \eqn{\left( \theta \right)}.
+#' Population parameter
+#' \eqn{
+#'   \left(
+#'     \theta
+#'   \right)
+#' }.
 #' @param label Vector.
-#'   Vector used to label results.
-#'   If not provided defaults to `label = 1:(length(ci)/2)`.
+#' Vector used to label results.
+#' If not provided defaults to `label = 1:(length(ci)/2)`.
 #' @return Returns a vector with the following elements:
-#'   \describe{
-#'     \item{zero_hit_}{Logical. Tests if confidence interval contains zero.}
-#'     \item{theta_hit_}{Logical. Tests if confidence interval contains theta.}
-#'     \item{length_}{Length of confidence interval.}
-#'     \item{shape_}{Shape of confidence interval.}
-#'   }
+#' \describe{
+#'   \item{zero_hit_}{Logical. Tests if confidence interval contains zero.}
+#'   \item{theta_hit_}{Logical. Tests if confidence interval contains theta.}
+#'   \item{length_}{Length of confidence interval.}
+#'   \item{shape_}{Shape of confidence interval.}
+#' }
 #' @examples
 #' ci <- c(
 #'   98.04786,
