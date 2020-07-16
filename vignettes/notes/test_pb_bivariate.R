@@ -1,38 +1,31 @@
----
-title: "Test: Nonparametric Bootstrap - Bivariate"
-author: "Ivan Jacob Agaloos Pesigan"
-date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Test: Nonparametric Bootstrap - Bivariate}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
-
-
-```{r knitr_options, include=FALSE, cache=FALSE}
+#' ---
+#' title: "Test: Parametric Bootstrap - Bivariate"
+#' author: "Ivan Jacob Agaloos Pesigan"
+#' date: "`r Sys.Date()`"
+#' output: rmarkdown::html_vignette
+#' vignette: >
+#'   %\VignetteIndexEntry{Test: Parametric Bootstrap - Bivariate}
+#'   %\VignetteEngine{knitr::rmarkdown}
+#'   %\VignetteEncoding{UTF-8}
+#' ---
+#'
+#+ knitr_options, include=FALSE, cache=FALSE
 knitr::opts_chunk$set(
   error = TRUE,
   collapse = TRUE,
   comment = "#>",
   out.width = "100%"
 )
-```
-
-
-
-```{r setup}
+#'
+#+ setup
 library(testthat)
 library(MASS)
 library(jeksterslabRboot)
-context("Test Nonparametric Bootstrap - Bivariate.")
-```
-
-
-## Parameters
-
-
-```{r parameters}
+context("Test Parametric Bootstrap - Bivariate.")
+#'
+#' ## Parameters
+#'
+#+ parameters
 n <- 1000
 B <- 1000
 rho <- runif(
@@ -111,13 +104,10 @@ knitr::kable(
   row.names = FALSE,
   caption = "Sampling Distribution of $\\hat{\\theta}$ with Known Parameter"
 )
-```
-
-
-## Generate Data
-
-
-```{r generate_data}
+#'
+#' ## Generate Data
+#'
+#+ generate_data
 X <- mvrnorm(
   n = n,
   Sigma = Sigma,
@@ -131,13 +121,10 @@ hist(X[, 2])
 qqnorm(X[, 2])
 qqline(X[, 2])
 plot(X[, 1], X[, 2])
-```
-
-
-## Estimate Correlation
-
-
-```{r estimate}
+#'
+#' ## Estimate Correlation
+#'
+#+ estimate
 rhohat <- cor(X)[2, 1]
 thetahat <- rhohat
 varhat_thetahat <- ((1 - rhohat^2)^2) / (n - 2)
@@ -179,15 +166,17 @@ knitr::kable(
   row.names = FALSE,
   caption = "Sample Statistics (Parameter Estimates)"
 )
-```
-
-
-## Bootstrap
-
-
-```{r bootstrap}
-X_star <- nb(
-  data = X,
+#'
+#' ## Bootstrap
+#'
+#+ bootstrap
+n <- nrow(X)
+muhatthetahat <- colMeans(X)
+Sigmahatthetahat <- cov(X)
+X_star <- pbmvn(
+  n = n,
+  muhatthetahat = muhatthetahat,
+  Sigmahatthetahat = Sigmahatthetahat,
   B = B
 )
 thetahatstar <- sapply(
@@ -234,15 +223,12 @@ knitr::kable(
     Value
   ),
   row.names = FALSE,
-  caption = "Nonparametric Bootstrapping Results"
+  caption = "Parametric Bootstrapping Results"
 )
-```
-
-
-### Bootstrap Sampling Distribution
-
-
-```{r plot}
+#'
+#' ### Bootstrap Sampling Distribution
+#'
+#+ plot
 hist(
   thetahatstar,
   breaks = 100,
@@ -262,46 +248,34 @@ hist(
 )
 qqnorm(thetahatstar)
 qqline(thetahatstar)
-```
-
-
-
-### Confidence Intervals
-
-
-```{r wald}
+#'
+#'
+#' ### Confidence Intervals
+#'
+#+ wald
 wald_out <- wald(
   thetahat = thetahat,
   sehat = sehat,
   eval = TRUE
 )
-```
-
-
-
-```{r pc}
+#'
+#+ pc
 pc_out <- pc(
   thetahatstar = thetahatstar,
   thetahat = thetahat,
   wald = TRUE,
   eval = TRUE
 )
-```
-
-
-
-```{r bc}
+#'
+#+ bc
 bc_out <- bc(
   thetahatstar = thetahatstar,
   thetahat = thetahat,
   wald = TRUE,
   eval = TRUE
 )
-```
-
-
-
-```{r bca}
+#'
+#+ bca
 bca_out <- bca(
   thetahatstar = thetahatstar,
   thetahat = thetahat,
@@ -310,11 +284,8 @@ bca_out <- bca(
   wald = TRUE,
   eval = TRUE
 )
-```
-
-
-
-```{r ci}
+#'
+#+ ci
 knitr::kable(
   x = as.data.frame(
     rbind(
@@ -326,13 +297,10 @@ knitr::kable(
   ),
   caption = "Confidence Intervals"
 )
-```
-
-
-## testthat
-
-
-```{r testthat_01}
+#'
+#' ## testthat
+#'
+#+ testthat_01
 test_that("mean", {
   expect_equivalent(
     thetahat,
@@ -340,11 +308,8 @@ test_that("mean", {
     tolerance = 0.01
   )
 })
-```
-
-
-
-```{r testthat_02}
+#'
+#+ testthat_02
 test_that("se", {
   expect_equivalent(
     se_thetahat,
@@ -352,11 +317,8 @@ test_that("se", {
     tolerance = 0.01
   )
 })
-```
-
-
-
-```{r testthat_03}
+#'
+#+ testthat_03
 test_that("2.5 is equal to cor.test", {
   expect_equivalent(
     round(
@@ -370,11 +332,8 @@ test_that("2.5 is equal to cor.test", {
     tolerance = 0.02
   )
 })
-```
-
-
-
-```{r testthat_04}
+#'
+#+ testthat_04
 test_that("97.5 is equal to cor.test", {
   expect_equivalent(
     round(
@@ -388,11 +347,8 @@ test_that("97.5 is equal to cor.test", {
     tolerance = 0.02
   )
 })
-```
-
-
-
-```{r testthat_05}
+#'
+#+ testthat_05
 test_that("2.5", {
   expect_equivalent(
     round(
@@ -414,11 +370,8 @@ test_that("2.5", {
     tolerance = 0.02
   )
 })
-```
-
-
-
-```{r testthat_06}
+#'
+#+ testthat_06
 test_that("97.5", {
   expect_equivalent(
     round(
@@ -440,5 +393,3 @@ test_that("97.5", {
     tolerance = 0.02
   )
 })
-```
-

@@ -30,13 +30,25 @@ vignettes/articles/*.md
 vignettes/notes/*.html
 vignettes/notes/*.pdf
 vignettes/notes/*.md
+vignettes/references/*.html
+vignettes/references/*.pdf
+vignettes/references/*.md
+vignettes/resources/*.html
+vignettes/resources/*.pdf
+vignettes/resources/*.md
 vignettes/tests/*.html
 vignettes/tests/*.pdf
 vignettes/tests/*.md
+
 # produced tests
 tests/testthat/*.html
 tests/testthat/*.pdf
 tests/testthat/*.md
+
+# produced data_raw
+data_raw/*.html
+data_raw/*.pdf
+data_raw/*.md
 
 # OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
 .httr-oauth

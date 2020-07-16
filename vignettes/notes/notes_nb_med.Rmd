@@ -683,11 +683,7 @@ knitr::kable(
 Confidence intervals can be constructed
 around
 $\hat{\theta}$ .
-The functions
-`pc()`,
-`bc()`,
-and
-`bca()`
+The functions `pc()`, `bc()`, and `bca()`
 from
 the `jeksterslabRboot` package
 can be used to construct
@@ -705,20 +701,14 @@ we can check if our confidence intervals contain
 the population parameter.
 
 See documentation for
-`pc()`,
-`bc()`,
-and
-`bca()`
+`pc()`, `bc()`, and `bca()`
 from
 the `jeksterslabRboot` package
 on how confidence intervals are constructed.
 
 See documentation for
-`zero_hit()`,
-`theta_hit()`,
-`len()`,
-and
-`shape()`
+`zero_hit()`, `theta_hit()`, `len()`,
+and `shape()`
 from
 the `jeksterslabRboot` package
 on how confidence intervals are evaluated.

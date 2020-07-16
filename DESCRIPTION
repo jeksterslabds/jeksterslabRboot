@@ -27,11 +27,12 @@ Imports:
 	utils,
 	stats,
     MASS,
-    jeksterslabRutils,
+    lavaan,
+    jeksterslabRpar,
     jeksterslabRdata,
     jeksterslabRdatarepo
 Remotes:
-    jeksterslabds/jeksterslabRutils,
+    jeksterslabds/jeksterslabRpar,
     jeksterslabds/jeksterslabRdata,
     jeksterslabds/jeksterslabRdatarepo
 Suggests:

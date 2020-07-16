@@ -47,6 +47,7 @@ and $\sigma^2 = `r sigma2`$.
     \mu = `r mu`,
     \sigma^2 = `r sigma2`
   \right)
+  (\#eq:dist-norm-X-r)
 \end{equation}
 
 This data generating function is referred to as $F$.
@@ -172,6 +173,16 @@ is independently sampled from the normal distribution
 with $\mu = `r mu`$ and $\sigma^2 = `r sigma2`$.
 
 \begin{equation}
+  x
+  =
+  X
+  \left(
+    \omega
+  \right)
+  (\#eq:dist-random-variable-1)
+\end{equation}
+
+\begin{equation}
   \mathbf{x}
   =
   \begin{bmatrix}
@@ -187,8 +198,8 @@ with $\mu = `r mu`$ and $\sigma^2 = `r sigma2`$.
   \left\{
     1, 2, 3, \dots, n
   \right\}
+  (\#eq:dist-random-variable-2)
 \end{equation}
-
 
 This is accommplished in `R`
 using the 
