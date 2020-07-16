@@ -3,7 +3,9 @@
 #' Generates jackknife samples.
 #'
 #' \deqn{
-#'   \mathbf{x}_i
+#'   \mathbf{
+#'     x
+#'   }_i
 #'   =
 #'   \left\{
 #'     x_1,
@@ -13,7 +15,18 @@
 #'     x_n
 #'   \right\}
 #' }
-#' for \eqn{i = \left\{ 1, 2, 3, \dots, n \right\}}
+#' for
+#' \eqn{
+#'   i
+#'   =
+#'   \left\{
+#'     1,
+#'     2,
+#'     3,
+#'     \dots,
+#'     n
+#'   \right\}
+#' }
 #' the \eqn{i}th jackknife sample
 #' consists of the original sample data
 #' with the \eqn{i}th observation removed.
@@ -64,7 +77,13 @@
 #' @export
 jack <- function(data,
                  par = FALSE,
-                 ncores = NULL) {
+                 ncores = NULL,
+                 mc = TRUE,
+                 lb = FALSE,
+                 cl_eval = FALSE,
+                 cl_export = FALSE,
+                 cl_expr,
+                 cl_vars) {
   if (is.vector(data)) {
     n <- length(data)
   }
@@ -79,14 +98,19 @@ jack <- function(data,
       return(data[-i])
     }
   }
-  util_lapply(
+  par_lapply(
+    X = 1:n,
     FUN = foo,
-    args = list(
-      i = 1:n,
-      data = data
-    ),
+    data = data,
     par = par,
-    ncores = ncores
+    ncores = ncores,
+    mc = mc,
+    lb = lb,
+    cl_eval = cl_eval,
+    cl_export = cl_export,
+    cl_expr = cl_expr,
+    cl_vars = cl_vars,
+    rbind = NULL
   )
 }
 
@@ -96,37 +120,66 @@ jack <- function(data,
 #'
 #' The jackknife estimate of bias is given by
 #' \deqn{
-#'   \widehat{\mathrm{bias}}_{\mathrm{jack}}
+#'   \widehat{
+#'     \mathrm{
+#'       bias
+#'     }
+#'   }_{
+#'     \mathrm{
+#'       jack
+#'     }
+#'   }
 #'   \left(
 #'     \theta
 #'   \right)
 #'   =
 #'   \left(
-#'     n - 1
+#'     n
+#'     -
+#'     1
 #'   \right)
 #'   \left(
-#'     \hat{\theta}_{
+#'     \hat{
+#'       \theta
+#'     }_{
 #'       \left(
 #'         \cdot
 #'       \right)
 #'     }
 #'     -
-#'     \hat{\theta}
+#'     \hat{
+#'       \theta
+#'     }
 #'   \right)
 #' }
 #'
 #' where
 #'
 #' \deqn{
-#'   \hat{\theta}_{
+#'   \hat{
+#'     \theta
+#'   }_{
 #'     \left(
 #'       \cdot
 #'     \right)
 #'   }
 #'   =
-#'   \frac{1}{n}
-#'   \sum_{i = 1}^{n}
-#'   \hat{\theta}_{
+#'   \frac{
+#'     1
+#'   }
+#'   {
+#'     n
+#'   }
+#'   \sum_{
+#'     i
+#'     =
+#'     1
+#'   }^{
+#'     n
+#'   }
+#'   \hat{
+#'     \theta
+#'   }_{
 #'     \left(
 #'       i
 #'     \right)
@@ -137,18 +190,53 @@ jack <- function(data,
 #' is given by
 #'
 #' \deqn{
-#'   \widehat{\mathrm{se}}_{\mathrm{jack}}
+#'   \widehat{
+#'     \mathrm{
+#'       se
+#'     }
+#'   }_{
+#'     \mathrm{
+#'       jack
+#'     }
+#'   }
 #'   \left(
-#'     \hat{\theta}
+#'     \hat{
+#'       \theta
+#'     }
 #'   \right)
 #'   =
 #'   \sqrt{
-#'     \frac{n - 1}{n}
-#'     \sum_{i = 1}^{n}
-#'     \left(
-#'       \hat{\theta}_{\left( i \right)}
+#'     \frac{
+#'       n
 #'       -
-#'       \hat{\theta}_{\left( \cdot \right)}
+#'       1
+#'     }
+#'     {
+#'       n
+#'     }
+#'     \sum_{
+#'       i
+#'       =
+#'       1
+#'     }^{
+#'       n
+#'     }
+#'     \left(
+#'       \hat{
+#'         \theta
+#'       }_{
+#'         \left(
+#'           i
+#'         \right)
+#'       }
+#'       -
+#'       \hat{
+#'         \theta
+#'       }_{
+#'         \left(
+#'           \cdot
+#'         \right)
+#'       }
 #'     \right)^2
 #'   } .
 #' }
@@ -157,22 +245,44 @@ jack <- function(data,
 #' is given by
 #'
 #' \deqn{
-#'   \hat{\theta}_{\mathrm{jack}}
+#'   \hat{
+#'     \theta
+#'   }_{
+#'     \mathrm{
+#'       jack
+#'     }
+#'   }
 #'   =
-#'   \hat{\theta}
+#'   \hat{
+#'     \theta
+#'   }
 #'   -
-#'   \hat{\mathrm{bias}}_{\mathrm{jack}}
+#'   \hat{
+#'     \mathrm{
+#'       bias
+#'     }
+#'   }_{
+#'     \mathrm{
+#'       jack
+#'     }
+#'   }
 #'   \left(
 #'     \theta
 #'   \right)
 #'   =
 #'   n
-#'   \hat{\theta}
+#'   \hat{
+#'     \theta
+#'   }
 #'   -
 #'   \left(
-#'     n - 1
+#'     n
+#'     -
+#'     1
 #'   \right)
-#'   \hat{\theta}_{
+#'   \hat{
+#'     \theta
+#'   }_{
 #'     \left(
 #'       \cdot
 #'     \right)
@@ -182,31 +292,68 @@ jack <- function(data,
 #' Pseudo-values can be computed using
 #'
 #' \deqn{
-#'   \tilde{\theta}_{i}
+#'   \tilde{
+#'     \theta
+#'   }_{
+#'     i
+#'   }
 #'   =
-#'   n \hat{\theta}
+#'   n
+#'   \hat{
+#'     \theta
+#'   }
 #'   -
 #'   \left(
-#'     n - 1
+#'     n
+#'     -
+#'     1
 #'   \right)
-#'   \hat{\theta}_{\left( i \right)} .
+#'   \hat{
+#'     \theta
+#'   }_{
+#'     \left(
+#'       i
+#'     \right)
+#'   } .
 #' }
 #'
 #' The standard error can be estimated using the pseudo-values
 #'
 #' \deqn{
-#'   \widehat{\mathrm{se}}_{\mathrm{jack}}
+#'   \widehat{
+#'     \mathrm{
+#'       se
+#'     }
+#'   }_{
+#'     \mathrm{
+#'       jack
+#'     }
+#'   }
 #'   \left(
-#'     \tilde{\theta}
+#'     \tilde{
+#'       \theta
+#'     }
 #'   \right)
 #'   =
 #'   \sqrt{
-#'     \sum_{i = 1}^{n}
+#'     \sum_{
+#'       i
+#'       =
+#'       1
+#'     }^{
+#'       n
+#'     }
 #'     \frac{
 #'       \left(
-#'         \tilde{\theta}_{i}
+#'         \tilde{
+#'           \theta
+#'         }_{
+#'           i
+#'         }
 #'         -
-#'         \tilde{\theta}
+#'         \tilde{
+#'           \theta
+#'         }
 #'       \right)^2
 #'     }
 #'     {
@@ -223,26 +370,69 @@ jack <- function(data,
 #' where
 #'
 #' \deqn{
-#'   \tilde{\theta}
+#'   \tilde{
+#'     \theta
+#'   }
 #'   =
-#'   \frac{1}{n}
-#'   \sum_{i = 1}^{n}
-#'   \tilde{\theta}_{i} .
+#'   \frac{
+#'     1
+#'   }
+#'   {
+#'     n
+#'   }
+#'   \sum_{
+#'     i
+#'     =
+#'     1
+#'   }^{
+#'     n
+#'   }
+#'   \tilde{
+#'     \theta
+#'   }_{
+#'     i
+#'   } .
 #' }
 #'
 #' An interval can be generated using
 #'
 #' \deqn{
-#'   \tilde{\theta}
+#'   \tilde{
+#'     \theta
+#'   }
 #'   \pm
-#'   t_{\frac{\alpha}{2}}
+#'   t_{
+#'     \frac{
+#'       \alpha
+#'     }
+#'     {
+#'       2
+#'     }
+#'   }
 #'   \times
-#'   \widehat{\mathrm{se}}_{\mathrm{jack}}
-#'     \left(
-#'       \tilde{\theta}
-#'     \right)
+#'   \widehat{
+#'     \mathrm{
+#'       se
+#'     }
+#'   }_{
+#'     \mathrm{
+#'       jack
+#'     }
+#'   }
+#'   \left(
+#'     \tilde{
+#'       \theta
+#'     }
+#'   \right)
 #' }
-#' with degrees of freedom \eqn{\nu = n - 1}.
+#' with degrees of freedom
+#' \eqn{
+#'   \nu
+#'   =
+#'   n
+#'   -
+#'   1
+#' } .
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #' @family jackknife functions
@@ -250,21 +440,51 @@ jack <- function(data,
 #' @inheritParams wald
 #' @inherit jack references
 #' @param thetahatstarjack Numeric vector.
-#'   Jackknife sampling distribution,
-#'   that is,
-#'   the sampling distribution of `thetahat`
-#'   estimated for each `i` jackknife sample.
-#'   \eqn{
-#'     \hat{\theta}_{\left( 1 \right)},
-#'     \hat{\theta}_{\left( 2 \right)},
-#'     \hat{\theta}_{\left( 3 \right)},
-#'     \dots,
-#'     \hat{\theta}_{\left( n \right)}
-#'   } .
+#' Jackknife sampling distribution,
+#' that is,
+#' the sampling distribution of `thetahat`
+#' estimated for each `i` jackknife sample.
+#' \eqn{
+#'   \hat{
+#'     \theta
+#'   }_{
+#'     \left(
+#'       1
+#'     \right)
+#'   },
+#'   \hat{
+#'     \theta
+#'   }_{
+#'     \left(
+#'       2
+#'     \right)
+#'   },
+#'   \hat{
+#'     \theta
+#'   }_{
+#'     \left(
+#'       3
+#'     \right)
+#'   },
+#'   \dots,
+#'   \hat{
+#'     \theta
+#'   }_{
+#'     \left(
+#'       n
+#'     \right)
+#'   }
+#' } .
 #' @param thetahat Numeric.
-#'   Parameter estimate
-#'   \eqn{\left( \hat{\theta} \right)}
-#'   from the original sample data.
+#' Parameter estimate
+#' \eqn{
+#'   \left(
+#'     \hat{
+#'       \theta
+#'     }
+#'   \right)
+#' }
+#' from the original sample data.
 #' @return Returns a list with the following elements:
 #'   \describe{
 #'     \item{hat}{Jackknife estimates.}

@@ -782,6 +782,7 @@ bc <- function(thetahatstar,
                  thetahat,
                  data,
                  fitFUN,
+                 ...,
                  alpha = c(
                    0.001,
                    0.01,
@@ -793,9 +794,14 @@ bc <- function(thetahatstar,
                  df,
                  eval = FALSE,
                  theta = 0,
-                 par = FALSE,
+                 par = TRUE,
                  ncores = NULL,
-                 ...) {
+                 mc = TRUE,
+                 lb = FALSE,
+                 cl_eval = FALSE,
+                 cl_export = FALSE,
+                 cl_expr,
+                 cl_vars) {
   # standard error
   sehatB <- sd(thetahatstar)
   # bias-correction
@@ -814,19 +820,19 @@ bc <- function(thetahatstar,
       )
     }
     ## generate thetahatstarjack from generated xstarjack or argument
-    thetahatstarjack <- util_lapply(
+    thetahatstarjack <- par_lapply(
+      X = xstarjack,
       FUN = fitFUN,
-      args = list(
-        data = xstarjack
-      ),
+      ...,
       par = par,
-      ncores = ncores
-    )
-    thetahatstarjack <- as.vector(
-      do.call(
-        what = "rbind",
-        args = thetahatstarjack
-      )
+      ncores = ncores,
+      mc = mc,
+      lb = lb,
+      cl_eval = cl_eval,
+      cl_export = cl_export,
+      cl_expr = cl_expr,
+      cl_vars = cl_vars,
+      rbind = TRUE
     )
   }
   parenthesis <- mean(thetahatstarjack) - thetahatstarjack
@@ -899,6 +905,7 @@ bca <- function(thetahatstar,
                 thetahat,
                 data,
                 fitFUN,
+                ...,
                 alpha = c(
                   0.001,
                   0.01,
@@ -910,9 +917,14 @@ bca <- function(thetahatstar,
                 df,
                 eval = FALSE,
                 theta = 0,
-                par = FALSE,
+                par = TRUE,
                 ncores = NULL,
-                ...) {
+                mc = TRUE,
+                lb = FALSE,
+                cl_eval = FALSE,
+                cl_export = FALSE,
+                cl_expr,
+                cl_vars) {
   .bca(
     thetahatstar = thetahatstar,
     thetahatstarjack = NULL,
@@ -920,6 +932,7 @@ bca <- function(thetahatstar,
     thetahat = thetahat,
     data = data,
     fitFUN = fitFUN,
+    ...,
     alpha = alpha,
     wald = wald,
     null = null,
@@ -929,6 +942,11 @@ bca <- function(thetahatstar,
     theta = theta,
     par = par,
     ncores = ncores,
-    ...
+    mc = mc,
+    lb = lb,
+    cl_eval = cl_eval,
+    cl_export = cl_export,
+    cl_expr = cl_expr,
+    cl_vars = cl_vars
   )
 }

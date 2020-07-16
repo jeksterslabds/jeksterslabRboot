@@ -1,39 +1,48 @@
 #' Nonparametric Bootstrap
 #'
-#' Generates `B` number of nonparametric bootstrap
+#' @description Generates `B` number of nonparametric bootstrap
 #' samples from the original sample `data`.
-#' `data` is referred to as the empirical distribution \eqn{\hat{F}}.
+#' `data` is referred to as the empirical distribution
+#' \eqn{
+#'   \hat{
+#'     F
+#'   }
+#'   %(\#eq:boot-ecdf)
+#' }.
 #'
-#' For more details and examples see the following vignettes:
+#' @details For more details and examples see the following vignettes:
 #'
-#' [Notes: Introduction to Nonparametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_nb.html)
+#' [Notes: Intro to NB](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_nb.html)
 #'
-#' [Notes: Introduction to Parametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_pb.html)
+#' [Notes: Intro to PB](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_pb.html)
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #' @family bootstrap functions
 #' @keywords bootstrap
-#' @inheritParams jeksterslabRutils::util_lapply
+#' @inheritParams jeksterslabRpar::par_lapply
 #' @param data Vector, matrix or data frame.
 #'   Sample data to bootstrap.
-#'   The empirical distribution \eqn{\hat{F}}.
-#' @param B Integer. Number of bootstrap samples.
+#'   The empirical distribution
+#'   \eqn{
+#'     \hat{
+#'       F
+#'     }
+#'     %(\#eq:boot-ecdf)
+#'   }.
+#' @param B Integer.
+#'   Number of bootstrap samples.
 #' @return Returns a list of length `B` of nonparametric bootstrap samples.
 #' @examples
 #' B <- 5L
 #' n <- 5
-#' #################################
-#' # vector
-#' #################################
+#' # vector----------------------------------------------------------------------
 #' x <- rnorm(n = n)
 #' xstar <- nb(
 #'   data = x,
 #'   B = B
 #' )
 #' str(xstar)
-#' #################################
-#' # matrix
-#' #################################
+#' # matrix----------------------------------------------------------------------
 #' x1 <- rnorm(n = n)
 #' x2 <- rnorm(n = n)
 #' x3 <- rnorm(n = n)
@@ -43,9 +52,7 @@
 #'   B = B
 #' )
 #' str(Xstar)
-#' #################################
-#' # data frame
-#' #################################
+#' # data frame------------------------------------------------------------------
 #' X <- as.data.frame(X)
 #' Xstar <- nb(
 #'   data = X,
@@ -53,17 +60,24 @@
 #' )
 #' str(Xstar)
 #' @references
-#' Efron, B., & Tibshirani, R. J. (1993).
-#' *An introduction to the bootstrap*.
-#' New York, N.Y: Chapman & Hall.
+#'   Efron, B., & Tibshirani, R. J. (1993).
+#'   *An introduction to the bootstrap*.
+#'   New York, N.Y: Chapman & Hall.
 #'
-#' [Wikipedia: Bootstrapping (statistics)](https://en.wikipedia.org/wiki/Bootstrapping_(statistics))
-#' @importFrom jeksterslabRutils util_lapply
+#'   [Wikipedia: Bootstrapping (statistics)](https://en.wikipedia.org/wiki/Bootstrapping_(statistics))
+#' @importFrom jeksterslabRpar par_lapply
 #' @export
 nb <- function(data,
                B = 2000L,
+               # par_lapply
                par = FALSE,
-               ncores = NULL) {
+               ncores = NULL,
+               mc = TRUE,
+               lb = FALSE,
+               cl_eval = FALSE,
+               cl_export = FALSE,
+               cl_expr,
+               cl_vars) {
   if (is.vector(data)) {
     len <- 1:length(data)
   }
@@ -85,49 +99,107 @@ nb <- function(data,
       return(data[i])
     }
   }
-  util_lapply(
+  par_lapply(
+    X = 1:B,
     FUN = foo,
-    args = list(
-      iter = 1:B,
-      data = data
-    ),
+    data = data,
     par = par,
-    ncores = ncores
+    ncores = ncores,
+    mc = mc,
+    lb = lb,
+    cl_eval = cl_eval,
+    cl_export = cl_export,
+    cl_expr = cl_expr,
+    cl_vars = cl_vars,
+    rbind = NULL
   )
 }
 
 #' Parametric Bootstrap
 #' (Multivariate Normal)
 #' from
-#' \eqn{\boldsymbol{\hat{\mu}}}
-#' and
-#' \eqn{\boldsymbol{\hat{\Sigma}}}
-#'
-#' Generates `B` number of parametric bootstrap
-#' samples from the original sample `data`.
-#' `data` is referred to as the empirical distribution
 #' \eqn{
-#'   \hat{F}_{
-#'     \mathrm{MVN}
-#'     \left(
-#'       \boldsymbol{\hat{\Sigma}},
-#'       \boldsymbol{\hat{\mu}}
-#'     \right)
+#'   \boldsymbol{
+#'     \hat{
+#'       \mu
+#'     }
 #'   }
-#' } .
-#' Data is generated from a multivariate normal distribution
-#' using the estimated variance-covariance matrix
-#' \eqn{\boldsymbol{\hat{\Sigma}}}
+#'   \left(
+#'     \boldsymbol{
+#'       \hat{
+#'         \theta
+#'       }
+#'     }
+#'   \right)
+#'   %(\#eq:boot-pb-mvn-mu)
+#' }
 #' and
-#' mean vector
-#' \eqn{\boldsymbol{\hat{\mu}}}
-#' .
+#' \eqn{
+#'   \boldsymbol{
+#'     \hat{
+#'       \Sigma
+#'     }
+#'   }
+#'   \left(
+#'     \boldsymbol{
+#'       \hat{
+#'         \theta
+#'       }
+#'     }
+#'   \right)
+#'   %(\#eq:boot-pb-mvn-Sigma)
+#' } .
 #'
-#' For more details and examples see the following vignettes:
+#' @description Generates `B` number of parametric bootstrap
+#' samples using estimated parameters
+#' from the original sample `data`.
+#' `data` is referred to as the empirical distribution
+#' with the following distributional assumption
+#' \deqn{
+#'   \hat{
+#'     F
+#'   }_{
+#'     \mathcal{
+#'       N
+#'     }_{k}
+#'     \left(
+#'       \boldsymbol{
+#'         \hat{
+#'           \mu
+#'         }
+#'       }
+#'       \left(
+#'         \boldsymbol{
+#'           \hat{
+#'             \theta
+#'           }
+#'         }
+#'       \right) ,
+#'       \boldsymbol{
+#'         \hat{
+#'           \Sigma
+#'         }
+#'       }
+#'       \left(
+#'         \boldsymbol{
+#'           \hat{
+#'             \theta
+#'           }
+#'         }
+#'       \right)
+#'     \right)
+#'   } .
+#'   %(\#eq:boot-pb-mvn)
+#' }
+#' Bootstrap samples are generated from a multivariate normal distribution
+#' using the fitted model-implied mean vector
+#' and variance-covariance matrix.
 #'
-#' [Notes: Introduction to Nonparametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_nb.html)
+#' @details For more details and examples see the following vignettes:
 #'
-#' [Notes: Introduction to Parametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_pb.html)
+#' [Notes: Intro to NB](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_nb.html)
+#'
+#' [Notes: Intro to PB](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_pb.html)
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #' @family bootstrap functions
@@ -137,15 +209,46 @@ nb <- function(data,
 #' @inherit nb references
 #' @param n Integer.
 #'   Sample size.
-#' @param muhat Vector.
-#'   Estimated mean vector from the original sample data.
-#' @param Sigmahat Matrix.
-#'   Estimated variance-covariance matrix
-#'   from the original sample data.
+#' @param muhatthetahat Vector.
+#'   Mean vector as a function of estimated parameters
+#'   or the fitted model-implied mean vector
+#'   \eqn{
+#'     \boldsymbol{
+#'       \hat{
+#'         \mu
+#'       }
+#'     }
+#'     \left(
+#'       \boldsymbol{
+#'         \hat{
+#'           \theta
+#'         }
+#'       }
+#'     \right)
+#'     %(\#eq:boot-pb-mvn-mu)
+#'   } .
+#' @param Sigmahatthetahat Matrix.
+#'   Variance-covariance matrix as a function of estimated parameters
+#'   or the fitted model-implied variance-covariance matrix
+#'   \eqn{
+#'     \boldsymbol{
+#'       \hat{
+#'         \Sigma
+#'       }
+#'     }
+#'     \left(
+#'       \boldsymbol{
+#'         \hat{
+#'           \theta
+#'         }
+#'       }
+#'     \right)
+#'     %(\#eq:boot-pb-mvn-Sigma)
+#'   } .
 #' @return Returns a list of length `B` of parametric bootstrap samples.
 #' @examples
 #' B <- 5L
-#' Sigmahat <- matrix(
+#' Sigmahatthetahat <- matrix(
 #'   data = c(
 #'     82.37344,
 #'     70.55922,
@@ -159,144 +262,101 @@ nb <- function(data,
 #'   ),
 #'   nrow = 3
 #' )
-#' muhat <- c(
+#' muhatthetahat <- c(
 #'   108.3060,
 #'   105.3324,
 #'   103.4009
 #' )
-#' Xstar <- .pbmvn(
+#' Xstar <- pbmvn(
 #'   n = 5,
-#'   Sigmahat = Sigmahat,
-#'   muhat = muhat,
+#'   Sigmahatthetahat = Sigmahatthetahat,
+#'   muhatthetahat = muhatthetahat,
 #'   B = B
 #' )
 #' str(Xstar)
 #' @importFrom jeksterslabRdata mvn
 #' @export
-.pbmvn <- function(n,
-                   Sigmahat,
-                   muhat,
-                   B = 2000L,
-                   par = FALSE,
-                   ncores = NULL,
-                   ...) {
-  #  foo <- function(iter,
-  #                  n,
-  #                  Sigmahat,
-  #                  muhat) {
-  #    mvrnorm(
-  #      n = n,
-  #      Sigma = Sigmahat,
-  #      mu = muhat
-  #    )
-  #  }
-  #  util_lapply(
-  #    FUN = foo,
-  #    args = list(
-  #      iter = 1:B,
-  #      n = n,
-  #      Sigmahat = Sigmahat,
-  #      muhat = muhat
-  #    ),
-  #    par = par,
-  #    ncores = ncores
-  #  )
-  mvn(
-    n = n,
-    mu = muhat,
-    Sigma = Sigmahat,
-    R = B,
-    par = par,
-    ncores = ncores,
-    ...
-  )
-}
-
-#' Parametric Bootstrap
-#' (Multivariate Normal)
-#' from Data
-#'
-#' @author Ivan Jacob Agaloos Pesigan
-#' @family bootstrap functions
-#' @keywords bootstrap
-#' @inheritParams nb
-#' @inheritParams .pbmvn
-#' @inherit .pbmvn references description details return
-#' @examples
-#' X <- matrix(
-#'   data = c(
-#'     121.03482,
-#'     99.74874,
-#'     101.44951,
-#'     114.31910,
-#'     104.97803,
-#'     118.31483,
-#'     101.39711,
-#'     90.20035,
-#'     105.31186,
-#'     111.43784,
-#'     95.68517,
-#'     109.52585,
-#'     105.11345,
-#'     128.37871,
-#'     78.30152
-#'   ),
-#'   nrow = 5
-#' )
-#' Xstar <- pbmvn(
-#'   data = X,
-#'   B = 5L
-#' )
-#' str(Xstar)
-#' @importFrom stats cov
-#' @export
-pbmvn <- function(data,
+pbmvn <- function(n, # mvrnorm
+                  muhatthetahat,
+                  Sigmahatthetahat,
+                  tol = 1e-6,
+                  empirical = FALSE,
+                  # iter
                   B = 2000L,
+                  # par_lapply
                   par = FALSE,
                   ncores = NULL,
-                  ...) {
-  n <- nrow(data)
-  Sigmahat <- cov(data)
-  muhat <- colMeans(data)
-  .pbmvn(
+                  mc = TRUE,
+                  lb = FALSE,
+                  cl_eval = FALSE,
+                  cl_export = FALSE,
+                  cl_expr,
+                  cl_vars) {
+  mvn(
+    # mvrnorm
     n = n,
-    Sigmahat = Sigmahat,
-    muhat = muhat,
-    B = B,
+    mu = muhatthetahat,
+    Sigma = Sigmahatthetahat,
+    tol = tol,
+    empirical = empirical,
+    # iter
+    R = B,
+    # par_lapply
     par = par,
     ncores = ncores,
-    ...
+    mc = mc,
+    lb = lb,
+    cl_eval = cl_eval,
+    cl_export = cl_export,
+    cl_expr = cl_expr,
+    cl_vars = cl_vars
   )
 }
 
 #' Parametric Bootstrap (Univariate)
 #'
-#' Generates `B` number of parametric bootstrap
+#' @description Generates `B` number of parametric bootstrap
 #' samples from estimated parameters of original univariate sample `data`.
 #' `data` is referred to as the empirical distribution
-#' \eqn{\hat{F}_{\mathcal{Distribution}}}.
+#' \deqn{
+#'   \hat{
+#'     F
+#'   }_{
+#'     \mathcal{
+#'       Distribution
+#'     }
+#'   }
+#' }.
 #' The default distribution is
-#' \eqn{
-#'   \mathcal{N}
+#' \deqn{
+#'   \mathcal{
+#'     N
+#'   }
 #'   \left(
-#'     \hat{\mu},
-#'     \hat{\sigma}^2
+#'     \hat{
+#'       \mu
+#'     },
+#'     \hat{
+#'       \sigma
+#'     }^2
 #'   \right)
+#'   %(\#eq:boot-pb-norm)
 #' }.
 #' The univariate distribution and parameters used in the
 #' data generating process can be specified using `rFUN` and `...`.
 #'
-#' For more details and examples see the following vignettes:
+#' @details For more details and examples see the following vignettes:
 #'
-#' [Notes: Introduction to Nonparametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_nb.html)
+#' [Notes: Intro to NB](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_nb.html)
 #'
-#' [Notes: Introduction to Parametric Bootstrapping](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_pb.html)
+#' [Notes: Intro to PB](https://jeksterslabds.github.io/jeksterslabRboot/articles/notes/notes_intro_pb.html)
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #' @family bootstrap functions
 #' @keywords bootstrap
 #' @inheritParams nb
-#' @inherit .pbmvn references return
+#' @inheritParams jeksterslabRpar::par_lapply
+#' @inherit pbmvn references return
 #' @param n Integer.
 #'   Sample size.
 #' @param rFUN Function.
@@ -305,9 +365,7 @@ pbmvn <- function(data,
 #' @examples
 #' n <- 5
 #' B <- 5
-#' #################################
-#' # normal distribution
-#' #################################
+#' # normal distribution---------------------------------------------------------
 #' mu <- 100
 #' sigma2 <- 225
 #' sigma <- sqrt(sigma2)
@@ -316,19 +374,17 @@ pbmvn <- function(data,
 #'   mean = mu,
 #'   sd = sigma
 #' )
-#' muhat <- mean(x)
-#' sigmahat <- sd(x)
+#' muhatthetahat <- mean(x)
+#' Sigmahatthetahat <- sd(x)
 #' xstar <- pbuniv(
 #'   n = n,
 #'   rFUN = rnorm,
 #'   B = B,
-#'   mean = muhat,
-#'   sd = sigmahat
+#'   mean = muhatthetahat,
+#'   sd = Sigmahatthetahat
 #' )
 #' str(xstar)
-#' #################################
-#' # binomial distribution
-#' #################################
+#' # binomial distribution-------------------------------------------------------
 #' n_trials <- 1
 #' p <- 0.50
 #' x <- rbinom(
@@ -346,40 +402,39 @@ pbmvn <- function(data,
 #' )
 #' str(xstar)
 #' @importFrom jeksterslabRdata univ
+#' @importFrom stats rnorm
 #' @export
-pbuniv <- function(n,
+pbuniv <- function(n, # rFUN
                    rFUN = rnorm,
+                   ...,
+                   # iter
                    B = 2000L,
+                   # par_lapply
                    par = FALSE,
                    ncores = NULL,
-                   ...) {
-  #  args <- list(
-  #    iter = 1:B,
-  #    rFUN = rFUN,
-  #    n = n,
-  #    ...
-  #  )
-  #  foo <- function(iter,
-  #                  rFUN,
-  #                  n,
-  #                  ...) {
-  #    rFUN(
-  #      n = n,
-  #      ...
-  #    )
-  #  }
-  #  util_lapply(
-  #    FUN = foo,
-  #    args = args,
-  #    par = par,
-  #    ncores = ncores
-  #  )
+                   mc = TRUE,
+                   lb = FALSE,
+                   cl_eval = FALSE,
+                   cl_export = FALSE,
+                   cl_expr,
+                   cl_vars,
+                   rbind = NULL) {
   univ(
+    # rFUN
     n = n,
     rFUN = rFUN,
+    ...,
+    # iter
     R = B,
+    # par_lapply
     par = par,
     ncores = ncores,
-    ...
+    mc = mc,
+    lb = lb,
+    cl_eval = cl_eval,
+    cl_export = cl_export,
+    cl_expr = cl_expr,
+    cl_vars = cl_vars,
+    rbind = rbind
   )
 }
